@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using Bebone.Core.Windowing;
+using System.Numerics;
 
 namespace Bebone.Core.Graphics.Renderer.Agnostic
 {

@@ -1,4 +1,4 @@
-﻿namespace Bebone.Core.Graphics
+﻿namespace Bebone.Core.Windowing
 {
     public enum MouseButton
     {

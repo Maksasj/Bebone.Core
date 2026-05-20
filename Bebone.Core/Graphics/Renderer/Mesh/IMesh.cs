@@ -1,4 +1,4 @@
-﻿namespace Bebone.Core.Graphics
+﻿namespace Bebone.Core.Graphics.Renderer.Mesh
 {
     public interface IMesh<T> where T : IVertex
     {

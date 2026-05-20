@@ -1,4 +1,5 @@
-﻿using Bebone.Core.Graphics.Renderer.OpenGL.Buffers;
+﻿using Bebone.Core.Graphics.Renderer.Mesh;
+using Bebone.Core.Graphics.Renderer.OpenGL.Buffers;
 using Silk.NET.OpenGL;
 
 namespace Bebone.Core.Graphics.Renderer.OpenGL.Mesh

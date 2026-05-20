@@ -1,10 +1,9 @@
-﻿using Bebone.Core.Graphics;
-using Bebone.Core.Graphics.Renderer.Agnostic;
+﻿using Bebone.Core.Graphics.Renderer.Agnostic;
 using Bebone.Core.Graphics.Renderer.OpenGL;
 using Silk.NET.GLFW;
 using System.Numerics;
 
-namespace Bebone.Core.Window
+namespace Bebone.Core.Windowing
 {
     public class GlfwWindow : Window
     {
@@ -146,7 +145,7 @@ namespace Bebone.Core.Window
 
         private unsafe void KeyInputCallback(WindowHandle* window, Keys key, int scancode, InputAction action, KeyModifiers mods) => OnInputChange((Key)key, action != InputAction.Release);
         private unsafe void CursorPosInputCallback(WindowHandle* window, double xpos, double ypos) => OnCursorPositionChange(new Vector2((float)xpos, (float)ypos));
-        private unsafe void MouseButtonCallback(WindowHandle* window, Silk.NET.GLFW.MouseButton button, InputAction action, KeyModifiers mods) => OnMouseButtonChange((Graphics.MouseButton)button, action != InputAction.Release);
+        private unsafe void MouseButtonCallback(WindowHandle* window, Silk.NET.GLFW.MouseButton button, InputAction action, KeyModifiers mods) => OnMouseButtonChange((MouseButton)button, action != InputAction.Release);
         private unsafe void ScrollCallback(WindowHandle* window, double xoffset, double yoffset) => OnMouseScrollChange(new Vector2((float)xoffset, (float)yoffset));
     }
 }

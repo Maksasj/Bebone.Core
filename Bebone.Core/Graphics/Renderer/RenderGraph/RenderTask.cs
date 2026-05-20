@@ -1,4 +1,4 @@
-﻿namespace Bebone.Core.Graphics
+﻿namespace Bebone.Core.Graphics.Renderer.RenderGraph
 {
     public class RenderTask<PassData>(Func<Dictionary<string, object>, PassData> compile, Action<PassData> execute) : IPass
     {

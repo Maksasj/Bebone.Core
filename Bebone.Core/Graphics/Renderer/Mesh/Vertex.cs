@@ -1,7 +1,6 @@
-﻿using Bebone.Core.Graphics;
-using System.Numerics;
+﻿using System.Numerics;
 
-namespace tpi.Graphics.Mesh
+namespace Bebone.Core.Graphics.Renderer.Mesh
 {
     public struct Vertex : IVertex
     {

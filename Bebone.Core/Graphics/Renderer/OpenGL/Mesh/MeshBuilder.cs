@@ -1,4 +1,6 @@
-﻿namespace Bebone.Core.Graphics.Renderer.OpenGL.Mesh
+﻿using Bebone.Core.Graphics.Renderer.Mesh;
+
+namespace Bebone.Core.Graphics.Renderer.OpenGL.Mesh
 {
     public class MeshBuilder<T> : IMeshBuilder<T> where T : IVertex
     {
