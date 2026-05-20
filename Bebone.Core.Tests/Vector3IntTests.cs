@@ -1,4 +1,7 @@
-﻿namespace Bebone.Core.Tests;
+﻿using FsCheck;
+using FsCheck.Fluent;
+
+namespace Bebone.Core.Tests;
 
 [TestFixture]
 public class Vector3IntTests
@@ -6,23 +9,32 @@ public class Vector3IntTests
     [Test]
     public void Constructor_SetsXYZ()
     {
-        // Arrange & Act
-        var v = new Vector3Int(2, -3, 5);
+        Prop.ForAll<int, int, int>((x, y, z) =>
+        {
+            // Arrange & Act
+            var v = new Vector3Int(x, y, z);
 
-        // Assert
-        Assert.That(v.X, Is.EqualTo(2));
-        Assert.That(v.Y, Is.EqualTo(-3));
-        Assert.That(v.Z, Is.EqualTo(5));
+            // Assert
+            return v.X == x &&
+                   v.Y == y &&
+                   v.Z == z;
+        }).QuickCheckThrowOnFailure();
     }
 
     [Test]
     public void Length_ReturnsMagnitude()
     {
-        // Arrange & Act
-        var v = new Vector3Int(2, 3, 6);
+        Prop.ForAll<int, int, int>((x, y, z) =>
+        {
+            // Arrange
+            var v = new Vector3Int(x, y, z);
 
-        // Assert
-        Assert.That(v.Length, Is.EqualTo(7f));
+            // Act
+            var expected = MathF.Sqrt(x * x + y * y + z * z);
+
+            // Assert
+            return v.Length == expected;
+        }).QuickCheckThrowOnFailure();
     }
 
     [Test]
@@ -44,21 +56,45 @@ public class Vector3IntTests
     [Test]
     public void Add_ReturnsSum()
     {
-        // Arrange & Act
-        var result = new Vector3Int(1, 2, 3) + new Vector3Int(4, -1, 2);
+        Prop.ForAll<(int x1, int y1, int z1, int x2, int y2, int z2)>(data =>
+        {
+            // Arrange
+            var a = new Vector3Int(data.x1, data.y1, data.z1);
+            var b = new Vector3Int(data.x2, data.y2, data.z2);
 
-        // Assert
-        Assert.That(result, Is.EqualTo(new Vector3Int(5, 1, 5)));
+            // Act
+            var result = a + b;
+
+            // Assert
+            var expected = new Vector3Int(
+                data.x1 + data.x2,
+                data.y1 + data.y2,
+                data.z1 + data.z2);
+
+            return result == expected;
+        }).QuickCheckThrowOnFailure();
     }
 
     [Test]
     public void Subtract_ReturnsDifference()
     {
-        // Arrange & Act
-        var result = new Vector3Int(5, 4, 3) - new Vector3Int(1, 2, 1);
+        Prop.ForAll<(int x1, int y1, int z1, int x2, int y2, int z2)>(data =>
+        {
+            // Arrange
+            var a = new Vector3Int(data.x1, data.y1, data.z1);
+            var b = new Vector3Int(data.x2, data.y2, data.z2);
 
-        // Assert
-        Assert.That(result, Is.EqualTo(new Vector3Int(4, 2, 2)));
+            // Act
+            var result = a - b;
+
+            // Assert
+            var expected = new Vector3Int(
+                data.x1 - data.x2,
+                data.y1 - data.y2,
+                data.z1 - data.z2);
+
+            return result == expected;
+        }).QuickCheckThrowOnFailure();
     }
 
     [Test]
@@ -69,16 +105,60 @@ public class Vector3IntTests
 
         // Assert
         Assert.That(result, Is.EqualTo(new Vector3Int(3, -6, 9)));
+
+        Prop.ForAll<(int x1, int y1, int z1, int scalar)>(data =>
+        {
+            // Arrange
+            var v = new Vector3Int(data.x1, data.y1, data.z1);
+
+            // Act
+            var result = v * data.scalar;
+
+            // Assert
+            var expected = new Vector3Int(
+                data.x1 * data.scalar,
+                data.y1 * data.scalar,
+                data.z1 * data.scalar);
+
+            return result == expected;
+        }).QuickCheckThrowOnFailure();
     }
 
     [Test]
     public void Divide_ReturnsDividedVector()
     {
-        // Arrange & Act
-        var result = new Vector3Int(8, -12, 4) / 4;
+        Prop.ForAll<(int x1, int y1, int z1, int scalar)>(data =>
+        {
+            if (data.scalar == 0)
+                return true;
 
-        // Assert
-        Assert.That(result, Is.EqualTo(new Vector3Int(2, -3, 1)));
+            // Arrange
+            var v = new Vector3Int(data.x1, data.y1, data.z1);
+
+            // Act
+            var result = v / data.scalar;
+
+            // Assert
+            var expected = new Vector3Int(
+                data.x1 / data.scalar,
+                data.y1 / data.scalar,
+                data.z1 / data.scalar);
+
+            return result == expected;
+        }).QuickCheckThrowOnFailure();
+    }
+
+    [Test]
+    public void Divide_ByZero_ThrowsDivideByZeroException()
+    {
+        // Arrange
+        var v = new Vector3Int(1, 1, 1);
+
+        // Act & Assert
+        Assert.Throws<DivideByZeroException>(() =>
+        {
+            _ = v / 0;
+        });
     }
 
     [Test]
@@ -121,10 +201,11 @@ public class Vector3IntTests
     [Test]
     public void ToString_ReturnsFormattedVector()
     {
-        // Arrange
-        var v = new Vector3Int(2, -3, 5);
+        Prop.ForAll<int, int, int>((x, y, z) =>
+        {
+            var v = new Vector3Int(x, y, z);
 
-        // Act & Assert
-        Assert.That(v.ToString(), Is.EqualTo("(2, -3, 5)"));
+            return v.ToString() == $"({x}, {y}, {z})";
+        }).QuickCheckThrowOnFailure();
     }
 }

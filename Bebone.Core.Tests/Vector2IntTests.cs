@@ -1,4 +1,7 @@
-﻿namespace Bebone.Core.Tests;
+﻿using FsCheck;
+using FsCheck.Fluent;
+
+namespace Bebone.Core.Tests;
 
 [TestFixture]
 public class Vector2IntTests
@@ -6,28 +9,37 @@ public class Vector2IntTests
     [Test]
     public void Constructor_SetsXAndY()
     {
-        // Arrange & Act
-        var v = new Vector2Int(2, -3);
-        
-        // Assert
-        Assert.That(v.X, Is.EqualTo(2));
-        Assert.That(v.Y, Is.EqualTo(-3));
+        Prop.ForAll<int, int>((x, y) =>
+        {
+            // Arrange & Act
+            var v = new Vector2Int(x, y);
+            
+            // Assert
+            return v.X == x
+                && v.Y == y;
+        }).QuickCheckThrowOnFailure();
     }
 
     [Test]
     public void Length_ReturnsMagnitude()
     {
-        // Arrange & Act
-        var v = new Vector2Int(3, 4);
+        Prop.ForAll<(int x, int y)>(data =>
+        {
+            // Arrange & Act
+            var v = new Vector2Int(data.x, data.y);
 
-        // Assert
-        Assert.That(v.Length, Is.EqualTo(5f));
+            // Assert
+            var expected = MathF.Sqrt(
+                data.x * data.x +
+                data.y * data.y);
+
+            return v.Length == expected;
+        }).QuickCheckThrowOnFailure();
     }
 
     [Test]
     public void StaticVectors_ReturnExpectedValues()
     {
-        // Arrange & Act & Assert
         Assert.That(Vector2Int.Zero, Is.EqualTo(new Vector2Int(0, 0)));
         Assert.That(Vector2Int.One, Is.EqualTo(new Vector2Int(1, 1)));
         Assert.That(Vector2Int.Up, Is.EqualTo(new Vector2Int(0, 1)));
@@ -37,48 +49,112 @@ public class Vector2IntTests
     }
 
     [Test]
-    public void Add_ReturnsSum()
+    public void Add_ReturnsComponentWiseSum()
     {
-        // Arrange & Act & Assert
-        Assert.That(new Vector2Int(2, 3) + new Vector2Int(4, -1),
-            Is.EqualTo(new Vector2Int(6, 2)));
+        Prop.ForAll<(int x1, int y1, int x2, int y2)>(data =>
+        {
+            // Arrange
+            var a = new Vector2Int(data.x1, data.y1);
+            var b = new Vector2Int(data.x2, data.y2);
+
+            // Act
+            var result = a + b;
+
+            // Assert
+            var expected = new Vector2Int(
+                data.x1 + data.x2,
+                data.y1 + data.y2);
+
+            return result == expected;
+        }).QuickCheckThrowOnFailure();
     }
 
     [Test]
-    public void Subtract_ReturnsDifference()
+    public void Subtract_ReturnsComponentWiseDifference()
     {
-        // Arrange & Act & Assert
-        Assert.That(new Vector2Int(2, 3) - new Vector2Int(4, -1),
-            Is.EqualTo(new Vector2Int(-2, 4)));
+        Prop.ForAll<(int x1, int y1, int x2, int y2)>(data =>
+        {
+            // Arrange
+            var a = new Vector2Int(data.x1, data.y1);
+            var b = new Vector2Int(data.x2, data.y2);
+
+            // Act
+            var result = a - b;
+
+            // Assert
+            var expected = new Vector2Int(
+                data.x1 - data.x2,
+                data.y1 - data.y2);
+
+            return result == expected;
+        }).QuickCheckThrowOnFailure();
     }
 
     [Test]
     public void Multiply_ReturnsScaledVector()
     {
-        // Arrange & Act & Assert
-        Assert.That(new Vector2Int(2, -3) * 4,
-            Is.EqualTo(new Vector2Int(8, -12)));
+        Prop.ForAll<(int x, int y, int scalar)>(data =>
+        {
+            // Arrange
+            var v = new Vector2Int(data.x, data.y);
+
+            // Act
+            var result = v * data.scalar;
+            
+            // Assert
+            var expected = new Vector2Int(
+                data.x * data.scalar,
+                data.y * data.scalar);
+
+            return result == expected;
+        }).QuickCheckThrowOnFailure();
     }
 
     [Test]
     public void Divide_ReturnsDividedVector()
     {
-        // Arrange & Act & Assert
-        Assert.That(new Vector2Int(8, -12) / 4,
-            Is.EqualTo(new Vector2Int(2, -3)));
+        Prop.ForAll<(int x, int y, int scalar)>(data =>
+        {
+            if (data.scalar == 0)
+                return true;
+
+            // Arrange
+            var v = new Vector2Int(data.x, data.y);
+
+            // Act
+            var result = v / data.scalar;
+
+            // Assert
+            var expected = new Vector2Int(
+                data.x / data.scalar,
+                data.y / data.scalar);
+
+            return result == expected;
+        }).QuickCheckThrowOnFailure();
+    }
+
+    [Test]
+    public void Divide_ByZero_Throws()
+    {
+        // Arrange
+        var v = new Vector2Int(1, 1);
+
+        // Act & Assert
+        Assert.Throws<DivideByZeroException>(() =>
+        {
+            _ = v / 0;
+        });
     }
 
     [Test]
     public void EqualityOperators_WorkCorrectly()
     {
         // Arrange
-        var a = new Vector2Int(1, 2);
-        var b = new Vector2Int(1, 2);
-        var c = new Vector2Int(2, 1);
+        var a = new Vector2Int(5, -7);
+        var b = new Vector2Int(5, -7);
 
         // Act & Assert
-        Assert.That(a == b, Is.True);
-        Assert.That(a != c, Is.True);
+        Assert.That(a.GetHashCode(), Is.EqualTo(b.GetHashCode()));
     }
 
     [Test]
@@ -110,10 +186,11 @@ public class Vector2IntTests
     [Test]
     public void ToString_ReturnsFormattedVector()
     {
-        // Arrange
-        var v = new Vector2Int(2, -3);
+        Prop.ForAll<int, int>((x, y) =>
+        {
+            var v = new Vector2Int(x, y);
 
-        // Act & Assert
-        Assert.That(v.ToString(), Is.EqualTo("(2, -3)"));
+            return v.ToString() == $"({x}, {y})";
+        }).QuickCheckThrowOnFailure();
     }
 }
