@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/Workflows/">
+    <File Path=".github/workflows/run-tests.yml" />
+  </Folder>
   <Project Path="Bebone.Core.Tests/Bebone.Core.Tests.csproj" Id="f0d0f6c7-4df0-4ffb-9cfc-d3cd20f8ef8b" />
   <Project Path="Bebone.Core/Bebone.Core.csproj" />
 </Solution>
