@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace tpi.Graphics
+namespace Bebone.Core.Graphics.Camera
 {
     public interface ICamera
     {

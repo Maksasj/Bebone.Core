@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace tpi.Graphics
+namespace Bebone.Core.Graphics.Camera
 {
     public class OrthographicCamera(int left, int right, int bottom, int top, float zNearPlane, float zFarPlane) : ICamera
     {
