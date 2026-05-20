@@ -1,4 +1,4 @@
-﻿using Bebone.Core.Math;
+﻿namespace Bebone.Core.Tests;
 
 [TestFixture]
 public class Vector2IntTests

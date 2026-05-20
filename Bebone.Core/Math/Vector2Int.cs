@@ -1,4 +1,4 @@
-﻿namespace Bebone.Core.Math;
+﻿namespace Bebone.Core;
 
 public readonly struct Vector2Int(int x, int y) : IEquatable<Vector2Int>
 {
