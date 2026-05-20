@@ -1,7 +1,7 @@
-﻿using Bebone.Core.Windowing;
+﻿using Bebone.Core.Graphics.Renderer.Agnostic;
 using System.Numerics;
 
-namespace Bebone.Core.Graphics.Renderer.Agnostic
+namespace Bebone.Core.Windowing
 {
     public abstract class Window
     {
