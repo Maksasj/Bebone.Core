@@ -1,4 +1,4 @@
-﻿namespace Bebone.Core.Graphics
+﻿namespace Bebone.Core.Graphics.Renderer.Mesh
 {
     public struct AttributeBind(int index, int size, AttributeBindType type, int offset)
     {

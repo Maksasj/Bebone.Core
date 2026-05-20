@@ -1,9 +1,10 @@
-﻿using Bebone.Core.Graphics.Renderer.Agnostic;
+﻿using Bebone.Core.Graphics;
+using Bebone.Core.Graphics.Renderer.Agnostic;
 using Bebone.Core.Graphics.Renderer.OpenGL;
 using Silk.NET.GLFW;
 using System.Numerics;
 
-namespace Bebone.Core.Graphics.Renderer
+namespace Bebone.Core.Window
 {
     public class GlfwWindow : Window
     {

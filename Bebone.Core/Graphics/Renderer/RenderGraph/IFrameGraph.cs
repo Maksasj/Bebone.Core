@@ -1,4 +1,4 @@
-﻿namespace Bebone.Core.Graphics
+﻿namespace Bebone.Core.Graphics.Renderer.RenderGraph
 {
     public interface IFrameGraph
     {

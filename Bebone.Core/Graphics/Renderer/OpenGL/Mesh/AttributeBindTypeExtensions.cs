@@ -1,4 +1,5 @@
-﻿using Silk.NET.OpenGL;
+﻿using Bebone.Core.Graphics.Renderer.Mesh;
+using Silk.NET.OpenGL;
 
 namespace Bebone.Core.Graphics.Renderer.OpenGL.Mesh
 {
