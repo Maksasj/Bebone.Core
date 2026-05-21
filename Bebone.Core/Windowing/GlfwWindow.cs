@@ -11,97 +11,63 @@ namespace Bebone.Core.Windowing
         private readonly IntPtr _windowHandle;
 
         private readonly string _baseTitle;
-        private double _lastTime;
-        private int _frameCount;
-        private double _timer;
 
         public GlfwWindow(string title, int width, int height)
         {
-            baseTitle = title;
-            glfw = Glfw.GetApi();
+            _baseTitle = title;
+            _glfw = Glfw.GetApi();
 
-            if (!glfw.Init())
+            if (!_glfw.Init())
                 throw new Exception("GLFW initialization failed.");
 
-            glfw.WindowHint(WindowHintClientApi.ClientApi, ClientApi.OpenGL);
-            glfw.WindowHint(WindowHintOpenGlProfile.OpenGlProfile, OpenGlProfile.Core);
-            glfw.WindowHint(WindowHintInt.ContextVersionMajor, 3);
-            glfw.WindowHint(WindowHintInt.ContextVersionMinor, 3);
-            glfw.WindowHint(WindowHintBool.Resizable, false);
+            _glfw.WindowHint(WindowHintClientApi.ClientApi, ClientApi.OpenGL);
+            _glfw.WindowHint(WindowHintOpenGlProfile.OpenGlProfile, OpenGlProfile.Core);
+            _glfw.WindowHint(WindowHintInt.ContextVersionMajor, 3);
+            _glfw.WindowHint(WindowHintInt.ContextVersionMinor, 3);
+            _glfw.WindowHint(WindowHintBool.Resizable, false);
 
             unsafe
             {
-                var windowPtr = glfw.CreateWindow(width, height, title, null, null);
+                var windowPtr = _glfw.CreateWindow(width, height, title, null, null);
 
                 if (windowPtr is null)
                 {
-                    glfw.Terminate();
+                    _glfw.Terminate();
                     throw new InvalidOperationException("Failed to create GLFW window.");
                     return;
                 }
 
-                windowHandle = (IntPtr)windowPtr;
+                _windowHandle = (IntPtr)windowPtr;
 
-                glfw.MakeContextCurrent((WindowHandle*)windowHandle.ToPointer());
-                lastTime = glfw.GetTime();
-                timer = glfw.GetTime();
+                _glfw.MakeContextCurrent((WindowHandle*)_windowHandle.ToPointer());
             }
 
             unsafe
             {
-                glfw.SetKeyCallback((WindowHandle*)windowHandle, KeyInputCallback);
-                glfw.SetCursorPosCallback((WindowHandle*)windowHandle, CursorPosInputCallback);
-                glfw.SetMouseButtonCallback((WindowHandle*)windowHandle, MouseButtonCallback);
-                glfw.SetScrollCallback((WindowHandle*)windowHandle, ScrollCallback);
+                _glfw.SetKeyCallback((WindowHandle*)_windowHandle, KeyInputCallback);
+                _glfw.SetCursorPosCallback((WindowHandle*)_windowHandle, CursorPosInputCallback);
+                _glfw.SetMouseButtonCallback((WindowHandle*)_windowHandle, MouseButtonCallback);
+                _glfw.SetScrollCallback((WindowHandle*)_windowHandle, ScrollCallback);
 
-                glfw.SwapInterval(0);
+                _glfw.SwapInterval(0);
             }
-
-            frameCount = 0;
         }
 
         public override void SwapBuffers()
         {
-            UpdatePerformanceTitle();
-
             unsafe
             {
-                glfw.SwapBuffers((WindowHandle*)windowHandle);
+                _glfw.SwapBuffers((WindowHandle*)_windowHandle);
             }
         }
 
-        private void UpdatePerformanceTitle()
-        {
-            double currentTime = glfw.GetTime();
-            double deltaTime = currentTime - lastTime;
-            lastTime = currentTime;
-
-            frameCount++;
-            timer += deltaTime;
-
-            if (timer >= 1.0)
-            {
-                double msPerFrame = (timer / frameCount) * 1000.0;
-                double fps = frameCount / timer;
-
-                unsafe
-                {
-                    string newTitle = $"{baseTitle} - {msPerFrame:F2} ms ({fps:F0} FPS)";
-                    glfw.SetWindowTitle((WindowHandle*)windowHandle, newTitle);
-                }
-
-                frameCount = 0;
-                timer = 0;
-            }
-        }
-
-        public override void PollEvents() => glfw.PollEvents();
+        public override void PollEvents() => _glfw.PollEvents();
 
         public override bool WindowShouldClose()
         {
             unsafe
             {
-                return glfw.WindowShouldClose((WindowHandle*)windowHandle);
+                return _glfw.WindowShouldClose((WindowHandle*)_windowHandle);
             }
         }
 
@@ -109,25 +75,25 @@ namespace Bebone.Core.Windowing
         {
             unsafe
             {
-                glfw.DestroyWindow((WindowHandle*)windowHandle);
+                _glfw.DestroyWindow((WindowHandle*)_windowHandle);
             }
         }
 
-        public override IGraphicsApiContext CreateApiContext() => new OpenGLContext(glfw);
+        public override IGraphicsApiContext CreateApiContext() => new OpenGLContext(_glfw);
 
-        public override unsafe void HideCursor() => glfw.SetInputMode((WindowHandle*)windowHandle, CursorStateAttribute.Cursor, CursorModeValue.CursorDisabled);
-        public override unsafe void ShowCursor() => glfw.SetInputMode((WindowHandle*)windowHandle, CursorStateAttribute.Cursor, CursorModeValue.CursorNormal);
+        public override unsafe void HideCursor() => _glfw.SetInputMode((WindowHandle*)_windowHandle, CursorStateAttribute.Cursor, CursorModeValue.CursorDisabled);
+        public override unsafe void ShowCursor() => _glfw.SetInputMode((WindowHandle*)_windowHandle, CursorStateAttribute.Cursor, CursorModeValue.CursorNormal);
 
         public Vector2 GetCursorPosition()
         {
             unsafe
             {
-                glfw.GetCursorPos((WindowHandle*)windowHandle, out var xpos, out var ypos);
+                _glfw.GetCursorPos((WindowHandle*)_windowHandle, out var xpos, out var ypos);
                 return new Vector2((float)xpos, (float)ypos);
             }
         }
 
-        public override float GetTime() => (float)glfw.GetTime();
+        public override float GetTime() => (float)_glfw.GetTime();
 
         public override int GetWidth() => (int)GetSize().X;
 
@@ -137,7 +103,7 @@ namespace Bebone.Core.Windowing
         {
             unsafe
             {
-                glfw.GetWindowSize((WindowHandle*)windowHandle, out int width, out int height);
+                _glfw.GetWindowSize((WindowHandle*)_windowHandle, out int width, out int height);
                 return new Vector2(width, height);
             }
         }

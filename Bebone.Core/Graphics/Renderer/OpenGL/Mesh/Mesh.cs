@@ -6,57 +6,57 @@ namespace Bebone.Core.Graphics.Renderer.OpenGL.Mesh
 {
     public class Mesh<T> : IMesh<T> where T : IVertex
     {
-        private readonly VertexArrayObject vao;
-        private readonly VertexBufferObject vbo;
-        private readonly ElementBufferObject ebo;
+        private readonly VertexArrayObject _vao;
+        private readonly VertexBufferObject _vbo;
+        private readonly ElementBufferObject _ebo;
 
-        private readonly uint indicesCount;
-        private int vertexCount;
-        private int capacity;
+        private readonly uint _indicesCount;
+        private int _vertexCount;
+        private int _capacity;
 
         public unsafe Mesh(T[] vertices, uint[] indices)
         {
-            indicesCount = (uint)indices.Length;
-            vertexCount = vertices.Length;
-            capacity = vertices.Length;
+            _indicesCount = (uint)indices.Length;
+            _vertexCount = vertices.Length;
+            _capacity = vertices.Length;
 
-            vao = new VertexArrayObject();
-            vao.Bind();
+            _vao = new VertexArrayObject();
+            _vao.Bind();
 
-            ebo = new ElementBufferObject();
-            ebo.Bind();
-            ebo.BufferData(indices);
+            _ebo = new ElementBufferObject();
+            _ebo.Bind();
+            _ebo.BufferData(indices);
 
-            vbo = new VertexBufferObject();
-            vbo.Bind();
-            vbo.BufferData(vertices);
+            _vbo = new VertexBufferObject();
+            _vbo.Bind();
+            _vbo.BufferData(vertices);
 
             var stride = sizeof(T);
 
             foreach (var bind in T.GetAttributes())
-                vao.LinkAttribute(bind.Index, bind.Size, bind.Type.ToOpenGL(), stride, (void*)bind.Offset);
+                _vao.LinkAttribute(bind.Index, bind.Size, bind.Type.ToOpenGL(), stride, (void*)bind.Offset);
 
-            vao.Unbind();
-            vbo.Unbind();
-            ebo.Unbind();
+            _vao.Unbind();
+            _vbo.Unbind();
+            _ebo.Unbind();
         }
 
-        public void Bind() => vao.Bind();
+        public void Bind() => _vao.Bind();
 
         public unsafe void DrawTriangles()
-            => OpenGL.Api.DrawElements(PrimitiveType.Triangles, indicesCount, DrawElementsType.UnsignedInt, null);
+            => OpenGL.Api.DrawElements(PrimitiveType.Triangles, _indicesCount, DrawElementsType.UnsignedInt, null);
 
         public void DrawLines()
-            => OpenGL.Api.DrawArrays(PrimitiveType.Lines, 0, (uint)vertexCount);
+            => OpenGL.Api.DrawArrays(PrimitiveType.Lines, 0, (uint)_vertexCount);
 
         public void DrawArrays()
-            => OpenGL.Api.DrawArrays(GLEnum.Triangles, 0, (uint)vertexCount);
+            => OpenGL.Api.DrawArrays(GLEnum.Triangles, 0, (uint)_vertexCount);
 
         public void Dispose()
         {
-            vbo.Dispose();
-            ebo.Dispose();
-            vao.Dispose();
+            _vbo.Dispose();
+            _ebo.Dispose();
+            _vao.Dispose();
         }
 
         // TODO: NOTE EBO IS NOT UPDATED HERE IF THE INDICES CHANGE
@@ -64,17 +64,17 @@ namespace Bebone.Core.Graphics.Renderer.OpenGL.Mesh
         {
             if (verticies == null || verticies.Length == 0) return;
 
-            vbo.Bind();
+            _vbo.Bind();
 
-            if (verticies.Length <= capacity)
-                vbo.BufferSubData(verticies);
+            if (verticies.Length <= _capacity)
+                _vbo.BufferSubData(verticies);
             else
-                vbo.BufferData(verticies);
-            capacity = verticies.Length;
+                _vbo.BufferData(verticies);
+            _capacity = verticies.Length;
 
-            vertexCount = verticies.Length;
+            _vertexCount = verticies.Length;
 
-            vbo.Unbind();
+            _vbo.Unbind();
         }
     }
 }

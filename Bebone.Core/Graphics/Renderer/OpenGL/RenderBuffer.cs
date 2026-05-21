@@ -5,19 +5,19 @@ namespace Bebone.Core.Graphics.Renderer.OpenGL
 {
     public class RenderBuffer : IRenderBuffer
     {
-        private readonly uint _nativeHandle;
+        private readonly uint _handle;
 
         public RenderBuffer(int width, int height)
         {
-            OpenGL.Api.GenRenderbuffers(1, out nativeHandle);
+            OpenGL.Api.GenRenderbuffers(1, out _handle);
 
-            OpenGL.Api.BindRenderbuffer(GLEnum.Renderbuffer, nativeHandle);
+            OpenGL.Api.BindRenderbuffer(GLEnum.Renderbuffer, _handle);
             OpenGL.Api.RenderbufferStorage(GLEnum.Renderbuffer, InternalFormat.Depth24Stencil8, (uint)width, (uint)height);
         }
 
-        public void Bind() => OpenGL.Api.BindRenderbuffer(GLEnum.Renderbuffer, nativeHandle);
+        public void Bind() => OpenGL.Api.BindRenderbuffer(GLEnum.Renderbuffer, _handle);
         public void Unbind() => OpenGL.Api.BindRenderbuffer(GLEnum.Renderbuffer, 0);
 
-        public uint GetHandle() => nativeHandle;
+        public uint GetHandle() => _handle;
     }
 }

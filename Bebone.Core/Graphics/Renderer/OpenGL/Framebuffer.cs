@@ -9,10 +9,10 @@ namespace Bebone.Core.Graphics.Renderer.OpenGL
 
         public Framebuffer()
         {
-            OpenGL.Api.GenFramebuffers(1, out framebuffer);
+            OpenGL.Api.GenFramebuffers(1, out _framebuffer);
         }
 
-        public void Bind() => OpenGL.Api.BindFramebuffer(GLEnum.Framebuffer, framebuffer);
+        public void Bind() => OpenGL.Api.BindFramebuffer(GLEnum.Framebuffer, _framebuffer);
         public void Unbind() => OpenGL.Api.BindFramebuffer(GLEnum.Framebuffer, 0);
 
         public void AttachTexture(IColorAttachment attachment, ColorAttachmentSlot colorAttachment)

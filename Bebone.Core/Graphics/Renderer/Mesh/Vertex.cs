@@ -21,10 +21,10 @@ namespace Bebone.Core.Graphics.Renderer.Mesh
 
         public static IEnumerable<AttributeBind> GetAttributes()
         {
-            var positionBind = new AttributeBind(index: 0, size: 3, AttributeBindType.Float, offset: 0);
-            var normalBind = new AttributeBind(index: 1, size: 3, AttributeBindType.Float, offset: 3 * sizeof(float));
-            var textureCoordinatesBind = new AttributeBind(index: 2, size: 2, AttributeBindType.Float, offset: 6 * sizeof(float));
-            
+            var positionBind = new AttributeBind(Index: 0, Size: 3, AttributeBindType.Float, Offset: 0);
+            var normalBind = new AttributeBind(Index: 1, Size: 3, AttributeBindType.Float, Offset: 3 * sizeof(float));
+            var textureCoordinatesBind = new AttributeBind(Index: 2, Size: 2, AttributeBindType.Float, Offset: 6 * sizeof(float));
+
             return [positionBind, normalBind, textureCoordinatesBind];
         }
 

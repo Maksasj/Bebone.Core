@@ -2,33 +2,33 @@
 {
     public class FrameGraph : IFrameGraph
     {
-        private readonly List<IPass> passes;
-        private readonly Dictionary<string, object> resources;
+        private readonly List<IPass> _passes;
+        private readonly Dictionary<string, object> _resources;
 
         public FrameGraph()
         {
-            passes = [];
-            resources = [];
+            _passes = [];
+            _resources = [];
         }
 
         public IPass AddPass(IPass pass)
         {
-            passes.Add(pass);
+            _passes.Add(pass);
             return pass;
         }
 
         public void Compile()
         {
-            foreach (var pass in passes)
-                pass.Compile(resources);
+            foreach (var pass in _passes)
+                pass.Compile(_resources);
         }
 
         public void Execute()
         {
-            foreach (var pass in passes)
+            foreach (var pass in _passes)
                 pass.Execute();
         }
 
-        public void AddResource(string name, object resource) => resources[name] = resource;
+        public void AddResource(string name, object resource) => _resources[name] = resource;
     }
 }

@@ -8,12 +8,12 @@ namespace Bebone.Core.Graphics.Renderer.OpenGL.Buffers
 
         public VertexArrayObject()
         {
-            Handle = OpenGL.Api.GenVertexArray();
+            _handle = OpenGL.Api.GenVertexArray();
         }
 
         public void Bind()
         {
-            OpenGL.Api.BindVertexArray(Handle);
+            OpenGL.Api.BindVertexArray(_handle);
         }
 
         public void Unbind()
@@ -29,7 +29,7 @@ namespace Bebone.Core.Graphics.Renderer.OpenGL.Buffers
 
         public void Dispose()
         {
-            OpenGL.Api.DeleteVertexArray(Handle);
+            OpenGL.Api.DeleteVertexArray(_handle);
         }
     }
 }

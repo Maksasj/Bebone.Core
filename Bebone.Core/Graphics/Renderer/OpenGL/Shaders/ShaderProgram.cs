@@ -7,32 +7,32 @@ namespace Bebone.Core.Graphics.Renderer.OpenGL.Shaders
 {
     public class ShaderProgram : IShaderProgram, IDisposable
     {
-        private readonly uint _nativeHandle;
+        private readonly uint _handle;
 
         public ShaderProgram(string vertexShaderSource, string fragmentShaderSource)
         {
             var vertexShader = new Shader(vertexShaderSource, ShaderType.VertexShader);
             var fragmentShader = new Shader(fragmentShaderSource, ShaderType.FragmentShader);
 
-            nativeHandle = OpenGL.Api.CreateProgram();
-            OpenGL.Api.AttachShader(nativeHandle, vertexShader.Handle);
-            OpenGL.Api.AttachShader(nativeHandle, fragmentShader.Handle);
-            OpenGL.Api.LinkProgram(nativeHandle);
+            _handle = OpenGL.Api.CreateProgram();
+            OpenGL.Api.AttachShader(_handle, vertexShader._handle);
+            OpenGL.Api.AttachShader(_handle, fragmentShader._handle);
+            OpenGL.Api.LinkProgram(_handle);
 
-            OpenGL.Api.GetProgram(nativeHandle, GLEnum.LinkStatus, out var status);
+            OpenGL.Api.GetProgram(_handle, GLEnum.LinkStatus, out var status);
 
             if (status == 0)
-                throw new Exception($"Error linking shader {OpenGL.Api.GetProgramInfoLog(nativeHandle)}");
+                throw new Exception($"Error linking shader {OpenGL.Api.GetProgramInfoLog(_handle)}");
 
-            OpenGL.Api.DetachShader(nativeHandle, vertexShader.Handle);
-            OpenGL.Api.DetachShader(nativeHandle, fragmentShader.Handle);
+            OpenGL.Api.DetachShader(_handle, vertexShader._handle);
+            OpenGL.Api.DetachShader(_handle, fragmentShader._handle);
 
             vertexShader.Dispose();
             fragmentShader.Dispose();
         }
 
-        public void Activate() => OpenGL.Api.UseProgram(nativeHandle);
-        public void Dispose() => OpenGL.Api.DeleteProgram(nativeHandle);
+        public void Activate() => OpenGL.Api.UseProgram(_handle);
+        public void Dispose() => OpenGL.Api.DeleteProgram(_handle);
 
         public void SetUniform(string name, int value) => OpenGL.Api.Uniform1(GetUniformLocation(name), value);
         public void SetUniform(string name, float value) => OpenGL.Api.Uniform1(GetUniformLocation(name), value);
@@ -43,7 +43,7 @@ namespace Bebone.Core.Graphics.Renderer.OpenGL.Shaders
 
         private int GetUniformLocation(string name)
         {
-            int location = OpenGL.Api.GetUniformLocation(nativeHandle, name);
+            int location = OpenGL.Api.GetUniformLocation(_handle, name);
 
             // if (location == -1)
             // throw new Exception($"'{name}' uniform not found in shader.");

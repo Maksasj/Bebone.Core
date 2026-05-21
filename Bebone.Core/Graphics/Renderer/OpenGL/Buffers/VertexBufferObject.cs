@@ -8,13 +8,13 @@ namespace Bebone.Core.Graphics.Renderer.OpenGL.Buffers
 
         public VertexBufferObject()
         {
-            Handle = OpenGL.Api.GenBuffer();
+            _handle = OpenGL.Api.GenBuffer();
 
         }
 
         public void Bind()
         {
-            OpenGL.Api.BindBuffer(BufferTargetARB.ArrayBuffer, Handle);
+            OpenGL.Api.BindBuffer(BufferTargetARB.ArrayBuffer, _handle);
         }
 
         public void Unbind()
@@ -36,7 +36,7 @@ namespace Bebone.Core.Graphics.Renderer.OpenGL.Buffers
 
         public void Dispose()
         {
-            OpenGL.Api.DeleteBuffer(Handle);
+            OpenGL.Api.DeleteBuffer(_handle);
         }
     }
 }

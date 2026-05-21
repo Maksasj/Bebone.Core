@@ -7,36 +7,36 @@ namespace Bebone.Core.Graphics.Renderer.OpenGL
 {
     public class Texture2D : ITexture, IColorAttachment
     {
-        private readonly uint texture;
+        private readonly uint _handle;
 
-        private readonly int width;
-        private readonly int height;
+        private readonly int _width;
+        private readonly int _height;
 
-        public unsafe Texture2D(int width, int height)
+        public unsafe Texture2D(int _width, int _height)
         {
-            this.width = width;
-            this.height = height;
+            this._width = _width;
+            this._height = _height;
 
-            texture = CreateTexture(isFboAttachment: true);
+            _handle = CreateTexture(isFboAttachment: true);
             ActivateBind(ColorAttachmentSlot.ColorAttachemnt0);
 
-            OpenGL.Api.TexImage2D(TextureTarget.Texture2D, 0, InternalFormat.Rgba, (uint)width, (uint)height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, null);
+            OpenGL.Api.TexImage2D(TextureTarget.Texture2D, 0, InternalFormat.Rgba, (uint)_width, (uint)_height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, null);
 
             Unbind();
         }
 
-        public unsafe Texture2D(int width, int height, byte[] data)
+        public unsafe Texture2D(int _width, int _height, byte[] data)
         {
-            this.width = width;
-            this.height = height;
+            this._width = _width;
+            this._height = _height;
 
-            texture = CreateTexture(false, TextureMinFilterType.Linear, TextureMagFilterType.Linear);
+            _handle = CreateTexture(false, TextureMinFilterType.Linear, TextureMagFilterType.Linear);
             ActivateBind(ColorAttachmentSlot.ColorAttachemnt0);
 
             fixed (byte* ptr = data)
             {
-                OpenGL.Api.TexImage2D(TextureTarget.Texture2D, 0, InternalFormat.Rgba, (uint)width,
-                    (uint)height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, ptr);
+                OpenGL.Api.TexImage2D(TextureTarget.Texture2D, 0, InternalFormat.Rgba, (uint)_width,
+                    (uint)_height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, ptr);
             }
 
             OpenGL.Api.GenerateMipmap(TextureTarget.Texture2D);
@@ -44,21 +44,21 @@ namespace Bebone.Core.Graphics.Renderer.OpenGL
             Unbind();
         }
 
-        public unsafe Texture2D(int width, int height, Color color)
+        public unsafe Texture2D(int _width, int _height, Color color)
         {
-            this.width = width;
-            this.height = height;
+            this._width = _width;
+            this._height = _height;
 
-            texture = CreateTexture();
+            _handle = CreateTexture();
             ActivateBind(ColorAttachmentSlot.ColorAttachemnt0);
 
-            byte[] data = new byte[width * height * 4];
+            byte[] data = new byte[_width * _height * 4];
 
-            for (int y = 0; y < height; y++)
+            for (int y = 0; y < _height; y++)
             {
-                for (int x = 0; x < width; x++)
+                for (int x = 0; x < _width; x++)
                 {
-                    int index = (y * width + x) * 4;
+                    int index = (y * _width + x) * 4;
                     data[index + 0] = color.R;
                     data[index + 1] = color.G;
                     data[index + 2] = color.B;
@@ -69,8 +69,8 @@ namespace Bebone.Core.Graphics.Renderer.OpenGL
 
             fixed (byte* ptr = data)
             {
-                OpenGL.Api.TexImage2D(TextureTarget.Texture2D, 0, InternalFormat.Rgba, (uint)width,
-                    (uint)height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, ptr);
+                OpenGL.Api.TexImage2D(TextureTarget.Texture2D, 0, InternalFormat.Rgba, (uint)_width,
+                    (uint)_height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, ptr);
             }
 
             OpenGL.Api.GenerateMipmap(TextureTarget.Texture2D);
@@ -82,15 +82,15 @@ namespace Bebone.Core.Graphics.Renderer.OpenGL
         {
             ImageResult result = ImageResult.FromMemory(File.ReadAllBytes(filePath), ColorComponents.RedGreenBlueAlpha);
 
-            width = result.Width;
-            height = result.Height;
+            _width = result.Width;
+            _height = result.Height;
 
-            texture = CreateTexture(false, minFilter, magFilter);
+            _handle = CreateTexture(false, minFilter, magFilter);
             ActivateBind(ColorAttachmentSlot.ColorAttachemnt0);
 
             fixed (byte* ptr = result.Data)
             {
-                OpenGL.Api.TexImage2D(TextureTarget.Texture2D, 0, InternalFormat.Rgba, (uint)width,
+                OpenGL.Api.TexImage2D(TextureTarget.Texture2D, 0, InternalFormat.Rgba, (uint)_width,
                     (uint)result.Height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, ptr);
             }
 
@@ -102,16 +102,16 @@ namespace Bebone.Core.Graphics.Renderer.OpenGL
         public void ActivateBind(ColorAttachmentSlot slot)
         {
             OpenGL.Api.ActiveTexture(TextureUnit.Texture0 + (int)slot);
-            OpenGL.Api.BindTexture(TextureTarget.Texture2D, texture);
+            OpenGL.Api.BindTexture(TextureTarget.Texture2D, _handle);
         }
 
         public void Unbind() => OpenGL.Api.BindTexture(TextureTarget.Texture2D, 0);
 
-        public int GetWidth() => width;
-        public int GetHeight() => height;
+        public int GetWidth() => _width;
+        public int GetHeight() => _height;
         public int GetDepth() => 0;
 
-        public uint GetHandle() => texture;
+        public uint GetHandle() => _handle;
 
         private static uint CreateTexture(bool isFboAttachment = false, TextureMinFilterType minFilter = TextureMinFilterType.Linear, TextureMagFilterType magFilter = TextureMagFilterType.Linear)
         {

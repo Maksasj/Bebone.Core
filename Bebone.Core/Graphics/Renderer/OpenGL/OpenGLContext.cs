@@ -12,7 +12,7 @@ namespace Bebone.Core.Graphics.Renderer.OpenGL
 
         public OpenGLContext(Glfw glfw)
         {
-            this.glfw = glfw;
+            _glfw = glfw;
 
             OpenGL.Initialize(GL.GetApi(glfw.GetProcAddress));
 
@@ -34,6 +34,6 @@ namespace Bebone.Core.Graphics.Renderer.OpenGL
         public IRenderBuffer CreateRenderBuffer(int width, int height) => new RenderBuffer(width, height);
         public IFramebuffer CreateFramebuffer() => new Framebuffer();
 
-        public float GetTime() => (float)glfw.GetTime();
+        public float GetTime() => (float)_glfw.GetTime();
     }
 }
