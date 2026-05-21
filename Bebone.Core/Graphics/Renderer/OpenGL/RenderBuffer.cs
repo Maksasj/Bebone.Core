@@ -5,7 +5,7 @@ namespace Bebone.Core.Graphics.Renderer.OpenGL
 {
     public class RenderBuffer : IRenderBuffer
     {
-        private readonly uint nativeHandle;
+        private readonly uint _nativeHandle;
 
         public RenderBuffer(int width, int height)
         {

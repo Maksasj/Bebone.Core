@@ -7,7 +7,7 @@ namespace Bebone.Core.Graphics.Renderer.OpenGL.Shaders
 {
     public class ShaderProgram : IShaderProgram, IDisposable
     {
-        private readonly uint nativeHandle;
+        private readonly uint _nativeHandle;
 
         public ShaderProgram(string vertexShaderSource, string fragmentShaderSource)
         {
@@ -39,7 +39,7 @@ namespace Bebone.Core.Graphics.Renderer.OpenGL.Shaders
         public void SetUniform(string name, Vector2 value) => OpenGL.Api.Uniform2(GetUniformLocation(name), value);
         public void SetUniform(string name, Vector3 value) => OpenGL.Api.Uniform3(GetUniformLocation(name), value);
         public void SetUniform(string name, Color value) => OpenGL.Api.Uniform4(GetUniformLocation(name), value.R / 255.0f, value.G / 255.0f, value.B / 255.0f, value.A / 255.0f);
-        public unsafe void SetUniform(string name, Matrix4x4 value) => OpenGL.Api.UniformMatrix4(GetUniformLocation(name), 1, false, (float*)&value);
+        public unsafe void SetUniform(string name, Matrix4x4 value) => OpenGL.Api.UniformMatrix4(GetUniformLocation(name), count: 1, transpose: false, (float*)&value);
 
         private int GetUniformLocation(string name)
         {

@@ -7,13 +7,13 @@ namespace Bebone.Core.Windowing
 {
     public class GlfwWindow : Window
     {
-        private readonly Glfw glfw;
-        private readonly IntPtr windowHandle;
+        private readonly Glfw _glfw;
+        private readonly IntPtr _windowHandle;
 
-        private readonly string baseTitle;
-        private double lastTime;
-        private int frameCount;
-        private double timer;
+        private readonly string _baseTitle;
+        private double _lastTime;
+        private int _frameCount;
+        private double _timer;
 
         public GlfwWindow(string title, int width, int height)
         {
@@ -36,7 +36,7 @@ namespace Bebone.Core.Windowing
                 if (windowPtr is null)
                 {
                     glfw.Terminate();
-                    throw new NotImplementedException();
+                    throw new InvalidOperationException("Failed to create GLFW window.");
                     return;
                 }
 
@@ -54,8 +54,7 @@ namespace Bebone.Core.Windowing
                 glfw.SetMouseButtonCallback((WindowHandle*)windowHandle, MouseButtonCallback);
                 glfw.SetScrollCallback((WindowHandle*)windowHandle, ScrollCallback);
 
-                bool enabled = false;
-                glfw.SwapInterval(enabled ? 1 : 0);
+                glfw.SwapInterval(0);
             }
 
             frameCount = 0;
@@ -74,7 +73,7 @@ namespace Bebone.Core.Windowing
         private void UpdatePerformanceTitle()
         {
             double currentTime = glfw.GetTime();
-            float deltaTime = (float)(currentTime - lastTime);
+            double deltaTime = currentTime - lastTime;
             lastTime = currentTime;
 
             frameCount++;

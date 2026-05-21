@@ -5,7 +5,7 @@ namespace Bebone.Core.Graphics.Renderer.OpenGL
 {
     public class Framebuffer : IFramebuffer
     {
-        private readonly uint framebuffer;
+        private readonly uint _framebuffer;
 
         public Framebuffer()
         {

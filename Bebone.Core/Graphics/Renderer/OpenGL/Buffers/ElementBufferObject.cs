@@ -4,7 +4,7 @@ namespace Bebone.Core.Graphics.Renderer.OpenGL.Buffers
 {
     public class ElementBufferObject
     {
-        public readonly uint Handle;
+        private readonly uint _handle;
 
         public ElementBufferObject()
         {
@@ -21,7 +21,7 @@ namespace Bebone.Core.Graphics.Renderer.OpenGL.Buffers
             OpenGL.Api.BindBuffer(BufferTargetARB.ElementArrayBuffer, 0);
         }
 
-        public unsafe void BufferData<T>(T[] data)
+        public unsafe void BufferData<T>(T[] data) where T : unmanaged
         {
             fixed (void* i = &data[0])
                 OpenGL.Api.BufferData(BufferTargetARB.ElementArrayBuffer, (nuint)(data.Length * sizeof(T)), i, BufferUsageARB.StaticDraw); //Setting buffer data.
