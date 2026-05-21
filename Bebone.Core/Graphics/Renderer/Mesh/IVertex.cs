@@ -1,7 +1,6 @@
-﻿namespace Bebone.Core.Graphics.Renderer.Mesh
+﻿namespace Bebone.Core.Graphics.Renderer.Mesh;
+
+public interface IVertex
 {
-    public interface IVertex
-    {
-        static abstract IEnumerable<AttributeBind> GetAttributes();
-    }
+    static abstract IEnumerable<AttributeBind> GetAttributes();
 }

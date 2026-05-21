@@ -1,48 +1,47 @@
 ﻿using Bebone.Core.Graphics.Renderer.Mesh;
 
-namespace Bebone.Core.Graphics.Renderer.OpenGL.Mesh
+namespace Bebone.Core.Graphics.Renderer.OpenGL.Mesh;
+
+public class MeshBuilder<T>(OpenGLGraphicsDevice device) : IMeshBuilder<T> where T : unmanaged, IVertex
 {
-    public class MeshBuilder<T>(OpenGLGraphicsDevice device) : IMeshBuilder<T> where T : unmanaged, IVertex
+    private readonly OpenGLGraphicsDevice _device = device;
+
+    private readonly List<T> _vertices = [];
+    private readonly List<uint> _indices = [];
+    private uint _currentIndex = 0;
+
+    public void AddQuad(T v1, T v2, T v3, T v4)
     {
-        private readonly OpenGLGraphicsDevice _device = device;
+        _vertices.Add(v1);
+        _vertices.Add(v2);
+        _vertices.Add(v3);
+        _vertices.Add(v4);
 
-        private readonly List<T> _vertices = [];
-        private readonly List<uint> _indices = [];
-        private uint _currentIndex = 0;
-
-        public void AddQuad(T v1, T v2, T v3, T v4)
+        var triangles = new uint[]
         {
-            _vertices.Add(v1);
-            _vertices.Add(v2);
-            _vertices.Add(v3);
-            _vertices.Add(v4);
+            _currentIndex, _currentIndex + 1, _currentIndex + 2,
+            _currentIndex + 3, _currentIndex + 2, _currentIndex + 1
+        };
 
-            var triangles = new uint[]
-            {
-                _currentIndex, _currentIndex + 1, _currentIndex + 2,
-                _currentIndex + 3, _currentIndex + 2, _currentIndex + 1
-            };
-
-            _indices.AddRange(triangles);
-            _currentIndex += 4;
-        }
-
-        public void AddTriangle(T v1, T v2, T v3)
-        {
-            _vertices.Add(v1);
-            _vertices.Add(v2);
-            _vertices.Add(v3);
-
-            var triangles = new uint[]
-            {
-                _currentIndex, _currentIndex + 1, _currentIndex + 2
-            };
-
-            _indices.AddRange(triangles);
-
-            _currentIndex += 3;
-        }
-
-        public IMesh<T> Build() => new Mesh<T>(_device, [.. _vertices], [.. _indices]);
+        _indices.AddRange(triangles);
+        _currentIndex += 4;
     }
+
+    public void AddTriangle(T v1, T v2, T v3)
+    {
+        _vertices.Add(v1);
+        _vertices.Add(v2);
+        _vertices.Add(v3);
+
+        var triangles = new uint[]
+        {
+            _currentIndex, _currentIndex + 1, _currentIndex + 2
+        };
+
+        _indices.AddRange(triangles);
+
+        _currentIndex += 3;
+    }
+
+    public IMesh<T> Build() => new Mesh<T>(_device, [.. _vertices], [.. _indices]);
 }

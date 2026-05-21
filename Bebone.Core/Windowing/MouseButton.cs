@@ -1,14 +1,13 @@
-﻿namespace Bebone.Core.Windowing
+﻿namespace Bebone.Core.Windowing;
+
+public enum MouseButton
 {
-    public enum MouseButton
-    {
-        Left = 0,
-        Right,
-        Middle,
-        Button4,
-        Button5,
-        Button6,
-        Button7,
-        Button8
-    }
+    Left = 0,
+    Right,
+    Middle,
+    Button4,
+    Button5,
+    Button6,
+    Button7,
+    Button8
 }
