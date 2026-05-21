@@ -1,5 +1,7 @@
 using System.Numerics;
 
+namespace Bebone.Core;
+
 public readonly struct Ray
 {
     public Vector3 Origin { get; }
