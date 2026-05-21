@@ -1,6 +1,4 @@
-﻿using Bebone.Core.Graphics.Renderer.Agnostic;
-using Bebone.Core.Graphics.Renderer.OpenGL;
-using Silk.NET.GLFW;
+﻿using Silk.NET.GLFW;
 using System.Numerics;
 
 namespace Bebone.Core.Windowing
@@ -74,8 +72,6 @@ namespace Bebone.Core.Windowing
                 _glfw.DestroyWindow((WindowHandle*)_windowHandle);
             }
         }
-
-        public override IGraphicsApiContext CreateApiContext() => new OpenGLContext(_glfw);
 
         public override unsafe void HideCursor() => _glfw.SetInputMode((WindowHandle*)_windowHandle, CursorStateAttribute.Cursor, CursorModeValue.CursorDisabled);
         public override unsafe void ShowCursor() => _glfw.SetInputMode((WindowHandle*)_windowHandle, CursorStateAttribute.Cursor, CursorModeValue.CursorNormal);

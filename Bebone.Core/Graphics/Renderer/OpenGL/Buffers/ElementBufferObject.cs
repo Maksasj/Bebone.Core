@@ -4,32 +4,35 @@ namespace Bebone.Core.Graphics.Renderer.OpenGL.Buffers
 {
     public class ElementBufferObject : IDisposable
     {
+        private readonly OpenGLGraphicsDevice _device;
         private readonly uint _handle;
 
-        public ElementBufferObject()
+        public ElementBufferObject(OpenGLGraphicsDevice device)
         {
-            _handle = OpenGL.Api.GenBuffer();
+            _device = device;
+
+            _handle = _device.Api.GenBuffer();
         }
 
         public void Bind()
         {
-            OpenGL.Api.BindBuffer(BufferTargetARB.ElementArrayBuffer, _handle);
+            _device.Api.BindBuffer(BufferTargetARB.ElementArrayBuffer, _handle);
         }
 
         public void Unbind()
         {
-            OpenGL.Api.BindBuffer(BufferTargetARB.ElementArrayBuffer, 0);
+            _device.Api.BindBuffer(BufferTargetARB.ElementArrayBuffer, 0);
         }
 
         public unsafe void BufferData<T>(T[] data) where T : unmanaged
         {
             fixed (void* i = &data[0])
-                OpenGL.Api.BufferData(BufferTargetARB.ElementArrayBuffer, (nuint)(data.Length * sizeof(T)), i, BufferUsageARB.StaticDraw);
+                _device.Api.BufferData(BufferTargetARB.ElementArrayBuffer, (nuint)(data.Length * sizeof(T)), i, BufferUsageARB.StaticDraw);
         }
 
         public void Dispose()
         {
-            OpenGL.Api.DeleteBuffer(_handle);
+            _device.Api.DeleteBuffer(_handle);
         }
     }
 }

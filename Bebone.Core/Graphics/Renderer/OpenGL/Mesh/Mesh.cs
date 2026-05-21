@@ -6,6 +6,8 @@ namespace Bebone.Core.Graphics.Renderer.OpenGL.Mesh
 {
     public class Mesh<T> : IMesh<T> where T : unmanaged, IVertex
     {
+        private readonly OpenGLGraphicsDevice _device;
+
         private readonly VertexArrayObject _vao;
         private readonly VertexBufferObject _vbo;
         private readonly ElementBufferObject _ebo;
@@ -14,20 +16,20 @@ namespace Bebone.Core.Graphics.Renderer.OpenGL.Mesh
         private int _vertexCount;
         private int _capacity;
 
-        public unsafe Mesh(T[] vertices, uint[] indices)
+        public unsafe Mesh(OpenGLGraphicsDevice device, T[] vertices, uint[] indices)
         {
+            _device = device;
+
             _indicesCount = (uint)indices.Length;
             _vertexCount = vertices.Length;
             _capacity = vertices.Length;
 
-            _vao = new VertexArrayObject();
+            _vao = new VertexArrayObject(device);
             _vao.Bind();
-
-            _ebo = new ElementBufferObject();
+            _ebo = new ElementBufferObject(device);
             _ebo.Bind();
             _ebo.BufferData(indices);
-
-            _vbo = new VertexBufferObject();
+            _vbo = new VertexBufferObject(device);
             _vbo.Bind();
             _vbo.BufferData(vertices);
 
@@ -44,13 +46,13 @@ namespace Bebone.Core.Graphics.Renderer.OpenGL.Mesh
         public void Bind() => _vao.Bind();
 
         public unsafe void DrawTriangles()
-            => OpenGL.Api.DrawElements(PrimitiveType.Triangles, _indicesCount, DrawElementsType.UnsignedInt, null);
+            => _device.Api.DrawElements(PrimitiveType.Triangles, _indicesCount, DrawElementsType.UnsignedInt, null);
 
         public void DrawLines()
-            => OpenGL.Api.DrawArrays(PrimitiveType.Lines, 0, (uint)_vertexCount);
+            => _device.Api.DrawArrays(PrimitiveType.Lines, 0, (uint)_vertexCount);
 
         public void DrawArrays()
-            => OpenGL.Api.DrawArrays(GLEnum.Triangles, 0, (uint)_vertexCount);
+            => _device.Api.DrawArrays(GLEnum.Triangles, 0, (uint)_vertexCount);
 
         public void Dispose()
         {

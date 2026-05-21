@@ -2,17 +2,13 @@
 
 namespace Bebone.Core.Graphics.Renderer.OpenGL.Mesh
 {
-    public class MeshBuilder<T> : IMeshBuilder<T> where T : unmanaged, IVertex
+    public class MeshBuilder<T>(OpenGLGraphicsDevice device) : IMeshBuilder<T> where T : unmanaged, IVertex
     {
-        private readonly List<T> _vertices;
-        private readonly List<uint> _indices;
-        private uint _currentIndex = 0;
+        private readonly OpenGLGraphicsDevice _device = device;
 
-        public MeshBuilder()
-        {
-            _vertices = [];
-            _indices = [];
-        }
+        private readonly List<T> _vertices = [];
+        private readonly List<uint> _indices = [];
+        private uint _currentIndex = 0;
 
         public void AddQuad(T v1, T v2, T v3, T v4)
         {
@@ -47,6 +43,6 @@ namespace Bebone.Core.Graphics.Renderer.OpenGL.Mesh
             _currentIndex += 3;
         }
 
-        public IMesh<T> Build() => new Mesh<T>([.. _vertices], [.. _indices]);
+        public IMesh<T> Build() => new Mesh<T>(_device, [.. _vertices], [.. _indices]);
     }
 }

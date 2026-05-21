@@ -1,12 +1,9 @@
-﻿using Bebone.Core.Graphics.Renderer.Agnostic;
-using System.Numerics;
+﻿using System.Numerics;
 
 namespace Bebone.Core.Windowing
 {
     public abstract class Window
     {
-        public abstract IGraphicsApiContext CreateApiContext();
-
         public abstract int GetWidth();
         public abstract int GetHeight();
 
