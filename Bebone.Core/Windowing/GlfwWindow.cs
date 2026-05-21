@@ -37,7 +37,6 @@ namespace Bebone.Core.Windowing
                 {
                     glfw.Terminate();
                     throw new NotImplementedException();
-                    return;
                 }
 
                 windowHandle = (IntPtr)windowPtr;

@@ -1,10 +1,4 @@
 ﻿namespace Bebone.Core.Graphics.Renderer.Mesh
 {
-    public struct AttributeBind(int index, int size, AttributeBindType type, int offset)
-    {
-        public int Index = index;
-        public int Size = size;
-        public AttributeBindType Type = type;
-        public int Offset = offset;
-    }
+    public record struct AttributeBind(int Index, int Size, AttributeBindType Type, int Offset);
 }

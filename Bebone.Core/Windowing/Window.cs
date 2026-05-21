@@ -20,9 +20,9 @@ namespace Bebone.Core.Windowing
         public abstract bool WindowShouldClose();
         public abstract void Destroy();
 
-        public Action<Vector2> OnCursorPositionChange = (_) => { };
-        public Action<Key, bool> OnInputChange = (_, _) => { };
-        public Action<MouseButton, bool> OnMouseButtonChange = (_, _) => { };
-        public Action<Vector2> OnMouseScrollChange = (_) => { };
+        public event EventHandler<Vector2> OnCursorPositionChange = delegate { };
+        public event EventHandler<Vector2> OnInputChange = delegate { };
+        public event EventHandler<Vector2> OnMouseButtonChange = delegate { };
+        public event EventHandler<Vector2> OnMouseScrollChange = delegate { };
     }
 }
