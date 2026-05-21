@@ -18,7 +18,7 @@ namespace Bebone.Core.Graphics.Renderer.OpenGL
             this._height = _height;
 
             _handle = CreateTexture(isFboAttachment: true);
-            ActivateBind(ColorAttachmentSlot.ColorAttachemnt0);
+            ActivateBind(slot: 0);
 
             OpenGL.Api.TexImage2D(TextureTarget.Texture2D, 0, InternalFormat.Rgba, (uint)_width, (uint)_height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, null);
 
@@ -31,7 +31,7 @@ namespace Bebone.Core.Graphics.Renderer.OpenGL
             this._height = _height;
 
             _handle = CreateTexture(false, TextureMinFilterType.Linear, TextureMagFilterType.Linear);
-            ActivateBind(ColorAttachmentSlot.ColorAttachemnt0);
+            ActivateBind(slot: 0);
 
             fixed (byte* ptr = data)
             {
@@ -50,7 +50,7 @@ namespace Bebone.Core.Graphics.Renderer.OpenGL
             this._height = _height;
 
             _handle = CreateTexture();
-            ActivateBind(ColorAttachmentSlot.ColorAttachemnt0);
+            ActivateBind(slot: 0);
 
             byte[] data = new byte[_width * _height * 4];
 
@@ -86,7 +86,7 @@ namespace Bebone.Core.Graphics.Renderer.OpenGL
             _height = result.Height;
 
             _handle = CreateTexture(false, minFilter, magFilter);
-            ActivateBind(ColorAttachmentSlot.ColorAttachemnt0);
+            ActivateBind(slot: 0);
 
             fixed (byte* ptr = result.Data)
             {
@@ -99,7 +99,7 @@ namespace Bebone.Core.Graphics.Renderer.OpenGL
             Unbind();
         }
 
-        public void ActivateBind(ColorAttachmentSlot slot)
+        public void ActivateBind(int slot)
         {
             OpenGL.Api.ActiveTexture(TextureUnit.Texture0 + (int)slot);
             OpenGL.Api.BindTexture(TextureTarget.Texture2D, _handle);

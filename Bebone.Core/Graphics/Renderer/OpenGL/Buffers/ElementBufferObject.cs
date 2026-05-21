@@ -2,7 +2,7 @@
 
 namespace Bebone.Core.Graphics.Renderer.OpenGL.Buffers
 {
-    public class ElementBufferObject
+    public class ElementBufferObject : IDisposable
     {
         private readonly uint _handle;
 

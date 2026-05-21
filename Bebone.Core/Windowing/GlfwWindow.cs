@@ -12,7 +12,6 @@ namespace Bebone.Core.Windowing
 
         public GlfwWindow(string title, int width, int height)
         {
-            _baseTitle = title;
             _glfw = Glfw.GetApi();
 
             if (!_glfw.Init())

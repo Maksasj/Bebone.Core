@@ -6,10 +6,10 @@
 
         void Unbind();
 
-        void AttachTexture(IColorAttachment attachment, ColorAttachmentSlot colorAttachment);
+        void AttachTexture(IColorAttachment attachment, int colorAttachmentSlot);
 
         void AttachRenderbuffer(IRenderBuffer renderBuffer);
 
-        void DrawBuffers(ColorAttachmentSlot[] buffers);
+        void DrawBuffers(int[] slots);
     }
 }

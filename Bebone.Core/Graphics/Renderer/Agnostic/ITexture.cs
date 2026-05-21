@@ -2,7 +2,7 @@
 {
     public interface ITexture
     {
-        void ActivateBind(ColorAttachmentSlot slot);
+        void ActivateBind(int slot);
         void Unbind();
 
         int GetWidth();

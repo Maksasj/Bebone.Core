@@ -15,7 +15,7 @@ namespace Bebone.Core.Graphics.Renderer.OpenGL
         public void Bind() => OpenGL.Api.BindFramebuffer(GLEnum.Framebuffer, _framebuffer);
         public void Unbind() => OpenGL.Api.BindFramebuffer(GLEnum.Framebuffer, 0);
 
-        public void AttachTexture(IColorAttachment attachment, ColorAttachmentSlot colorAttachment)
+        public void AttachTexture(IColorAttachment attachment, int colorAttachment)
         {
             Bind();
 
@@ -38,7 +38,7 @@ namespace Bebone.Core.Graphics.Renderer.OpenGL
             Unbind();
         }
 
-        public void DrawBuffers(ColorAttachmentSlot[] buffers)
+        public void DrawBuffers(int[] buffers)
         {
             var attachments = buffers.Select(b => GLEnum.ColorAttachment0 + (int)b).ToArray();
             OpenGL.Api.DrawBuffers((uint)attachments.Length, attachments);
