@@ -1,5 +1,7 @@
 using System.Numerics;
 
+namespace Bebone.Core.Tests;
+
 [TestFixture]
 public class RayTests
 {
