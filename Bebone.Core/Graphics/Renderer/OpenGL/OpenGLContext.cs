@@ -10,6 +10,8 @@ namespace Bebone.Core.Graphics.Renderer.OpenGL
     {
         private readonly Glfw _glfw;
 
+        private const float _maxByteColorValue = 255.0f;
+
         public OpenGLContext(Glfw glfw)
         {
             _glfw = glfw;
@@ -27,7 +29,7 @@ namespace Bebone.Core.Graphics.Renderer.OpenGL
         public void DisableDepthTest() => OpenGL.Api.Disable(EnableCap.DepthTest);
         public void SetViewport(int x, int y, int width, int height) => OpenGL.Api.Viewport(x, y, (uint)width, (uint)height);
         public void ClearBuffers() => OpenGL.Api.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-        public void ClearColor(Color color) => OpenGL.Api.ClearColor(color.R / 255.0f, color.G / 255.0f, color.B / 255.0f, 1.0f);
+        public void ClearColor(Color color) => OpenGL.Api.ClearColor(color.R / _maxByteColorValue, color.G / _maxByteColorValue, color.B / _maxByteColorValue, 1.0f);
 
         public IShaderProgram CreateShader(string vertexShaderPath, string fragmentShaderPath) => new ShaderProgram(File.ReadAllText(vertexShaderPath), File.ReadAllText(fragmentShaderPath));
         public ITexture CreateTexture(string filePath) => new Texture2D(filePath);

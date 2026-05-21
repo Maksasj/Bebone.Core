@@ -8,6 +8,7 @@ namespace Bebone.Core.Graphics.Renderer.OpenGL.Shaders
     public class ShaderProgram : IShaderProgram, IDisposable
     {
         private readonly uint _handle;
+        private const float _maxByteColorValue = 255.0f;
 
         public ShaderProgram(string vertexShaderSource, string fragmentShaderSource)
         {
@@ -38,17 +39,12 @@ namespace Bebone.Core.Graphics.Renderer.OpenGL.Shaders
         public void SetUniform(string name, float value) => OpenGL.Api.Uniform1(GetUniformLocation(name), value);
         public void SetUniform(string name, Vector2 value) => OpenGL.Api.Uniform2(GetUniformLocation(name), value);
         public void SetUniform(string name, Vector3 value) => OpenGL.Api.Uniform3(GetUniformLocation(name), value);
-        public void SetUniform(string name, Color value) => OpenGL.Api.Uniform4(GetUniformLocation(name), value.R / 255.0f, value.G / 255.0f, value.B / 255.0f, value.A / 255.0f);
+        public void SetUniform(string name, Color value) => OpenGL.Api.Uniform4(GetUniformLocation(name), value.R / _maxByteColorValue, value.G / _maxByteColorValue, value.B / _maxByteColorValue, value.A / _maxByteColorValue);
         public unsafe void SetUniform(string name, Matrix4x4 value) => OpenGL.Api.UniformMatrix4(GetUniformLocation(name), count: 1, transpose: false, (float*)&value);
 
         private int GetUniformLocation(string name)
         {
-            int location = OpenGL.Api.GetUniformLocation(_handle, name);
-
-            // if (location == -1)
-            // throw new Exception($"'{name}' uniform not found in shader.");
-
-            return location;
+            return OpenGL.Api.GetUniformLocation(_handle, name);
         }
     }
 }
