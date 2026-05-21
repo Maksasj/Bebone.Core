@@ -1,10 +1,8 @@
 ﻿namespace Bebone.Core;
 
-public readonly struct Vector2Int(int x, int y) : IEquatable<Vector2Int>
+public readonly record struct Vector2Int(int X, int Y)
 {
-    public int X { get; } = x;
-    public int Y { get; } = y;
-    public float Length { get; } = MathF.Sqrt(x * x + y * y);
+    public float Length { get; } = MathF.Sqrt(X * X + Y * Y);
 
     public static Vector2Int Zero => new(0, 0);
     public static Vector2Int One => new(1, 1);
@@ -18,12 +16,5 @@ public readonly struct Vector2Int(int x, int y) : IEquatable<Vector2Int>
     public static Vector2Int operator *(Vector2Int v, int scalar) => new(v.X * scalar, v.Y * scalar);
     public static Vector2Int operator /(Vector2Int v, int scalar) => new(v.X / scalar, v.Y / scalar);
 
-    public static bool operator ==(Vector2Int a, Vector2Int b) => a.Equals(b);
-    public static bool operator !=(Vector2Int a, Vector2Int b) => !a.Equals(b);
-
     public override string ToString() => $"({X}, {Y})";
-
-    public override bool Equals(object? obj) => obj is Vector2Int other && Equals(other);
-    public bool Equals(Vector2Int other) => X == other.X && Y == other.Y;
-    public override int GetHashCode() => HashCode.Combine(X, Y);
 }
