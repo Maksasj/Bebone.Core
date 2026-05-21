@@ -13,7 +13,7 @@ public class Vector2IntTests
         {
             // Arrange & Act
             var v = new Vector2Int(x, y);
-            
+
             // Assert
             return v.X == x
                 && v.Y == y;
@@ -100,7 +100,7 @@ public class Vector2IntTests
 
             // Act
             var result = v * data.scalar;
-            
+
             // Assert
             var expected = new Vector2Int(
                 data.x * data.scalar,
