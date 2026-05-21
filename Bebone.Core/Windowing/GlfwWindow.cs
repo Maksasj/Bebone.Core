@@ -10,8 +10,6 @@ namespace Bebone.Core.Windowing
         private readonly Glfw _glfw;
         private readonly IntPtr _windowHandle;
 
-        private readonly string _baseTitle;
-
         public GlfwWindow(string title, int width, int height)
         {
             _baseTitle = title;
@@ -34,7 +32,6 @@ namespace Bebone.Core.Windowing
                 {
                     _glfw.Terminate();
                     throw new InvalidOperationException("Failed to create GLFW window.");
-                    return;
                 }
 
                 _windowHandle = (IntPtr)windowPtr;

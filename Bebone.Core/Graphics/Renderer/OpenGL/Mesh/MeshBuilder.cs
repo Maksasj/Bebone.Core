@@ -2,7 +2,7 @@
 
 namespace Bebone.Core.Graphics.Renderer.OpenGL.Mesh
 {
-    public class MeshBuilder<T> : IMeshBuilder<T> where T : IVertex
+    public class MeshBuilder<T> : IMeshBuilder<T> where T : unmanaged, IVertex
     {
         private readonly List<T> _vertices;
         private readonly List<uint> _indices;

@@ -2,22 +2,15 @@
 
 namespace Bebone.Core.Graphics.Renderer.Mesh
 {
-    public struct Vertex : IVertex
+    public struct Vertex(Vector3 position, Vector3 normal, Vector2 textureCoordinates) : IVertex
     {
-        public Vector3 Position;
-        public Vector3 Normal;
-        public Vector2 TextureCoordinates;
+        public Vector3 Position = position;
+        public Vector3 Normal = normal;
+        public Vector2 TextureCoordinates = textureCoordinates;
 
         public Vertex(Vector3 position) : this(position, Vector3.Zero, Vector2.Zero) { }
 
         public Vertex(Vector3 position, Vector3 normal) : this(position, normal, Vector2.Zero) { }
-
-        public Vertex(Vector3 position, Vector3 normal, Vector2 textureCoordinates)
-        {
-            Position = position;
-            Normal = normal;
-            TextureCoordinates = textureCoordinates;
-        }
 
         public static IEnumerable<AttributeBind> GetAttributes()
         {

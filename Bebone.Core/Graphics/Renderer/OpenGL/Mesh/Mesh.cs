@@ -4,7 +4,7 @@ using Silk.NET.OpenGL;
 
 namespace Bebone.Core.Graphics.Renderer.OpenGL.Mesh
 {
-    public class Mesh<T> : IMesh<T> where T : IVertex
+    public class Mesh<T> : IMesh<T> where T : unmanaged, IVertex
     {
         private readonly VertexArrayObject _vao;
         private readonly VertexBufferObject _vbo;
