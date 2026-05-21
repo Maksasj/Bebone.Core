@@ -3,12 +3,12 @@ using System.Numerics;
 
 namespace Bebone.Core.Windowing;
 
-public class GlfwWindow : Window
+public class GLFWWindow : Window
 {
     private readonly Glfw _glfw;
     private readonly IntPtr _windowHandle;
 
-    public GlfwWindow(string title, int width, int height)
+    public GLFWWindow(string title, int width, int height)
     {
         _glfw = Glfw.GetApi();
 

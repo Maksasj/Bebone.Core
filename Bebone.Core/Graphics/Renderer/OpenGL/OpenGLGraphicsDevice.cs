@@ -3,20 +3,20 @@ using System.Drawing;
 
 namespace Bebone.Core.Graphics.Renderer.OpenGL;
 
-public class OpenGLGraphicsDevice(GL gl)
+public class OpenGLGraphicsDevice
 {
     private const float _maxByteColorValue = 255.0f;
-    private readonly GL _api = gl;
+    private readonly GL _gl;
 
-    public GL Api
+    public OpenGLGraphicsDevice(Func<string, IntPtr> procAddressLoader)
     {
-        get
-        {
-            if (_api == null)
-                throw new InvalidOperationException("OpenGL API not initialized. Call OpenGL.Initialize(GL gl) before using any OpenGL functionality.");
+        _gl = GL.GetApi(procAddressLoader);
 
-            return _api;
-        }
+        Api.Enable(EnableCap.DepthTest);
+        Api.DepthFunc(GLEnum.Less);
+
+        Api.Enable(EnableCap.Blend);
+        Api.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
     }
 
     public void EnableDepthTest() => Api.Enable(EnableCap.DepthTest);
@@ -25,4 +25,11 @@ public class OpenGLGraphicsDevice(GL gl)
     public void ClearBuffers() => Api.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
     public void ClearColor(Color color) => Api.ClearColor(color.R / _maxByteColorValue, color.G / _maxByteColorValue, color.B / _maxByteColorValue, 1.0f);
 
+    public GL Api
+    {
+        get
+        {
+            return _gl;
+        }
+    }
 }
