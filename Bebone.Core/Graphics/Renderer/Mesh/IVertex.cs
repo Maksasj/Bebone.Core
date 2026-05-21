@@ -2,6 +2,6 @@
 {
     public interface IVertex
     {
-        static abstract List<AttributeBind> GetAttributes();
+        static abstract IEnumerable<AttributeBind> GetAttributes();
     }
 }

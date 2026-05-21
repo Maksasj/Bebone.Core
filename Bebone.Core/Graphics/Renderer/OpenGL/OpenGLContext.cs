@@ -8,7 +8,7 @@ namespace Bebone.Core.Graphics.Renderer.OpenGL
 {
     public class OpenGLContext : IGraphicsApiContext
     {
-        private readonly Glfw glfw;
+        private readonly Glfw _glfw;
 
         public OpenGLContext(Glfw glfw)
         {

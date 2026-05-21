@@ -4,7 +4,7 @@ namespace Bebone.Core.Graphics.Renderer.OpenGL.Buffers
 {
     public class VertexBufferObject : IDisposable
     {
-        public readonly uint Handle;
+        private readonly uint _handle;
 
         public VertexBufferObject()
         {

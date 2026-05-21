@@ -8,19 +8,9 @@ namespace Bebone.Core.Graphics.Renderer.Mesh
         public Vector3 Normal;
         public Vector2 TextureCoordinates;
 
-        public Vertex(Vector3 position)
-        {
-            Position = position;
-            Normal = Vector3.Zero;
-            TextureCoordinates = Vector2.Zero;
-        }
+        public Vertex(Vector3 position) : this(position, Vector3.Zero, Vector2.Zero) { }
 
-        public Vertex(Vector3 position, Vector3 normal)
-        {
-            Position = position;
-            Normal = normal;
-            TextureCoordinates = Vector2.Zero;
-        }
+        public Vertex(Vector3 position, Vector3 normal) : this(position, normal, Vector2.Zero) { }
 
         public Vertex(Vector3 position, Vector3 normal, Vector2 textureCoordinates)
         {
@@ -29,12 +19,14 @@ namespace Bebone.Core.Graphics.Renderer.Mesh
             TextureCoordinates = textureCoordinates;
         }
 
-        public static List<AttributeBind> GetAttributes()
-            => [
-                new AttributeBind(0, 3, AttributeBindType.Float, 0),
-                new AttributeBind(1, 3, AttributeBindType.Float, 3 * sizeof(float)),
-                new AttributeBind(2, 2, AttributeBindType.Float, 6 * sizeof(float))
-            ];
+        public static IEnumerable<AttributeBind> GetAttributes()
+        {
+            var positionBind = new AttributeBind(index: 0, size: 3, AttributeBindType.Float, offset: 0);
+            var normalBind = new AttributeBind(index: 1, size: 3, AttributeBindType.Float, offset: 3 * sizeof(float));
+            var textureCoordinatesBind = new AttributeBind(index: 2, size: 2, AttributeBindType.Float, offset: 6 * sizeof(float));
+            
+            return [positionBind, normalBind, textureCoordinatesBind];
+        }
 
         public static Vertex ProjectToSphere(Vertex vertex, float radius) => new(Vector3.Normalize(vertex.Position) * radius, vertex.Normal, vertex.TextureCoordinates);
     }
