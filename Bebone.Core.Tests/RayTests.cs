@@ -31,7 +31,7 @@ public class RayTests
     }
 
     [Test]
-    public void Ray_Throws_WhenDirectionIsZero()
+    public void Ray_DirectionIsZero_ThrowsArgumentException()
     {
         // Arrange & Act & Assert
         Assert.Throws<ArgumentException>(() =>
