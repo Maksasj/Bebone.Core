@@ -1,5 +1,6 @@
 ﻿using FsCheck;
 using FsCheck.Fluent;
+using Bebone.Math;
 
 namespace Bebone.Core.Tests.Math;
 

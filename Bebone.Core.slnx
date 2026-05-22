@@ -2,8 +2,11 @@
   <Folder Name="/Workflows/">
     <File Path=".github/workflows/run-tests.yml" />
   </Folder>
-  <Project Path="Bebone.Core.Sound.SoundFlow/Bebone.Core.Sound.SoundFlow.csproj" Id="c9b95b66-076b-44b3-ba39-54d2d98c3bd6" />
-  <Project Path="Bebone.Core.Sound/Bebone.Core.Sound.Abstractions.csproj" Id="e486f710-ec17-4d39-845e-2aeb9e82804c" />
+  <Project Path="Bebone.Sound.SoundFlow/Bebone.Sound.SoundFlow.csproj" Id="c9b95b66-076b-44b3-ba39-54d2d98c3bd6" />
+  <Project Path="Bebone.Graphics/Bebone.Graphics.csproj" />
+  <Project Path="Bebone.Math/Bebone.Math.csproj" />
+  <Project Path="Bebone.Physics/Bebone.Physics.csproj" />
+  <Project Path="Bebone.Sound.Abstractions/Bebone.Sound.Abstractions.csproj" Id="e486f710-ec17-4d39-845e-2aeb9e82804c" />
   <Project Path="Bebone.Core.Tests/Bebone.Core.Tests.csproj" Id="f0d0f6c7-4df0-4ffb-9cfc-d3cd20f8ef8b" />
-  <Project Path="Bebone.Core/Bebone.Core.csproj" />
+  <Project Path="Bebone.Windowing/Bebone.Windowing.csproj" />
 </Solution>
