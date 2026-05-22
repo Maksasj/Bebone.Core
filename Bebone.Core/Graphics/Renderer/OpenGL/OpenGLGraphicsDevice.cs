@@ -25,11 +25,5 @@ public class OpenGLGraphicsDevice
     public void ClearBuffers() => Api.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
     public void ClearColor(Color color) => Api.ClearColor(color.R / _maxByteColorValue, color.G / _maxByteColorValue, color.B / _maxByteColorValue, 1.0f);
 
-    public GL Api
-    {
-        get
-        {
-            return _gl;
-        }
-    }
+    public GL Api => _gl;
 }
