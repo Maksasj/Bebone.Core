@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Bebone.Core.Sound\Bebone.Core.Sound.Abstractions.csproj" />
+    <ProjectReference Include="..\Bebone.Sound.Abstractions\Bebone.Sound.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>

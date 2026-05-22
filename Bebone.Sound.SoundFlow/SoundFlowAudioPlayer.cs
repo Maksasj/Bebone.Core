@@ -1,11 +1,11 @@
-﻿using Bebone.Core.Sound.Abstractions;
+﻿using Bebone.Sound.Abstractions;
 using SoundFlow.Abstracts;
 using SoundFlow.Abstracts.Devices;
 using SoundFlow.Components;
 using SoundFlow.Providers;
 using SoundFlow.Structs;
 
-namespace Bebone.Core.Sound.SoundFlow;
+namespace Bebone.Sound.SoundFlow;
 
 public sealed class SoundFlowAudioPlayer : IAudioPlayer, IDisposable
 {

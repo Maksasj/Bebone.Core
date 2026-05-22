@@ -1,7 +1,7 @@
 ﻿using SoundFlow.Components;
 using SoundFlow.Providers;
 
-namespace Bebone.Core.Sound.SoundFlow;
+namespace Bebone.Sound.SoundFlow;
 
 internal sealed record PlayingSound(SoundPlayer Player, StreamDataProvider DataProvider) : IDisposable
 {

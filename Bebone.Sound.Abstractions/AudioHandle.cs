@@ -1,4 +1,4 @@
-﻿namespace Bebone.Core.Sound.Abstractions;
+﻿namespace Bebone.Sound.Abstractions;
 
 public readonly record struct AudioHandle(Guid Id)
 {
