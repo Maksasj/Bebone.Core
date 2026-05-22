@@ -1,5 +1,5 @@
-using System.Numerics;
 using Bebone.Physics;
+using System.Numerics;
 
 namespace Bebone.Core.Tests.Physics;
 
