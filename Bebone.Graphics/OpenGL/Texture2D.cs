@@ -5,7 +5,7 @@ namespace Bebone.Graphics.OpenGL;
 
 public class Texture2D : ITexture
 {
-    private readonly GL _gl;
+    private readonly IGLContext _gl;
     private readonly uint _handle;
 
     private readonly int _width;
@@ -13,7 +13,7 @@ public class Texture2D : ITexture
 
     private const int _maxTextureSlots = 16; // Todo: This can be more depending on device, 16 is minimum
 
-    public unsafe Texture2D(GL gl, int width, int height, byte[] data)
+    public unsafe Texture2D(IGLContext gl, int width, int height, byte[] data)
     {
         _gl = gl;
         _width = width;

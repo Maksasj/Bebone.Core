@@ -7,11 +7,11 @@ namespace Bebone.Graphics.OpenGL.Shaders;
 
 public class ShaderProgram : IShaderProgram, IDisposable
 {
-    private readonly GL _gl;
+    private readonly IGLContext _gl;
     private readonly uint _handle;
     private const float _maxByteColorValue = 255.0f;
 
-    public ShaderProgram(GL gl, string vertexShaderSource, string fragmentShaderSource)
+    public ShaderProgram(IGLContext gl, string vertexShaderSource, string fragmentShaderSource)
     {
         _gl = gl;
         var vertexShader = new Shader(gl, vertexShaderSource, ShaderType.VertexShader);
@@ -41,7 +41,7 @@ public class ShaderProgram : IShaderProgram, IDisposable
     public void SetUniform(string name, float value) => _gl.Uniform1(GetUniformLocation(name), value);
     public void SetUniform(string name, Vector2 value) => _gl.Uniform2(GetUniformLocation(name), value);
     public void SetUniform(string name, Vector3 value) => _gl.Uniform3(GetUniformLocation(name), value);
-    public void SetUniform(string name, Color value) => _gl.Uniform4(GetUniformLocation(name), value.R / _maxByteColorValue, value.G / _maxByteColorValue, value.B / _maxByteColorValue, value.A / _maxByteColorValue);
+    public void SetUniform(string name, Color value) => _gl.Uniform4(GetUniformLocation(name), new Vector4(value.R / _maxByteColorValue, value.G / _maxByteColorValue, value.B / _maxByteColorValue, value.A / _maxByteColorValue));
     public unsafe void SetUniform(string name, Matrix4x4 value) => _gl.UniformMatrix4(GetUniformLocation(name), count: 1, transpose: false, (float*)&value);
     private int GetUniformLocation(string name) => _gl.GetUniformLocation(_handle, name);
 }

@@ -1,13 +1,14 @@
-﻿using Silk.NET.OpenGL;
+﻿using Bebone.Graphics.Abstractions;
+using Silk.NET.OpenGL;
 
 namespace Bebone.Graphics.OpenGL.Shaders;
 
 public class Shader : IDisposable
 {
-    private readonly GL _gl;
+    private readonly IGLContext _gl;
     public uint Handle { get; init; }
 
-    public Shader(GL gl, string shaderSource, ShaderType shaderType)
+    public Shader(IGLContext gl, string shaderSource, ShaderType shaderType)
     {
         _gl = gl;
 
