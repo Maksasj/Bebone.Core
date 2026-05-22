@@ -1,11 +1,11 @@
-﻿using Bebone.Graphics.Abstractions.Mesh;
-using Silk.NET.OpenGL;
+﻿using Bebone.Graphics.Abstractions;
+using Bebone.Graphics.Abstractions.Mesh;
 
 namespace Bebone.Graphics.OpenGL.Mesh;
 
-public class MeshBuilder<T>(GL gl) : IMeshBuilder<T> where T : unmanaged, IVertex
+public class MeshBuilder<T>(IGLContext gl) : IMeshBuilder<T> where T : unmanaged, IVertex
 {
-    private readonly GL _gl = gl;
+    private readonly IGLContext _gl = gl;
 
     private readonly List<T> _vertices = [];
     private readonly List<uint> _indices = [];

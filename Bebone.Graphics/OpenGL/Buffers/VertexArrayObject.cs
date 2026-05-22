@@ -1,13 +1,14 @@
-﻿using Silk.NET.OpenGL;
+﻿using Bebone.Graphics.Abstractions;
+using Silk.NET.OpenGL;
 
 namespace Bebone.Graphics.OpenGL.Buffers;
 
 public class VertexArrayObject : IDisposable
 {
-    private readonly GL _gl;
+    private readonly IGLContext _gl;
     private readonly uint _handle;
 
-    public VertexArrayObject(GL gl)
+    public VertexArrayObject(IGLContext gl)
     {
         _gl = gl;
 
