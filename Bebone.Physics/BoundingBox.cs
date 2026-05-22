@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace Bebone.Core;
+namespace Bebone.Physics;
 
 public readonly record struct BoundingBox
 {
