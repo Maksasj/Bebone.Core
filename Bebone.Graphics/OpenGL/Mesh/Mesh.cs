@@ -53,7 +53,7 @@ public class Mesh<T> : IMesh<T> where T : unmanaged, IVertex
         => _gl.DrawArrays(PrimitiveType.Lines, 0, (uint)_vertexCount);
 
     public void DrawArrays()
-        => _gl.DrawArrays(GLEnum.Triangles, 0, (uint)_vertexCount);
+        => _gl.DrawArrays(PrimitiveType.Triangles, 0, (uint)_vertexCount);
 
     public void Dispose()
     {

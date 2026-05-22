@@ -35,9 +35,9 @@ namespace Bebone.Graphics.OpenGL
             _gl.AttachShader(program, shader);
         }
 
-        public void DetachShader(uint target, uint shader)
+        public void DetachShader(uint program, uint shader)
         {
-            throw new NotImplementedException();
+            _gl.DetachShader(program, shader);
         }
 
         public void DeleteShader(uint shader)
@@ -57,14 +57,14 @@ namespace Bebone.Graphics.OpenGL
             _gl.LinkProgram(program);
         }
 
-        public void GetProgram(uint program, GLEnum link, out int status)
+        public unsafe void GetProgram(uint program, GLEnum pname, out int @params)
         {
-            throw new NotImplementedException();
+            _gl.GetProgram(program, pname, out @params);
         }
 
         public string GetProgramInfoLog(uint program)
         {
-            throw new NotImplementedException();
+            return _gl.GetProgramInfoLog(program);
         }
 
         public void UseProgram(uint program)
@@ -89,14 +89,14 @@ namespace Bebone.Graphics.OpenGL
             _gl.BindBuffer(target, buffer);
         }
 
-        public unsafe void BufferData(BufferTargetARB target, nuint size, void* pointer, BufferUsageARB usage)
+        public unsafe void BufferData(BufferTargetARB target, nuint size, void* data, BufferUsageARB usage)
         {
-            throw new NotImplementedException();
+            _gl.BufferData(target, size, data, usage);
         }
 
-        public unsafe void BufferSubData(BufferTargetARB target, int v, nuint size, void* pointer)
+        public unsafe void BufferSubData(BufferTargetARB target, int offset, nuint size, void* data)
         {
-            throw new NotImplementedException();
+            _gl.BufferSubData(target, offset, size, data);
         }
 
         public void DeleteBuffer(uint buffer)
@@ -148,14 +148,14 @@ namespace Bebone.Graphics.OpenGL
             _gl.ActiveTexture(texture);
         }
 
-        public unsafe void TexImage2D(TextureTarget a, int v, InternalFormat b, uint a1, uint v1, int v2, PixelFormat b1, PixelType a2, byte* b2)
+        public unsafe void TexImage2D(TextureTarget target, int level, InternalFormat internalFormat, uint width, uint height, int border, PixelFormat format, PixelType type, byte* pixels)
         {
-            throw new NotImplementedException();
+            _gl.TexImage2D(target, level, internalFormat, width, height, border, format, type, pixels);
         }
 
-        public void TextureParameter(uint target, TextureParameterName parameter, int value)
+        public void TextureParameter(uint texture, TextureParameterName pname, int param)
         {
-            throw new NotImplementedException();
+            _gl.TextureParameter(texture, pname, param);
         }
 
         public void GenerateMipmap(TextureTarget target)
@@ -165,9 +165,9 @@ namespace Bebone.Graphics.OpenGL
 
         // Uniforms
 
-        public int GetUniformLocation(uint handle, string name)
+        public unsafe int GetUniformLocation(uint program, string name)
         {
-            throw new NotImplementedException();
+            return _gl.GetUniformLocation(program, name);
         }
 
         public void Uniform1(int location, int x)
@@ -195,26 +195,21 @@ namespace Bebone.Graphics.OpenGL
             _gl.Uniform4(location, x);
         }
 
-        public unsafe void UniformMatrix4(int location, int count, bool transpose, float* value)
+        public unsafe void UniformMatrix4(int location, uint count, bool transpose, float* value)
         {
-            throw new NotImplementedException();
+            _gl.UniformMatrix4(location, count, transpose, value);
         }
 
         // Draw
 
-        public void DrawArrays(GLEnum type, uint offset, uint count)
+        public void DrawArrays(PrimitiveType mode, int first, uint count)
         {
-            throw new NotImplementedException();
+            _gl.DrawArrays(mode, first, count);
         }
 
-        public void DrawArrays(PrimitiveType type, uint offset, uint count)
+        public unsafe void DrawElements(PrimitiveType mode, uint count, DrawElementsType type, void* indices)
         {
-            throw new NotImplementedException();
-        }
-
-        public void DrawElements(PrimitiveType type, uint count, DrawElementsType elementsType, int? _)
-        {
-            throw new NotImplementedException();
+            _gl.DrawElements(mode, count, type, indices);
         }
     }
 }

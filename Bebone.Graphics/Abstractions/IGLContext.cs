@@ -6,56 +6,55 @@ namespace Bebone.Graphics.Abstractions
     public interface IGLContext
     {
         // Shader
-        uint CreateShader(ShaderType shaderType);
-        void ShaderSource(uint handle, string shaderSource);
-        void CompileShader(uint handle);
-        string? GetShaderInfoLog(uint handle);
-        void AttachShader(uint handle, uint _);
-        void DetachShader(uint target, uint shader);
-        void DeleteShader(uint handle);
+        uint CreateShader(ShaderType type);
+        void ShaderSource(uint shader, string @string);
+        void CompileShader(uint shader);
+        string GetShaderInfoLog(uint shader);
+        void AttachShader(uint program, uint shader);
+        void DetachShader(uint program, uint shader);
+        void DeleteShader(uint shader);
 
         // Program
         uint CreateProgram();
-        void LinkProgram(uint handle);
-        void GetProgram(uint program, GLEnum link, out int status);
+        void LinkProgram(uint program);
+        unsafe void GetProgram(uint program, GLEnum pname, out int @params);
         string GetProgramInfoLog(uint program);
-        void UseProgram(uint handle);
-        void DeleteProgram(uint handle);
+        void UseProgram(uint program);
+        void DeleteProgram(uint program);
 
         // Buffer
         uint GenBuffer();
-        void BindBuffer(BufferTargetARB arrayBuffer, uint handle);
-        unsafe void BufferData(BufferTargetARB target, nuint size, void* pointer, BufferUsageARB usage);
-        unsafe void BufferSubData(BufferTargetARB target, int v, nuint size, void* pointer);
-        void DeleteBuffer(uint handle);
+        void BindBuffer(BufferTargetARB target, uint buffer);
+        unsafe void BufferData(BufferTargetARB target, nuint size, void* data, BufferUsageARB usage);
+        unsafe void BufferSubData(BufferTargetARB target, int offset, nuint size, void* data);
+        void DeleteBuffer(uint buffer);
 
         // Vertex array
         uint GenVertexArray();
-        void BindVertexArray(uint handle);
+        void BindVertexArray(uint array);
         void EnableVertexAttribArray(uint index);
-        unsafe void VertexAttribPointer(uint index, int componentCount, VertexAttribPointerType type, bool v, uint strideSize, void* offset);
-        void DeleteVertexArray(uint handle);
+        unsafe void VertexAttribPointer(uint index, int size, VertexAttribPointerType type, bool normalized, uint stride, void* pointer);
+        void DeleteVertexArray(uint arrays);
 
         // Texture
         uint GenTexture();
-        void BindTexture(TextureTarget texture2D, uint created);
-        void ActiveTexture(TextureUnit texture0);
-        unsafe void TexImage2D(TextureTarget a, int v, InternalFormat b, uint a1, uint v1, int v2, PixelFormat b1, PixelType a2, byte* b2);
-        void TextureParameter(uint target, TextureParameterName parameter, int value);
-        void GenerateMipmap(TextureTarget texture2D);
+        void BindTexture(TextureTarget target, uint texture);
+        void ActiveTexture(TextureUnit texture);
+        unsafe void TexImage2D(TextureTarget target, int level, InternalFormat internalFormat, uint width, uint height, int border, PixelFormat format, PixelType type, byte* pixels);
+        void TextureParameter(uint texture, TextureParameterName pname, int param);
+        void GenerateMipmap(TextureTarget target);
 
         // Uniforms
-        int GetUniformLocation(uint handle, string name);
-        void Uniform1(int v, int value);
-        void Uniform1(int v, float value);
-        void Uniform2(int v, Vector2 value);
-        void Uniform3(int v, Vector3 value);
+        unsafe int GetUniformLocation(uint program, string name);
+        void Uniform1(int location, int x);
+        void Uniform1(int location, float x);
+        void Uniform2(int location, Vector2 x);
+        void Uniform3(int location, Vector3 x);
         void Uniform4(int location, Vector4 x);
-        unsafe void UniformMatrix4(int location, int count, bool transpose, float* value);
+        unsafe void UniformMatrix4(int location, uint count, bool transpose, float* value);
 
         // Draw
-        void DrawArrays(GLEnum type, uint offset, uint count);
-        void DrawArrays(PrimitiveType type, uint offset, uint count);
-        void DrawElements(PrimitiveType type, uint count, DrawElementsType elementsType, int? _);
+        void DrawArrays(PrimitiveType mode, int first, uint count);
+        unsafe void DrawElements(PrimitiveType mode, uint count, DrawElementsType type, void* indices);
     }
 }
