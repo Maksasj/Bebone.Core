@@ -57,7 +57,7 @@ namespace Bebone.Graphics.OpenGL
             _gl.LinkProgram(program);
         }
 
-        public unsafe void GetProgram(uint program, GLEnum pname, out int @params)
+        public void GetProgram(uint program, GLEnum pname, out int @params)
         {
             _gl.GetProgram(program, pname, out @params);
         }
@@ -94,7 +94,7 @@ namespace Bebone.Graphics.OpenGL
             _gl.BufferData(target, size, data, usage);
         }
 
-        public unsafe void BufferSubData(BufferTargetARB target, int offset, nuint size, void* data)
+        public unsafe void BufferSubData(BufferTargetARB target, nint offset, nuint size, void* data)
         {
             _gl.BufferSubData(target, offset, size, data);
         }

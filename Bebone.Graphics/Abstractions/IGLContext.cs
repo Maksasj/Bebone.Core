@@ -26,7 +26,7 @@ namespace Bebone.Graphics.Abstractions
         uint GenBuffer();
         void BindBuffer(BufferTargetARB target, uint buffer);
         unsafe void BufferData(BufferTargetARB target, nuint size, void* data, BufferUsageARB usage);
-        unsafe void BufferSubData(BufferTargetARB target, int offset, nuint size, void* data);
+        unsafe void BufferSubData(BufferTargetARB target, nint offset, nuint size, void* data);
         void DeleteBuffer(uint buffer);
 
         // Vertex array
