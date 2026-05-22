@@ -1,7 +1,7 @@
 ﻿using FsCheck;
 using FsCheck.Fluent;
 
-namespace Bebone.Core.Tests;
+namespace Bebone.Core.Tests.Math;
 
 [TestFixture]
 public class Vector2IntTests

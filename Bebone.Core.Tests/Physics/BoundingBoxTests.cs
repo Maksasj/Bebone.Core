@@ -2,7 +2,7 @@
 using FsCheck.Fluent;
 using System.Numerics;
 
-namespace Bebone.Core.Tests;
+namespace Bebone.Core.Tests.Physics;
 
 [TestFixture]
 public class BoundingBoxTests
