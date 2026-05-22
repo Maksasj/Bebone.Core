@@ -16,7 +16,7 @@ public class Mesh<T> : IMesh<T> where T : unmanaged, IVertex
     private int _vertexCount;
     private int _capacity;
 
-    public Mesh(GL gl, T[] vertices, uint[] indices)
+    public unsafe Mesh(GL gl, T[] vertices, uint[] indices)
     {
         _gl = gl;
 
@@ -45,7 +45,7 @@ public class Mesh<T> : IMesh<T> where T : unmanaged, IVertex
 
     public void Bind() => _vao.Bind();
 
-    public void DrawTriangles()
+    public unsafe void DrawTriangles()
         => _gl.DrawElements(PrimitiveType.Triangles, _indicesCount, DrawElementsType.UnsignedInt, null);
 
     public void DrawLines()

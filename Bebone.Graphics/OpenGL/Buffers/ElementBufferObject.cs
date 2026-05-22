@@ -18,7 +18,7 @@ public class ElementBufferObject : IDisposable
 
     public void Unbind() => _gl.BindBuffer(BufferTargetARB.ElementArrayBuffer, 0);
 
-    public void BufferData<T>(T[] data) where T : unmanaged
+    public unsafe void BufferData<T>(T[] data) where T : unmanaged
     {
         fixed (void* i = &data[0])
             _gl.BufferData(BufferTargetARB.ElementArrayBuffer, (nuint)(data.Length * sizeof(T)), i, BufferUsageARB.StaticDraw);
