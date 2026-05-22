@@ -18,13 +18,13 @@ public class VertexBufferObject : IDisposable
 
     public void Unbind() => _gl.BindBuffer(BufferTargetARB.ArrayBuffer, 0);
 
-    public void BufferData<T>(T[] data) where T : unmanaged
+    public unsafe void BufferData<T>(T[] data) where T : unmanaged
     {
         fixed (void* v = &data[0])
             _gl.BufferData(BufferTargetARB.ArrayBuffer, (nuint)(data.Length * sizeof(T)), v, BufferUsageARB.StaticDraw);
     }
 
-    public void BufferSubData<T>(T[] data) where T : unmanaged
+    public unsafe void BufferSubData<T>(T[] data) where T : unmanaged
     {
         fixed (void* v = &data[0])
             _gl.BufferSubData(BufferTargetARB.ArrayBuffer, 0, (nuint)(data.Length * sizeof(T)), v);
