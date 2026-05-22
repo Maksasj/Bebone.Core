@@ -113,4 +113,38 @@ public class ElementBufferObjectTests
         // Assert
         mockGL.Verify(s => s.DeleteBuffer(123), Times.Once);
     }
+
+    [Test]
+    public void Disposed_Bind_ThrowsObjectDisposedException()
+    {
+        // Arrange
+        var mockGL = new Mock<IGLContext>();
+
+        mockGL
+            .Setup(s => s.GenBuffer())
+            .Returns(123);
+
+        var buffer = new ElementBufferObject(mockGL.Object);
+
+        // Act & Assert
+        buffer.Dispose();
+        Assert.Throws<ObjectDisposedException>(() => buffer.Bind());
+    }
+
+    [Test]
+    public void Disposed_Unbind_ThrowsObjectDisposedException()
+    {
+        // Arrange
+        var mockGL = new Mock<IGLContext>();
+
+        mockGL
+            .Setup(s => s.GenBuffer())
+            .Returns(123);
+
+        var buffer = new ElementBufferObject(mockGL.Object);
+
+        // Act & Assert
+        buffer.Dispose();
+        Assert.Throws<ObjectDisposedException>(() => buffer.Unbind());
+    }
 }

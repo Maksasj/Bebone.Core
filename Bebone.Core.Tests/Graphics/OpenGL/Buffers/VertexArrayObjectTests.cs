@@ -112,4 +112,38 @@ public class VertexArrayObjectTests
         // Assert
         mockGL.Verify(s => s.DeleteVertexArray(123), Times.Once);
     }
+
+    [Test]
+    public void Disposed_Bind_ThrowsObjectDisposedException()
+    {
+        // Arrange
+        var mockGL = new Mock<IGLContext>();
+
+        mockGL
+            .Setup(s => s.GenVertexArray())
+            .Returns(123);
+
+        var buffer = new VertexArrayObject(mockGL.Object);
+
+        // Act & Assert
+        buffer.Dispose();
+        Assert.Throws<ObjectDisposedException>(() => buffer.Bind());
+    }
+
+    [Test]
+    public void Disposed_Unbind_ThrowsObjectDisposedException()
+    {
+        // Arrange
+        var mockGL = new Mock<IGLContext>();
+
+        mockGL
+            .Setup(s => s.GenVertexArray())
+            .Returns(123);
+
+        var buffer = new VertexArrayObject(mockGL.Object);
+
+        // Act & Assert
+        buffer.Dispose();
+        Assert.Throws<ObjectDisposedException>(() => buffer.Unbind());
+    }
 }
