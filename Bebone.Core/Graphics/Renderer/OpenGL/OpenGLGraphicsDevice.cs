@@ -12,18 +12,18 @@ public class OpenGLGraphicsDevice
     {
         _gl = GL.GetApi(procAddressLoader);
 
-        Api.Enable(EnableCap.DepthTest);
-        Api.DepthFunc(GLEnum.Less);
+        _gl.Enable(EnableCap.DepthTest);
+        _gl.DepthFunc(GLEnum.Less);
 
-        Api.Enable(EnableCap.Blend);
-        Api.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+        _gl.Enable(EnableCap.Blend);
+        _gl.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
     }
 
-    public void EnableDepthTest() => Api.Enable(EnableCap.DepthTest);
-    public void DisableDepthTest() => Api.Disable(EnableCap.DepthTest);
-    public void SetViewport(int x, int y, int width, int height) => Api.Viewport(x, y, (uint)width, (uint)height);
-    public void ClearBuffers() => Api.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-    public void ClearColor(Color color) => Api.ClearColor(color.R / _maxByteColorValue, color.G / _maxByteColorValue, color.B / _maxByteColorValue, 1.0f);
+    public OpenGLFactory CreateFactory() => new(_gl);
 
-    public GL Api => _gl;
+    public void EnableDepthTest() => _gl.Enable(EnableCap.DepthTest);
+    public void DisableDepthTest() => _gl.Disable(EnableCap.DepthTest);
+    public void SetViewport(int x, int y, int width, int height) => _gl.Viewport(x, y, (uint)width, (uint)height);
+    public void ClearBuffers() => _gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+    public void ClearColor(Color color) => _gl.ClearColor(color.R / _maxByteColorValue, color.G / _maxByteColorValue, color.B / _maxByteColorValue, 1.0f);
 }

@@ -4,34 +4,34 @@ namespace Bebone.Core.Graphics.Renderer.OpenGL.Buffers;
 
 public class VertexBufferObject : IDisposable
 {
-    private readonly OpenGLGraphicsDevice _device;
+    private readonly GL _gl;
     private readonly uint _handle;
 
-    public VertexBufferObject(OpenGLGraphicsDevice device)
+    public VertexBufferObject(GL gl)
     {
-        _device = device;
+        _gl = gl;
 
-        _handle = _device.Api.GenBuffer();
+        _handle = _gl.GenBuffer();
     }
 
-    public void Bind() => _device.Api.BindBuffer(BufferTargetARB.ArrayBuffer, _handle);
+    public void Bind() => _gl.BindBuffer(BufferTargetARB.ArrayBuffer, _handle);
 
-    public void Unbind() => _device.Api.BindBuffer(BufferTargetARB.ArrayBuffer, 0);
+    public void Unbind() => _gl.BindBuffer(BufferTargetARB.ArrayBuffer, 0);
 
     public unsafe void BufferData<T>(T[] data) where T : unmanaged
     {
         fixed (void* v = &data[0])
-            _device.Api.BufferData(BufferTargetARB.ArrayBuffer, (nuint)(data.Length * sizeof(T)), v, BufferUsageARB.StaticDraw);
+            _gl.BufferData(BufferTargetARB.ArrayBuffer, (nuint)(data.Length * sizeof(T)), v, BufferUsageARB.StaticDraw);
     }
 
     public unsafe void BufferSubData<T>(T[] data) where T : unmanaged
     {
         fixed (void* v = &data[0])
-            _device.Api.BufferSubData(BufferTargetARB.ArrayBuffer, 0, (nuint)(data.Length * sizeof(T)), v);
+            _gl.BufferSubData(BufferTargetARB.ArrayBuffer, 0, (nuint)(data.Length * sizeof(T)), v);
     }
 
     public void Dispose()
     {
-        _device.Api.DeleteBuffer(_handle);
+        _gl.DeleteBuffer(_handle);
     }
 }

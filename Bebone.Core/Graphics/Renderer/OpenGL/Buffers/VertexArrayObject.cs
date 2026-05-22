@@ -4,28 +4,28 @@ namespace Bebone.Core.Graphics.Renderer.OpenGL.Buffers;
 
 public class VertexArrayObject : IDisposable
 {
-    private readonly OpenGLGraphicsDevice _device;
+    private readonly GL _gl;
     private readonly uint _handle;
 
-    public VertexArrayObject(OpenGLGraphicsDevice device)
+    public VertexArrayObject(GL gl)
     {
-        _device = device;
+        _gl = gl;
 
-        _handle = _device.Api.GenVertexArray();
+        _handle = _gl.GenVertexArray();
     }
 
-    public void Bind() => _device.Api.BindVertexArray(_handle);
+    public void Bind() => _gl.BindVertexArray(_handle);
 
-    public void Unbind() => _device.Api.BindVertexArray(0);
+    public void Unbind() => _gl.BindVertexArray(0);
 
     public unsafe void LinkAttribute(int index, int componentCount, VertexAttribPointerType type, int strideSize, void* offset)
     {
-        _device.Api.VertexAttribPointer((uint)index, componentCount, type, false, (uint)strideSize, offset);
-        _device.Api.EnableVertexAttribArray((uint)index);
+        _gl.VertexAttribPointer((uint)index, componentCount, type, false, (uint)strideSize, offset);
+        _gl.EnableVertexAttribArray((uint)index);
     }
 
     public void Dispose()
     {
-        _device.Api.DeleteVertexArray(_handle);
+        _gl.DeleteVertexArray(_handle);
     }
 }

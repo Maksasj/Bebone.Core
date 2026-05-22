@@ -4,22 +4,22 @@ namespace Bebone.Core.Graphics.Renderer.OpenGL.Shaders;
 
 public class Shader : IDisposable
 {
-    private readonly OpenGLGraphicsDevice _device;
+    private readonly GL _gl;
     public uint Handle { get; init; }
 
-    public Shader(OpenGLGraphicsDevice device, string shaderSource, ShaderType shaderType)
+    public Shader(GL gl, string shaderSource, ShaderType shaderType)
     {
-        _device = device;
+        _gl = gl;
 
-        Handle = _device.Api.CreateShader(shaderType);
-        _device.Api.ShaderSource(Handle, shaderSource);
-        _device.Api.CompileShader(Handle);
+        Handle = _gl.CreateShader(shaderType);
+        _gl.ShaderSource(Handle, shaderSource);
+        _gl.CompileShader(Handle);
 
-        var infoLog = _device.Api.GetShaderInfoLog(Handle);
+        var infoLog = _gl.GetShaderInfoLog(Handle);
 
         if (!string.IsNullOrWhiteSpace(infoLog))
             throw new Exception($"Error compiling shader {infoLog}");
     }
 
-    public void Dispose() => _device.Api.DeleteShader(Handle);
+    public void Dispose() => _gl.DeleteShader(Handle);
 }

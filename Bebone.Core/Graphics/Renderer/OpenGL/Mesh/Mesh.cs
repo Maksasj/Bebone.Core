@@ -6,7 +6,7 @@ namespace Bebone.Core.Graphics.Renderer.OpenGL.Mesh;
 
 public class Mesh<T> : IMesh<T> where T : unmanaged, IVertex
 {
-    private readonly OpenGLGraphicsDevice _device;
+    private readonly GL _gl;
 
     private readonly VertexArrayObject _vao;
     private readonly VertexBufferObject _vbo;
@@ -16,20 +16,20 @@ public class Mesh<T> : IMesh<T> where T : unmanaged, IVertex
     private int _vertexCount;
     private int _capacity;
 
-    public unsafe Mesh(OpenGLGraphicsDevice device, T[] vertices, uint[] indices)
+    public unsafe Mesh(GL gl, T[] vertices, uint[] indices)
     {
-        _device = device;
+        _gl = gl;
 
         _indicesCount = (uint)indices.Length;
         _vertexCount = vertices.Length;
         _capacity = vertices.Length;
 
-        _vao = new VertexArrayObject(device);
+        _vao = new VertexArrayObject(gl);
         _vao.Bind();
-        _ebo = new ElementBufferObject(device);
+        _ebo = new ElementBufferObject(gl);
         _ebo.Bind();
         _ebo.BufferData(indices);
-        _vbo = new VertexBufferObject(device);
+        _vbo = new VertexBufferObject(gl);
         _vbo.Bind();
         _vbo.BufferData(vertices);
 
@@ -46,13 +46,13 @@ public class Mesh<T> : IMesh<T> where T : unmanaged, IVertex
     public void Bind() => _vao.Bind();
 
     public unsafe void DrawTriangles()
-        => _device.Api.DrawElements(PrimitiveType.Triangles, _indicesCount, DrawElementsType.UnsignedInt, null);
+        => _gl.DrawElements(PrimitiveType.Triangles, _indicesCount, DrawElementsType.UnsignedInt, null);
 
     public void DrawLines()
-        => _device.Api.DrawArrays(PrimitiveType.Lines, 0, (uint)_vertexCount);
+        => _gl.DrawArrays(PrimitiveType.Lines, 0, (uint)_vertexCount);
 
     public void DrawArrays()
-        => _device.Api.DrawArrays(GLEnum.Triangles, 0, (uint)_vertexCount);
+        => _gl.DrawArrays(GLEnum.Triangles, 0, (uint)_vertexCount);
 
     public void Dispose()
     {

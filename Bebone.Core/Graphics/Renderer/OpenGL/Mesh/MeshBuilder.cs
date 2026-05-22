@@ -1,10 +1,11 @@
 ﻿using Bebone.Core.Graphics.Renderer.Mesh;
+using Silk.NET.OpenGL;
 
 namespace Bebone.Core.Graphics.Renderer.OpenGL.Mesh;
 
-public class MeshBuilder<T>(OpenGLGraphicsDevice device) : IMeshBuilder<T> where T : unmanaged, IVertex
+public class MeshBuilder<T>(GL gl) : IMeshBuilder<T> where T : unmanaged, IVertex
 {
-    private readonly OpenGLGraphicsDevice _device = device;
+    private readonly GL _gl = gl;
 
     private readonly List<T> _vertices = [];
     private readonly List<uint> _indices = [];
@@ -43,5 +44,5 @@ public class MeshBuilder<T>(OpenGLGraphicsDevice device) : IMeshBuilder<T> where
         _currentIndex += 3;
     }
 
-    public IMesh<T> Build() => new Mesh<T>(_device, [.. _vertices], [.. _indices]);
+    public IMesh<T> Build() => new Mesh<T>(_gl, [.. _vertices], [.. _indices]);
 }
