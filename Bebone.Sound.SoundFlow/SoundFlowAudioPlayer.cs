@@ -14,18 +14,17 @@ public sealed class SoundFlowAudioPlayer : IAudioPlayer, IDisposable
     private readonly Dictionary<AudioHandle, PlayingSound> _playingSounds = [];
     private readonly AudioFormat _audioFormat;
 
-    public SoundFlowAudioPlayer(AudioEngine engine)
+    public SoundFlowAudioPlayer(AudioEngine engine, AudioFormat audioFormat)
     {
         _engine = engine;
-        _audioFormat = AudioFormat.DvdHq;
+        _audioFormat = audioFormat;
 
         _playbackDevice = GetDefaultPlaybackDevice();
         _playbackDevice.Start();
     }
 
-    public AudioHandle Play(Stream audioStream) => Play(audioStream, AudioPlaySettings.Default);
+    public AudioHandle Play(Stream audioStream) => Play(audioStream, new AudioPlaySettings());
 
-    // TODO: handle exceptions
     public AudioHandle Play(Stream audioStream, AudioPlaySettings settings)
     {
         if (audioStream.CanSeek)

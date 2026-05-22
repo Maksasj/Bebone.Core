@@ -1,6 +1,18 @@
 ﻿namespace Bebone.Sound.Abstractions;
 
-public readonly record struct AudioPlaySettings(bool Loop, float Volume)
+public readonly struct AudioPlaySettings
 {
-    public static AudioPlaySettings Default => new(false, 1f);
+    public bool Loop { get; }
+    public float Volume { get; }
+
+    public AudioPlaySettings(bool loop = false, float volume = 1f)
+    {
+        if (volume < 0f)
+        {
+            throw new ArgumentOutOfRangeException(nameof(volume), "Volume must be a positive value.");
+        }
+
+        Volume = volume;
+        Loop = loop;
+    }
 }
