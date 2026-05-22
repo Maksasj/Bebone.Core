@@ -1,4 +1,4 @@
-﻿namespace Bebone.Core;
+﻿namespace Bebone.Math;
 
 public readonly record struct Vector3Int(int X, int Y, int Z)
 {
