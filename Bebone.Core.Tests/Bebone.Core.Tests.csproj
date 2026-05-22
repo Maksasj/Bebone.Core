@@ -25,10 +25,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Bebone.Math\Bebone.Math.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Bebone.Physics\Bebone.Physics.csproj" />
+    <ProjectReference Include="..\Bebone.Sound.Abstractions\Bebone.Sound.Abstractions.csproj" />
   </ItemGroup>
 
   <ItemGroup>
