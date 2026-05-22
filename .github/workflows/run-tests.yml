@@ -31,13 +31,9 @@ jobs:
         with:
           reports: 'TestResults/**/coverage.cobertura.xml'
           targetdir: 'CoverageReport'
-          reporttypes: 'HtmlInline;MarkdownSummaryGithub'
+          reporttypes: 'MarkdownSummaryGithub'
 
-      - name: Add coverage summary
-        run: cat CoverageReport/SummaryGithub.md >> $GITHUB_STEP_SUMMARY
-
-      - name: Upload coverage report
-        uses: actions/upload-artifact@v4
+      - name: Post coverage comment
+        uses: marocchino/sticky-pull-request-comment@v2
         with:
-          name: coverage-report
-          path: CoverageReport
+          path: CoverageReport/SummaryGithub.md
