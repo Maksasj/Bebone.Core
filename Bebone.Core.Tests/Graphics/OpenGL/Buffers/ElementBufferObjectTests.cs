@@ -67,4 +67,50 @@ public class ElementBufferObjectTests
         // Assert
         mockGL.Verify(s => s.BindBuffer(BufferTargetARB.ElementArrayBuffer, 0), Times.Once);
     }
+
+    [Test]
+    public void Dispose_ExecuteDeleteBufferOnce()
+    {
+        // Arrange
+        var mockGL = new Mock<IGLContext>();
+
+        mockGL
+            .Setup(s => s.GenBuffer())
+            .Returns(123);
+
+        mockGL
+            .Setup(s => s.DeleteBuffer(123));
+
+        var buffer = new ElementBufferObject(mockGL.Object);
+
+        // Act
+        buffer.Dispose();
+
+        // Assert
+        mockGL.Verify(s => s.DeleteBuffer(123), Times.Once);
+    }
+
+    [Test]
+    public void MultipleDispose_ExecuteDeleteBufferOnce()
+    {
+        // Arrange
+        var mockGL = new Mock<IGLContext>();
+
+        mockGL
+            .Setup(s => s.GenBuffer())
+            .Returns(123);
+
+        mockGL
+            .Setup(s => s.DeleteBuffer(123));
+
+        var buffer = new ElementBufferObject(mockGL.Object);
+
+        // Act
+        buffer.Dispose();
+        buffer.Dispose();
+        buffer.Dispose();
+
+        // Assert
+        mockGL.Verify(s => s.DeleteBuffer(123), Times.Once);
+    }
 }

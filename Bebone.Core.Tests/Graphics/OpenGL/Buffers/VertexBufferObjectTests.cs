@@ -67,4 +67,50 @@ public class VertexBufferObjectTests
         // Assert
         mockGL.Verify(s => s.BindBuffer(It.IsAny<BufferTargetARB>(), 0), Times.Once);
     }
+
+    [Test]
+    public void Dispose_ExecuteDisposeOnce()
+    {
+        // Arrange
+        var mockGL = new Mock<IGLContext>();
+
+        mockGL
+            .Setup(s => s.GenBuffer())
+            .Returns(123);
+
+        mockGL
+            .Setup(s => s.DeleteBuffer(123));
+
+        var buffer = new VertexBufferObject(mockGL.Object);
+
+        // Act
+        buffer.Dispose();
+
+        // Assert
+        mockGL.Verify(s => s.DeleteBuffer(123), Times.Once);
+    }
+
+    [Test]
+    public void MultipleDispose_ExecuteDisposeOnce()
+    {
+        // Arrange
+        var mockGL = new Mock<IGLContext>();
+
+        mockGL
+            .Setup(s => s.GenBuffer())
+            .Returns(123);
+
+        mockGL
+            .Setup(s => s.DeleteBuffer(123));
+
+        var buffer = new VertexBufferObject(mockGL.Object);
+
+        // Act
+        buffer.Dispose();
+        buffer.Dispose();
+        buffer.Dispose();
+
+        // Assert
+        mockGL.Verify(s => s.DeleteBuffer(123), Times.Once);
+    }
 }
