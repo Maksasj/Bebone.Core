@@ -23,13 +23,6 @@ public sealed class SoundFlowAudioPlayer : IAudioPlayer, IDisposable
         _playbackDevice.Start();
     }
 
-    private AudioPlaybackDevice GetDefaultPlaybackDevice()
-    {
-        _engine.UpdateAudioDevicesInfo();
-        var defaultDevice = _engine.PlaybackDevices.FirstOrDefault(x => x.IsDefault);
-        return _engine.InitializePlaybackDevice(defaultDevice, _audioFormat);
-    }
-
     public AudioHandle Play(Stream audioStream) => Play(audioStream, AudioPlaySettings.Default);
 
     // TODO: handle exceptions
@@ -79,5 +72,12 @@ public sealed class SoundFlowAudioPlayer : IAudioPlayer, IDisposable
         }
 
         _playingSounds.Clear();
+    }
+
+    private AudioPlaybackDevice GetDefaultPlaybackDevice()
+    {
+        _engine.UpdateAudioDevicesInfo();
+        var defaultDevice = _engine.PlaybackDevices.FirstOrDefault(x => x.IsDefault);
+        return _engine.InitializePlaybackDevice(defaultDevice, _audioFormat);
     }
 }
