@@ -32,6 +32,10 @@
   </ItemGroup>
 
   <ItemGroup>
+	<ProjectReference Include="..\Bebone.Graphics\Bebone.Graphics.csproj" />
+  </ItemGroup>
+	
+  <ItemGroup>
     <Using Include="NUnit.Framework" />
   </ItemGroup>
 
