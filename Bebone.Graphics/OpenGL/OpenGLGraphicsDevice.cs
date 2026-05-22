@@ -19,7 +19,7 @@ public class OpenGLGraphicsDevice
         _gl.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
     }
 
-    public OpenGLFactory CreateFactory() => new(_gl);
+    public OpenGLFactory CreateFactory() => new(new GLContext(_gl));
 
     public void EnableDepthTest() => _gl.Enable(EnableCap.DepthTest);
     public void DisableDepthTest() => _gl.Disable(EnableCap.DepthTest);

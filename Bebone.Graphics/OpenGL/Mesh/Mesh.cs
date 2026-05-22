@@ -1,4 +1,5 @@
-﻿using Bebone.Graphics.Abstractions.Mesh;
+﻿using Bebone.Graphics.Abstractions;
+using Bebone.Graphics.Abstractions.Mesh;
 using Bebone.Graphics.OpenGL.Buffers;
 using Silk.NET.OpenGL;
 
@@ -6,7 +7,7 @@ namespace Bebone.Graphics.OpenGL.Mesh;
 
 public class Mesh<T> : IMesh<T> where T : unmanaged, IVertex
 {
-    private readonly GL _gl;
+    private readonly IGLContext _gl;
 
     private readonly VertexArrayObject _vao;
     private readonly VertexBufferObject _vbo;
@@ -16,7 +17,7 @@ public class Mesh<T> : IMesh<T> where T : unmanaged, IVertex
     private int _vertexCount;
     private int _capacity;
 
-    public unsafe Mesh(GL gl, T[] vertices, uint[] indices)
+    public unsafe Mesh(IGLContext gl, T[] vertices, uint[] indices)
     {
         _gl = gl;
 
