@@ -2,214 +2,213 @@ using Bebone.Graphics.Abstractions;
 using Silk.NET.OpenGL;
 using System.Numerics;
 
-namespace Bebone.Graphics.OpenGL
+namespace Bebone.Graphics.OpenGL;
+
+public class GLContext(GL gl) : IGLContext
 {
-    public class GLContext(GL gl) : IGLContext
+    private readonly GL _gl = gl;
+
+    // Shader
+
+    public uint CreateShader(ShaderType type)
     {
-        private readonly GL _gl = gl;
+        return _gl.CreateShader(type);
+    }
 
-        // Shader
+    public void ShaderSource(uint shader, string @string)
+    {
+        _gl.ShaderSource(shader, @string);
+    }
 
-        public uint CreateShader(ShaderType type)
-        {
-            return _gl.CreateShader(type);
-        }
+    public void CompileShader(uint shader)
+    {
+        _gl.CompileShader(shader);
+    }
 
-        public void ShaderSource(uint shader, string @string)
-        {
-            _gl.ShaderSource(shader, @string);
-        }
+    public string GetShaderInfoLog(uint shader)
+    {
+        return _gl.GetShaderInfoLog(shader);
+    }
 
-        public void CompileShader(uint shader)
-        {
-            _gl.CompileShader(shader);
-        }
+    public void AttachShader(uint program, uint shader)
+    {
+        _gl.AttachShader(program, shader);
+    }
 
-        public string GetShaderInfoLog(uint shader)
-        {
-            return _gl.GetShaderInfoLog(shader);
-        }
+    public void DetachShader(uint program, uint shader)
+    {
+        _gl.DetachShader(program, shader);
+    }
 
-        public void AttachShader(uint program, uint shader)
-        {
-            _gl.AttachShader(program, shader);
-        }
+    public void DeleteShader(uint shader)
+    {
+        _gl.DeleteShader(shader);
+    }
 
-        public void DetachShader(uint program, uint shader)
-        {
-            _gl.DetachShader(program, shader);
-        }
+    // Program
 
-        public void DeleteShader(uint shader)
-        {
-            _gl.DeleteShader(shader);
-        }
+    public uint CreateProgram()
+    {
+        return _gl.CreateProgram();
+    }
 
-        // Program
+    public void LinkProgram(uint program)
+    {
+        _gl.LinkProgram(program);
+    }
 
-        public uint CreateProgram()
-        {
-            return _gl.CreateProgram();
-        }
+    public void GetProgram(uint program, GLEnum pname, out int @params)
+    {
+        _gl.GetProgram(program, pname, out @params);
+    }
 
-        public void LinkProgram(uint program)
-        {
-            _gl.LinkProgram(program);
-        }
+    public string GetProgramInfoLog(uint program)
+    {
+        return _gl.GetProgramInfoLog(program);
+    }
 
-        public void GetProgram(uint program, GLEnum pname, out int @params)
-        {
-            _gl.GetProgram(program, pname, out @params);
-        }
+    public void UseProgram(uint program)
+    {
+        _gl.UseProgram(program);
+    }
 
-        public string GetProgramInfoLog(uint program)
-        {
-            return _gl.GetProgramInfoLog(program);
-        }
+    public void DeleteProgram(uint program)
+    {
+        _gl.DeleteProgram(program);
+    }
 
-        public void UseProgram(uint program)
-        {
-            _gl.UseProgram(program);
-        }
+    // Buffer
 
-        public void DeleteProgram(uint program)
-        {
-            _gl.DeleteProgram(program);
-        }
+    public uint GenBuffer()
+    {
+        return _gl.GenBuffer();
+    }
 
-        // Buffer
+    public void BindBuffer(BufferTargetARB target, uint buffer)
+    {
+        _gl.BindBuffer(target, buffer);
+    }
 
-        public uint GenBuffer()
-        {
-            return _gl.GenBuffer();
-        }
+    public unsafe void BufferData(BufferTargetARB target, nuint size, void* data, BufferUsageARB usage)
+    {
+        _gl.BufferData(target, size, data, usage);
+    }
 
-        public void BindBuffer(BufferTargetARB target, uint buffer)
-        {
-            _gl.BindBuffer(target, buffer);
-        }
+    public unsafe void BufferSubData(BufferTargetARB target, nint offset, nuint size, void* data)
+    {
+        _gl.BufferSubData(target, offset, size, data);
+    }
 
-        public unsafe void BufferData(BufferTargetARB target, nuint size, void* data, BufferUsageARB usage)
-        {
-            _gl.BufferData(target, size, data, usage);
-        }
+    public void DeleteBuffer(uint buffer)
+    {
+        _gl.DeleteBuffer(buffer);
+    }
 
-        public unsafe void BufferSubData(BufferTargetARB target, nint offset, nuint size, void* data)
-        {
-            _gl.BufferSubData(target, offset, size, data);
-        }
+    // Vertex array
 
-        public void DeleteBuffer(uint buffer)
-        {
-            _gl.DeleteBuffer(buffer);
-        }
+    public uint GenVertexArray()
+    {
+        return _gl.GenVertexArray();
+    }
 
-        // Vertex array
+    public void BindVertexArray(uint array)
+    {
+        _gl.BindVertexArray(array);
+    }
 
-        public uint GenVertexArray()
-        {
-            return _gl.GenVertexArray();
-        }
+    public void EnableVertexAttribArray(uint index)
+    {
+        _gl.EnableVertexAttribArray(index);
+    }
 
-        public void BindVertexArray(uint array)
-        {
-            _gl.BindVertexArray(array);
-        }
+    public unsafe void VertexAttribPointer(uint index, int size, VertexAttribPointerType type, bool normalized, uint stride, void* pointer)
+    {
+        _gl.VertexAttribPointer(index, size, type, normalized, stride, pointer);
+    }
 
-        public void EnableVertexAttribArray(uint index)
-        {
-            _gl.EnableVertexAttribArray(index);
-        }
+    public void DeleteVertexArray(uint arrays)
+    {
+        _gl.DeleteVertexArray(arrays);
+    }
 
-        public unsafe void VertexAttribPointer(uint index, int size, VertexAttribPointerType type, bool normalized, uint stride, void* pointer)
-        {
-            _gl.VertexAttribPointer(index, size, type, normalized, stride, pointer);
-        }
+    // Texture
 
-        public void DeleteVertexArray(uint arrays)
-        {
-            _gl.DeleteVertexArray(arrays);
-        }
+    public uint GenTexture()
+    {
+        return _gl.GenTexture();
+    }
 
-        // Texture
+    public void BindTexture(TextureTarget target, uint texture)
+    {
+        _gl.BindTexture(target, texture);
+    }
 
-        public uint GenTexture()
-        {
-            return _gl.GenTexture();
-        }
+    public void ActiveTexture(TextureUnit texture)
+    {
+        _gl.ActiveTexture(texture);
+    }
 
-        public void BindTexture(TextureTarget target, uint texture)
-        {
-            _gl.BindTexture(target, texture);
-        }
+    public unsafe void TexImage2D(TextureTarget target, int level, InternalFormat internalFormat, uint width, uint height, int border, PixelFormat format, PixelType type, byte* pixels)
+    {
+        _gl.TexImage2D(target, level, internalFormat, width, height, border, format, type, pixels);
+    }
 
-        public void ActiveTexture(TextureUnit texture)
-        {
-            _gl.ActiveTexture(texture);
-        }
+    public void TextureParameter(uint texture, TextureParameterName pname, int param)
+    {
+        _gl.TextureParameter(texture, pname, param);
+    }
 
-        public unsafe void TexImage2D(TextureTarget target, int level, InternalFormat internalFormat, uint width, uint height, int border, PixelFormat format, PixelType type, byte* pixels)
-        {
-            _gl.TexImage2D(target, level, internalFormat, width, height, border, format, type, pixels);
-        }
+    public void GenerateMipmap(TextureTarget target)
+    {
+        _gl.GenerateMipmap(target);
+    }
 
-        public void TextureParameter(uint texture, TextureParameterName pname, int param)
-        {
-            _gl.TextureParameter(texture, pname, param);
-        }
+    // Uniforms
 
-        public void GenerateMipmap(TextureTarget target)
-        {
-            _gl.GenerateMipmap(target);
-        }
+    public unsafe int GetUniformLocation(uint program, string name)
+    {
+        return _gl.GetUniformLocation(program, name);
+    }
 
-        // Uniforms
+    public void Uniform1(int location, int x)
+    {
+        _gl.Uniform1(location, x);
+    }
 
-        public unsafe int GetUniformLocation(uint program, string name)
-        {
-            return _gl.GetUniformLocation(program, name);
-        }
+    public void Uniform1(int location, float x)
+    {
+        _gl.Uniform1(location, x);
+    }
 
-        public void Uniform1(int location, int x)
-        {
-            _gl.Uniform1(location, x);
-        }
+    public void Uniform2(int location, Vector2 x)
+    {
+        _gl.Uniform2(location, x);
+    }
 
-        public void Uniform1(int location, float x)
-        {
-            _gl.Uniform1(location, x);
-        }
+    public void Uniform3(int location, Vector3 x)
+    {
+        _gl.Uniform3(location, x);
+    }
 
-        public void Uniform2(int location, Vector2 x)
-        {
-            _gl.Uniform2(location, x);
-        }
+    public void Uniform4(int location, Vector4 x)
+    {
+        _gl.Uniform4(location, x);
+    }
 
-        public void Uniform3(int location, Vector3 x)
-        {
-            _gl.Uniform3(location, x);
-        }
+    public unsafe void UniformMatrix4(int location, uint count, bool transpose, float* value)
+    {
+        _gl.UniformMatrix4(location, count, transpose, value);
+    }
 
-        public void Uniform4(int location, Vector4 x)
-        {
-            _gl.Uniform4(location, x);
-        }
+    // Draw
 
-        public unsafe void UniformMatrix4(int location, uint count, bool transpose, float* value)
-        {
-            _gl.UniformMatrix4(location, count, transpose, value);
-        }
+    public void DrawArrays(PrimitiveType mode, int first, uint count)
+    {
+        _gl.DrawArrays(mode, first, count);
+    }
 
-        // Draw
-
-        public void DrawArrays(PrimitiveType mode, int first, uint count)
-        {
-            _gl.DrawArrays(mode, first, count);
-        }
-
-        public unsafe void DrawElements(PrimitiveType mode, uint count, DrawElementsType type, void* indices)
-        {
-            _gl.DrawElements(mode, count, type, indices);
-        }
+    public unsafe void DrawElements(PrimitiveType mode, uint count, DrawElementsType type, void* indices)
+    {
+        _gl.DrawElements(mode, count, type, indices);
     }
 }
