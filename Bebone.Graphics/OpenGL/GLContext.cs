@@ -1,4 +1,4 @@
-﻿using Bebone.Graphics.Abstractions;
+using Bebone.Graphics.Abstractions;
 using Silk.NET.OpenGL;
 using System.Numerics;
 
@@ -8,39 +8,16 @@ namespace Bebone.Graphics.OpenGL
     {
         private readonly GL _gl = gl;
 
-        public void ActiveTexture(TextureUnit texture)
+        // Shader
+
+        public uint CreateShader(ShaderType type)
         {
-            _gl.ActiveTexture(texture);
+            return _gl.CreateShader(type);
         }
 
-        public void AttachShader(uint program, uint shader)
+        public void ShaderSource(uint shader, string @string)
         {
-            _gl.AttachShader(program, shader);
-        }
-
-        public void BindBuffer(BufferTargetARB target, uint buffer)
-        {
-            _gl.BindBuffer(target, buffer);
-        }
-
-        public void BindTexture(TextureTarget target, uint texture)
-        {
-            _gl.BindTexture(target, texture);
-        }
-
-        public void BindVertexArray(uint array)
-        {
-            _gl.BindVertexArray(array);
-        }
-
-        public unsafe void BufferData(BufferTargetARB target, nuint size, void* pointer, BufferUsageARB usage)
-        {
-            throw new NotImplementedException();
-        }
-
-        public unsafe void BufferSubData(BufferTargetARB target, int v, nuint size, void* pointer)
-        {
-            throw new NotImplementedException();
+            _gl.ShaderSource(shader, @string);
         }
 
         public void CompileShader(uint shader)
@@ -48,34 +25,14 @@ namespace Bebone.Graphics.OpenGL
             _gl.CompileShader(shader);
         }
 
-        public uint CreateProgram()
+        public string GetShaderInfoLog(uint shader)
         {
-            return _gl.CreateProgram();
+            return _gl.GetShaderInfoLog(shader);
         }
 
-        public uint CreateShader(ShaderType type)
+        public void AttachShader(uint program, uint shader)
         {
-            return _gl.CreateShader(type);
-        }
-
-        public void DeleteBuffer(uint buffer)
-        {
-            _gl.DeleteBuffer(buffer);
-        }
-
-        public void DeleteProgram(uint program)
-        {
-            _gl.DeleteProgram(program);
-        }
-
-        public void DeleteShader(uint shader)
-        {
-            _gl.DeleteShader(shader);
-        }
-
-        public void DeleteVertexArray(uint arrays)
-        {
-            _gl.DeleteVertexArray(arrays);
+            _gl.AttachShader(program, shader);
         }
 
         public void DetachShader(uint target, uint shader)
@@ -83,44 +40,21 @@ namespace Bebone.Graphics.OpenGL
             throw new NotImplementedException();
         }
 
-        public void DrawArrays(GLEnum type, uint offset, uint count)
+        public void DeleteShader(uint shader)
         {
-            throw new NotImplementedException();
+            _gl.DeleteShader(shader);
         }
 
-        public void DrawArrays(PrimitiveType type, uint offset, uint count)
+        // Program
+
+        public uint CreateProgram()
         {
-            throw new NotImplementedException();
+            return _gl.CreateProgram();
         }
 
-        public void DrawElements(PrimitiveType type, uint count, DrawElementsType elementsType, int? _)
+        public void LinkProgram(uint program)
         {
-            throw new NotImplementedException();
-        }
-
-        public void EnableVertexAttribArray(uint index)
-        {
-            _gl.EnableVertexAttribArray(index);
-        }
-
-        public uint GenBuffer()
-        {
-            return _gl.GenBuffer();
-        }
-
-        public void GenerateMipmap(TextureTarget target)
-        {
-            _gl.GenerateMipmap(target);
-        }
-
-        public uint GenTexture()
-        {
-            return _gl.GenTexture();
-        }
-
-        public uint GenVertexArray()
-        {
-            return _gl.GenVertexArray();
+            _gl.LinkProgram(program);
         }
 
         public void GetProgram(uint program, GLEnum link, out int status)
@@ -133,24 +67,85 @@ namespace Bebone.Graphics.OpenGL
             throw new NotImplementedException();
         }
 
-        public string GetShaderInfoLog(uint shader)
+        public void UseProgram(uint program)
         {
-            return _gl.GetShaderInfoLog(shader);
+            _gl.UseProgram(program);
         }
 
-        public int GetUniformLocation(uint handle, string name)
+        public void DeleteProgram(uint program)
+        {
+            _gl.DeleteProgram(program);
+        }
+
+        // Buffer
+
+        public uint GenBuffer()
+        {
+            return _gl.GenBuffer();
+        }
+
+        public void BindBuffer(BufferTargetARB target, uint buffer)
+        {
+            _gl.BindBuffer(target, buffer);
+        }
+
+        public unsafe void BufferData(BufferTargetARB target, nuint size, void* pointer, BufferUsageARB usage)
         {
             throw new NotImplementedException();
         }
 
-        public void LinkProgram(uint program)
+        public unsafe void BufferSubData(BufferTargetARB target, int v, nuint size, void* pointer)
         {
-            _gl.LinkProgram(program);
+            throw new NotImplementedException();
         }
 
-        public void ShaderSource(uint shader, string @string)
+        public void DeleteBuffer(uint buffer)
         {
-            _gl.ShaderSource(shader, @string);
+            _gl.DeleteBuffer(buffer);
+        }
+
+        // Vertex array
+
+        public uint GenVertexArray()
+        {
+            return _gl.GenVertexArray();
+        }
+
+        public void BindVertexArray(uint array)
+        {
+            _gl.BindVertexArray(array);
+        }
+
+        public void EnableVertexAttribArray(uint index)
+        {
+            _gl.EnableVertexAttribArray(index);
+        }
+
+        public unsafe void VertexAttribPointer(uint index, int size, VertexAttribPointerType type, bool normalized, uint stride, void* pointer)
+        {
+            _gl.VertexAttribPointer(index, size, type, normalized, stride, pointer);
+        }
+
+        public void DeleteVertexArray(uint arrays)
+        {
+            _gl.DeleteVertexArray(arrays);
+        }
+
+        // Texture
+
+        public uint GenTexture()
+        {
+            return _gl.GenTexture();
+        }
+
+        public void BindTexture(TextureTarget target, uint texture)
+        {
+            _gl.BindTexture(target, texture);
+        }
+
+        public void ActiveTexture(TextureUnit texture)
+        {
+            _gl.ActiveTexture(texture);
         }
 
         public unsafe void TexImage2D(TextureTarget a, int v, InternalFormat b, uint a1, uint v1, int v2, PixelFormat b1, PixelType a2, byte* b2)
@@ -159,6 +154,18 @@ namespace Bebone.Graphics.OpenGL
         }
 
         public void TextureParameter(uint target, TextureParameterName parameter, int value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void GenerateMipmap(TextureTarget target)
+        {
+            _gl.GenerateMipmap(target);
+        }
+
+        // Uniforms
+
+        public int GetUniformLocation(uint handle, string name)
         {
             throw new NotImplementedException();
         }
@@ -193,14 +200,21 @@ namespace Bebone.Graphics.OpenGL
             throw new NotImplementedException();
         }
 
-        public void UseProgram(uint program)
+        // Draw
+
+        public void DrawArrays(GLEnum type, uint offset, uint count)
         {
-            _gl.UseProgram(program);
+            throw new NotImplementedException();
         }
 
-        public unsafe void VertexAttribPointer(uint index, int size, VertexAttribPointerType type, bool normalized, uint stride, void* pointer)
+        public void DrawArrays(PrimitiveType type, uint offset, uint count)
         {
-            _gl.VertexAttribPointer(index, size, type, normalized, stride, pointer);
+            throw new NotImplementedException();
+        }
+
+        public void DrawElements(PrimitiveType type, uint count, DrawElementsType elementsType, int? _)
+        {
+            throw new NotImplementedException();
         }
     }
 }
