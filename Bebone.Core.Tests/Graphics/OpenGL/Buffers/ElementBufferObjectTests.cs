@@ -6,7 +6,7 @@ using Silk.NET.OpenGL;
 namespace Bebone.Core.Tests.Graphics.OpenGL.Buffers;
 
 [TestFixture]
-public class VertexBufferObjectTests
+public class ElementBufferObjectTests
 {
     [Test]
     public void Constructor_ExecuteGenBufferOnce()
@@ -18,7 +18,7 @@ public class VertexBufferObjectTests
             .Returns(123);
 
         // Act
-        var buffer = new VertexBufferObject(mockGL.Object);
+        var buffer = new ElementBufferObject(mockGL.Object);
 
         // Assert
         mockGL.Verify(s => s.GenBuffer(), Times.Once);
@@ -35,15 +35,15 @@ public class VertexBufferObjectTests
             .Returns(123);
 
         mockGL
-            .Setup(s => s.BindBuffer(BufferTargetARB.ArrayBuffer, 123));
+            .Setup(s => s.BindBuffer(BufferTargetARB.ElementArrayBuffer, 123));
 
-        var buffer = new VertexBufferObject(mockGL.Object);
+        var buffer = new ElementBufferObject(mockGL.Object);
 
         // Act
         buffer.Bind();
 
         // Assert
-        mockGL.Verify(s => s.BindBuffer(It.IsAny<BufferTargetARB>(), 123), Times.Once);
+        mockGL.Verify(s => s.BindBuffer(BufferTargetARB.ElementArrayBuffer, 123), Times.Once);
     }
 
     [Test]
@@ -57,14 +57,14 @@ public class VertexBufferObjectTests
             .Returns(123);
 
         mockGL
-            .Setup(s => s.BindBuffer(BufferTargetARB.ArrayBuffer, 0));
+            .Setup(s => s.BindBuffer(BufferTargetARB.ElementArrayBuffer, 0));
 
-        var buffer = new VertexBufferObject(mockGL.Object);
+        var buffer = new ElementBufferObject(mockGL.Object);
 
         // Act
         buffer.Unbind();
 
         // Assert
-        mockGL.Verify(s => s.BindBuffer(It.IsAny<BufferTargetARB>(), 0), Times.Once);
+        mockGL.Verify(s => s.BindBuffer(BufferTargetARB.ElementArrayBuffer, 0), Times.Once);
     }
 }
