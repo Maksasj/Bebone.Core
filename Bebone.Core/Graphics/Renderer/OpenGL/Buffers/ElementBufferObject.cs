@@ -1,35 +1,31 @@
 ﻿using Silk.NET.OpenGL;
 
-namespace Bebone.Core.Graphics.Renderer.OpenGL.Buffers
+namespace Bebone.Core.Graphics.Renderer.OpenGL.Buffers;
+
+public class ElementBufferObject : IDisposable
 {
-    public class ElementBufferObject : IDisposable
+    private readonly GL _gl;
+    private readonly uint _handle;
+
+    public ElementBufferObject(GL gl)
     {
-        private readonly uint _handle;
+        _gl = gl;
 
-        public ElementBufferObject()
-        {
-            _handle = OpenGL.Api.GenBuffer();
-        }
+        _handle = _gl.GenBuffer();
+    }
 
-        public void Bind()
-        {
-            OpenGL.Api.BindBuffer(BufferTargetARB.ElementArrayBuffer, _handle);
-        }
+    public void Bind() => _gl.BindBuffer(BufferTargetARB.ElementArrayBuffer, _handle);
 
-        public void Unbind()
-        {
-            OpenGL.Api.BindBuffer(BufferTargetARB.ElementArrayBuffer, 0);
-        }
+    public void Unbind() => _gl.BindBuffer(BufferTargetARB.ElementArrayBuffer, 0);
 
-        public unsafe void BufferData<T>(T[] data) where T : unmanaged
-        {
-            fixed (void* i = &data[0])
-                OpenGL.Api.BufferData(BufferTargetARB.ElementArrayBuffer, (nuint)(data.Length * sizeof(T)), i, BufferUsageARB.StaticDraw);
-        }
+    public unsafe void BufferData<T>(T[] data) where T : unmanaged
+    {
+        fixed (void* i = &data[0])
+            _gl.BufferData(BufferTargetARB.ElementArrayBuffer, (nuint)(data.Length * sizeof(T)), i, BufferUsageARB.StaticDraw);
+    }
 
-        public void Dispose()
-        {
-            OpenGL.Api.DeleteBuffer(_handle);
-        }
+    public void Dispose()
+    {
+        _gl.DeleteBuffer(_handle);
     }
 }

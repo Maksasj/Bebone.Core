@@ -1,35 +1,31 @@
 ﻿using Silk.NET.OpenGL;
 
-namespace Bebone.Core.Graphics.Renderer.OpenGL.Buffers
+namespace Bebone.Core.Graphics.Renderer.OpenGL.Buffers;
+
+public class VertexArrayObject : IDisposable
 {
-    public class VertexArrayObject : IDisposable
+    private readonly GL _gl;
+    private readonly uint _handle;
+
+    public VertexArrayObject(GL gl)
     {
-        private readonly uint _handle;
+        _gl = gl;
 
-        public VertexArrayObject()
-        {
-            _handle = OpenGL.Api.GenVertexArray();
-        }
+        _handle = _gl.GenVertexArray();
+    }
 
-        public void Bind()
-        {
-            OpenGL.Api.BindVertexArray(_handle);
-        }
+    public void Bind() => _gl.BindVertexArray(_handle);
 
-        public void Unbind()
-        {
-            OpenGL.Api.BindVertexArray(0);
-        }
+    public void Unbind() => _gl.BindVertexArray(0);
 
-        public unsafe void LinkAttribute(int index, int componentCount, VertexAttribPointerType type, int strideSize, void* offset)
-        {
-            OpenGL.Api.VertexAttribPointer((uint)index, componentCount, type, false, (uint)strideSize, offset);
-            OpenGL.Api.EnableVertexAttribArray((uint)index);
-        }
+    public unsafe void LinkAttribute(int index, int componentCount, VertexAttribPointerType type, int strideSize, void* offset)
+    {
+        _gl.VertexAttribPointer((uint)index, componentCount, type, false, (uint)strideSize, offset);
+        _gl.EnableVertexAttribArray((uint)index);
+    }
 
-        public void Dispose()
-        {
-            OpenGL.Api.DeleteVertexArray(_handle);
-        }
+    public void Dispose()
+    {
+        _gl.DeleteVertexArray(_handle);
     }
 }

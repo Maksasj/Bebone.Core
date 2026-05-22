@@ -1,7 +1,6 @@
-﻿namespace Bebone.Core.Graphics.Renderer.Mesh
+﻿namespace Bebone.Core.Graphics.Renderer.Mesh;
+
+public enum AttributeBindType
 {
-    public enum AttributeBindType
-    {
-        Float = 0,
-    }
+    Float = 0,
 }

@@ -1,11 +1,12 @@
-﻿namespace Bebone.Core.Graphics.Renderer.Mesh
+﻿namespace Bebone.Core.Graphics.Renderer.Mesh;
+
+public interface IMesh<T> where T : IVertex
 {
-    public interface IMesh<T> where T : IVertex
-    {
-        void Bind();
-        void DrawTriangles();
-        void DrawLines();
-        void DrawArrays();
-        void UpdateVertices(T[] verticies);
-    }
+    void Bind();
+
+    void DrawTriangles();
+    void DrawLines();
+    void DrawArrays();
+
+    void UpdateVertices(T[] verticies);
 }

@@ -1,22 +1,25 @@
 ﻿using Silk.NET.OpenGL;
 
-namespace Bebone.Core.Graphics.Renderer.OpenGL.Shaders
+namespace Bebone.Core.Graphics.Renderer.OpenGL.Shaders;
+
+public class Shader : IDisposable
 {
-    public class Shader : IDisposable
+    private readonly GL _gl;
+    public uint Handle { get; init; }
+
+    public Shader(GL gl, string shaderSource, ShaderType shaderType)
     {
-        public uint _handle { get; init; }
+        _gl = gl;
 
-        public Shader(string shaderSource, ShaderType shaderType)
-        {
-            _handle = OpenGL.Api.CreateShader(shaderType);
-            OpenGL.Api.ShaderSource(_handle, shaderSource);
-            OpenGL.Api.CompileShader(_handle);
+        Handle = _gl.CreateShader(shaderType);
+        _gl.ShaderSource(Handle, shaderSource);
+        _gl.CompileShader(Handle);
 
-            string infoLog = OpenGL.Api.GetShaderInfoLog(_handle);
-            if (!string.IsNullOrWhiteSpace(infoLog))
-                throw new Exception($"Error compiling shader {infoLog}");
-        }
+        var infoLog = _gl.GetShaderInfoLog(Handle);
 
-        public void Dispose() => OpenGL.Api.DeleteShader(_handle);
+        if (!string.IsNullOrWhiteSpace(infoLog))
+            throw new Exception($"Error compiling shader {infoLog}");
     }
+
+    public void Dispose() => _gl.DeleteShader(Handle);
 }

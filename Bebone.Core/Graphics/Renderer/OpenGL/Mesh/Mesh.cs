@@ -2,79 +2,80 @@
 using Bebone.Core.Graphics.Renderer.OpenGL.Buffers;
 using Silk.NET.OpenGL;
 
-namespace Bebone.Core.Graphics.Renderer.OpenGL.Mesh
+namespace Bebone.Core.Graphics.Renderer.OpenGL.Mesh;
+
+public class Mesh<T> : IMesh<T> where T : unmanaged, IVertex
 {
-    public class Mesh<T> : IMesh<T> where T : unmanaged, IVertex
+    private readonly GL _gl;
+
+    private readonly VertexArrayObject _vao;
+    private readonly VertexBufferObject _vbo;
+    private readonly ElementBufferObject _ebo;
+
+    private readonly uint _indicesCount;
+    private int _vertexCount;
+    private int _capacity;
+
+    public unsafe Mesh(GL gl, T[] vertices, uint[] indices)
     {
-        private readonly VertexArrayObject _vao;
-        private readonly VertexBufferObject _vbo;
-        private readonly ElementBufferObject _ebo;
+        _gl = gl;
 
-        private readonly uint _indicesCount;
-        private int _vertexCount;
-        private int _capacity;
+        _indicesCount = (uint)indices.Length;
+        _vertexCount = vertices.Length;
+        _capacity = vertices.Length;
 
-        public unsafe Mesh(T[] vertices, uint[] indices)
-        {
-            _indicesCount = (uint)indices.Length;
-            _vertexCount = vertices.Length;
-            _capacity = vertices.Length;
+        _vao = new VertexArrayObject(gl);
+        _vao.Bind();
+        _ebo = new ElementBufferObject(gl);
+        _ebo.Bind();
+        _ebo.BufferData(indices);
+        _vbo = new VertexBufferObject(gl);
+        _vbo.Bind();
+        _vbo.BufferData(vertices);
 
-            _vao = new VertexArrayObject();
-            _vao.Bind();
+        var stride = sizeof(T);
 
-            _ebo = new ElementBufferObject();
-            _ebo.Bind();
-            _ebo.BufferData(indices);
+        foreach (var bind in T.GetAttributes())
+            _vao.LinkAttribute(bind.Index, bind.Size, bind.Type.ToOpenGL(), stride, (void*)bind.Offset);
 
-            _vbo = new VertexBufferObject();
-            _vbo.Bind();
-            _vbo.BufferData(vertices);
+        _vao.Unbind();
+        _vbo.Unbind();
+        _ebo.Unbind();
+    }
 
-            var stride = sizeof(T);
+    public void Bind() => _vao.Bind();
 
-            foreach (var bind in T.GetAttributes())
-                _vao.LinkAttribute(bind.Index, bind.Size, bind.Type.ToOpenGL(), stride, (void*)bind.Offset);
+    public unsafe void DrawTriangles()
+        => _gl.DrawElements(PrimitiveType.Triangles, _indicesCount, DrawElementsType.UnsignedInt, null);
 
-            _vao.Unbind();
-            _vbo.Unbind();
-            _ebo.Unbind();
-        }
+    public void DrawLines()
+        => _gl.DrawArrays(PrimitiveType.Lines, 0, (uint)_vertexCount);
 
-        public void Bind() => _vao.Bind();
+    public void DrawArrays()
+        => _gl.DrawArrays(GLEnum.Triangles, 0, (uint)_vertexCount);
 
-        public unsafe void DrawTriangles()
-            => OpenGL.Api.DrawElements(PrimitiveType.Triangles, _indicesCount, DrawElementsType.UnsignedInt, null);
+    public void Dispose()
+    {
+        _vbo.Dispose();
+        _ebo.Dispose();
+        _vao.Dispose();
+    }
 
-        public void DrawLines()
-            => OpenGL.Api.DrawArrays(PrimitiveType.Lines, 0, (uint)_vertexCount);
+    // TODO: NOTE EBO IS NOT UPDATED HERE IF THE INDICES CHANGE
+    public void UpdateVertices(T[] verticies)
+    {
+        if (verticies == null || verticies.Length == 0) return;
 
-        public void DrawArrays()
-            => OpenGL.Api.DrawArrays(GLEnum.Triangles, 0, (uint)_vertexCount);
+        _vbo.Bind();
 
-        public void Dispose()
-        {
-            _vbo.Dispose();
-            _ebo.Dispose();
-            _vao.Dispose();
-        }
+        if (verticies.Length <= _capacity)
+            _vbo.BufferSubData(verticies);
+        else
+            _vbo.BufferData(verticies);
+        _capacity = verticies.Length;
 
-        // TODO: NOTE EBO IS NOT UPDATED HERE IF THE INDICES CHANGE
-        public void UpdateVertices(T[] verticies)
-        {
-            if (verticies == null || verticies.Length == 0) return;
+        _vertexCount = verticies.Length;
 
-            _vbo.Bind();
-
-            if (verticies.Length <= _capacity)
-                _vbo.BufferSubData(verticies);
-            else
-                _vbo.BufferData(verticies);
-            _capacity = verticies.Length;
-
-            _vertexCount = verticies.Length;
-
-            _vbo.Unbind();
-        }
+        _vbo.Unbind();
     }
 }
