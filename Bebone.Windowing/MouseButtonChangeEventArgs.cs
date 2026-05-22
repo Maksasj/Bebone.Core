@@ -1,4 +1,4 @@
-﻿namespace Bebone.Core.Windowing;
+﻿namespace Bebone.Windowing;
 
 public class MouseButtonChangeEventArgs(MouseButton button, bool isPressed) : EventArgs
 {

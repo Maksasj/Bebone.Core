@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace Bebone.Core.Windowing;
+namespace Bebone.Windowing;
 
 public abstract class Window
 {

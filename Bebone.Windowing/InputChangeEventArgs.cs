@@ -1,4 +1,4 @@
-﻿namespace Bebone.Core.Windowing;
+﻿namespace Bebone.Windowing;
 
 public class InputChangeEventArgs(Key key, bool isPressed) : EventArgs
 {

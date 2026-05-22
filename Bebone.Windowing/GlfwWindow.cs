@@ -1,7 +1,7 @@
 ﻿using Silk.NET.GLFW;
 using System.Numerics;
 
-namespace Bebone.Core.Windowing;
+namespace Bebone.Windowing;
 
 public class GLFWWindow : Window
 {
