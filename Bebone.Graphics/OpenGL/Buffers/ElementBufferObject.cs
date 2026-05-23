@@ -35,6 +35,9 @@ public class ElementBufferObject : IDisposable
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
 
+        if (data.Length == 0)
+            throw new ArgumentException("Buffer data cannot be empty.", nameof(data));
+
         fixed (void* i = &data[0])
             _gl.BufferData(BufferTargetARB.ElementArrayBuffer, (nuint)(data.Length * sizeof(T)), i, BufferUsageARB.StaticDraw);
     }
