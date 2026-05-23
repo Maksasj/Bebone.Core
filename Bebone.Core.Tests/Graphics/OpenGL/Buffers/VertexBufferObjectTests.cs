@@ -69,6 +69,38 @@ public class VertexBufferObjectTests
     }
 
     [Test]
+    public void BufferData_EmptyData_ThrowsArgumentException()
+    {
+        // Arrange
+        var mockGL = new Mock<IGLContext>();
+
+        mockGL
+            .Setup(s => s.GenBuffer())
+            .Returns(123);
+
+        var buffer = new VertexBufferObject(mockGL.Object);
+
+        // Act & Assert
+        Assert.Throws<ArgumentException>(() => buffer.BufferData<int>([]));
+    }
+
+    [Test]
+    public void BufferSubData_EmptyData_ThrowsArgumentException()
+    {
+        // Arrange
+        var mockGL = new Mock<IGLContext>();
+
+        mockGL
+            .Setup(s => s.GenBuffer())
+            .Returns(123);
+
+        var buffer = new VertexBufferObject(mockGL.Object);
+
+        // Act & Assert
+        Assert.Throws<ArgumentException>(() => buffer.BufferData<int>([]));
+    }
+
+    [Test]
     public void Dispose_ExecuteDisposeOnce()
     {
         // Arrange
