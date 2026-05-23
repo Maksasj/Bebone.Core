@@ -1,5 +1,6 @@
 using Bebone.Graphics.Abstractions;
 using Silk.NET.OpenGL;
+using System.Drawing;
 using System.Numerics;
 
 namespace Bebone.Graphics.OpenGL;
@@ -210,5 +211,47 @@ public class GLContext(GL gl) : IGLContext
     public unsafe void DrawElements(PrimitiveType mode, uint count, DrawElementsType type, void* indices)
     {
         _gl.DrawElements(mode, count, type, indices);
+    }
+
+    // State
+
+    public void SetViewport(int x, int y, uint width, uint height)
+    {
+        _gl.Viewport(x, y, width, height);
+    }
+
+    public void ClearColor(Color color)
+    {
+        _gl.ClearColor(color);
+    }
+
+    public void ClearBuffers()
+    {
+        _gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+    }
+
+    public void EnableDepthTest()
+    {
+        _gl.Enable(EnableCap.DepthTest);
+    }
+
+    public void DisableDepthTest()
+    {
+        _gl.Disable(EnableCap.DepthTest);
+    }
+
+    public void Enable(EnableCap blend)
+    {
+        _gl.Enable(blend);
+    }
+
+    public void DepthFunc(GLEnum func)
+    {
+        _gl.DepthFunc(func);
+    }
+
+    public void BlendFunc(BlendingFactor sfactor, BlendingFactor dfactor)
+    {
+        _gl.BlendFunc(sfactor, dfactor);
     }
 }
