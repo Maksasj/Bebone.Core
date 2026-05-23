@@ -9,7 +9,7 @@ namespace Bebone.Core.Tests.Graphics.OpenGL.Buffers;
 public class VertexBufferObjectTests
 {
     [Test]
-    public void Constructor_ExecuteGenBufferOnce()
+    public void VertexBufferObject_ExecuteGenBufferOnce()
     {
         // Arrange
         var mockGL = new Mock<IGLContext>();
@@ -91,7 +91,7 @@ public class VertexBufferObjectTests
     }
 
     [Test]
-    public void MultipleDispose_ExecuteDisposeOnce()
+    public void Dispose_MultipleExecution_ExecuteDisposeOnce()
     {
         // Arrange
         var mockGL = new Mock<IGLContext>();
@@ -115,7 +115,7 @@ public class VertexBufferObjectTests
     }
 
     [Test]
-    public void Disposed_Bind_ThrowsObjectDisposedException()
+    public void Bind_Disposed_ThrowsObjectDisposedException()
     {
         // Arrange
         var mockGL = new Mock<IGLContext>();
@@ -132,7 +132,7 @@ public class VertexBufferObjectTests
     }
 
     [Test]
-    public void Disposed_Unbind_ThrowsObjectDisposedException()
+    public void Unbind_Disposed_ThrowsObjectDisposedException()
     {
         // Arrange
         var mockGL = new Mock<IGLContext>();

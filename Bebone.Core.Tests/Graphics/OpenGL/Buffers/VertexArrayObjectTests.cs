@@ -8,7 +8,7 @@ namespace Bebone.Core.Tests.Graphics.OpenGL.Buffers;
 public class VertexArrayObjectTests
 {
     [Test]
-    public void Constructor_ExecuteGenVertexArrayOnce()
+    public void VertexArrayObject_ExecuteGenVertexArrayOnce()
     {
         // Arrange
         var mockGL = new Mock<IGLContext>();
@@ -90,7 +90,7 @@ public class VertexArrayObjectTests
     }
 
     [Test]
-    public void MultipleDispose_ExecuteDeleteVertexArrayOnce()
+    public void Dispose_MultipleExecution_ExecuteDeleteVertexArrayOnce()
     {
         // Arrange
         var mockGL = new Mock<IGLContext>();
@@ -114,7 +114,7 @@ public class VertexArrayObjectTests
     }
 
     [Test]
-    public void Disposed_Bind_ThrowsObjectDisposedException()
+    public void Bind_Disposed_ThrowsObjectDisposedException()
     {
         // Arrange
         var mockGL = new Mock<IGLContext>();
@@ -131,7 +131,7 @@ public class VertexArrayObjectTests
     }
 
     [Test]
-    public void Disposed_Unbind_ThrowsObjectDisposedException()
+    public void Unbind_Disposed_ThrowsObjectDisposedException()
     {
         // Arrange
         var mockGL = new Mock<IGLContext>();
