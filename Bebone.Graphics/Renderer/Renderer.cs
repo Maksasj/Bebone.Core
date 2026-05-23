@@ -56,9 +56,9 @@ namespace Bebone.Graphics.Renderer
             PerspectiveCamera = new PerspectiveCamera();
             OrthographicCamera = new OrthographicCamera(0, 1920, 1080, 0, -1.0f, 1.0f);
 
-            frameGraph = CreateFrameGraph(context);
-
             shaderProgram = factory.CreateShader(DefaultVertexShader, DefaultFragmentShader);
+
+            frameGraph = CreateFrameGraph(context);
         }
 
         private FrameGraph CreateFrameGraph(IGLContext context)

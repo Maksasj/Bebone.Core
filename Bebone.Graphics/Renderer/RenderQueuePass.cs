@@ -26,8 +26,8 @@ namespace Bebone.Graphics.Renderer
             else
                 _context.DisableDepthTest();
 
-            _shader!.Activate();
-            _shader!.SetUniform("cam", _camera.GetViewMatrix() * _camera.GetProjectionMatrix((float)1920 / (float)1080));
+            _shader.Activate();
+            _shader.SetUniform("cam", _camera.GetViewMatrix() * _camera.GetProjectionMatrix((float)1920 / (float)1080));
 
             foreach (var task in _renderQueue)
                 task.Execute(0);
