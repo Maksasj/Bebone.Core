@@ -54,12 +54,19 @@ public class VertexBufferObject : IDisposable
 
     public void Dispose()
     {
-        if (_disposed)
-            return;
-
-        _gl.DeleteBuffer(_handle);
-        _disposed = true;
-
+        Dispose(true);
         GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            if (!_disposed)
+            {
+                _gl.DeleteBuffer(_handle);
+                _disposed = true;
+            }
+        }
     }
 }
