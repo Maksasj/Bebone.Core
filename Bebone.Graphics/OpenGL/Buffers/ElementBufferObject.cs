@@ -3,7 +3,7 @@ using Silk.NET.OpenGL;
 
 namespace Bebone.Graphics.OpenGL.Buffers;
 
-public class ElementBufferObject : IDisposable
+public sealed class ElementBufferObject : IDisposable
 {
     private readonly IGLContext _gl;
     private readonly uint _handle;
@@ -44,19 +44,10 @@ public class ElementBufferObject : IDisposable
 
     public void Dispose()
     {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
+        if (_disposed)
+            return;
 
-    protected virtual void Dispose(bool disposing)
-    {
-        if (disposing)
-        {
-            if (!_disposed)
-            {
-                _gl.DeleteBuffer(_handle);
-                _disposed = true;
-            }
-        }
+        _gl.DeleteBuffer(_handle);
+        _disposed = true;
     }
 }

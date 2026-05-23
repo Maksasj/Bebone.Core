@@ -3,7 +3,7 @@ using Silk.NET.OpenGL;
 
 namespace Bebone.Graphics.OpenGL.Buffers;
 
-public class VertexBufferObject : IDisposable
+public sealed class VertexBufferObject : IDisposable
 {
     private readonly IGLContext _gl;
     private readonly uint _handle;
@@ -54,19 +54,10 @@ public class VertexBufferObject : IDisposable
 
     public void Dispose()
     {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
+        if (_disposed)
+            return;
 
-    protected virtual void Dispose(bool disposing)
-    {
-        if (disposing)
-        {
-            if (!_disposed)
-            {
-                _gl.DeleteBuffer(_handle);
-                _disposed = true;
-            }
-        }
+        _gl.DeleteBuffer(_handle);
+        _disposed = true;
     }
 }
