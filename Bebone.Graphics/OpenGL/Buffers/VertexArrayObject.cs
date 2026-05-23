@@ -17,6 +17,11 @@ public class VertexArrayObject : IDisposable
         _disposed = false;
     }
 
+    ~VertexArrayObject()
+    {
+        Dispose(false);
+    }
+
     public void Bind()
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
@@ -46,13 +51,10 @@ public class VertexArrayObject : IDisposable
 
     protected virtual void Dispose(bool disposing)
     {
-        if (disposing)
+        if (!_disposed)
         {
-            if (!_disposed)
-            {
-                _gl.DeleteVertexArray(_handle);
-                _disposed = true;
-            }
+            _gl.DeleteVertexArray(_handle);
+            _disposed = true;
         }
     }
 }

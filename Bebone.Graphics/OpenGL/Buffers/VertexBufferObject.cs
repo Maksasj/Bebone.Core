@@ -16,6 +16,11 @@ public class VertexBufferObject : IDisposable
         _disposed = false;
     }
 
+    ~VertexBufferObject()
+    {
+        Dispose(false);
+    }
+
     public void Bind()
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
@@ -60,13 +65,10 @@ public class VertexBufferObject : IDisposable
 
     protected virtual void Dispose(bool disposing)
     {
-        if (disposing)
+        if (!_disposed)
         {
-            if (!_disposed)
-            {
-                _gl.DeleteBuffer(_handle);
-                _disposed = true;
-            }
+            _gl.DeleteBuffer(_handle);
+            _disposed = true;
         }
     }
 }

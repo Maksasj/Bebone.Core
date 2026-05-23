@@ -17,6 +17,11 @@ public class ElementBufferObject : IDisposable
         _disposed = false;
     }
 
+    ~ElementBufferObject()
+    {
+        Dispose(false);
+    }
+
     public void Bind()
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
@@ -50,13 +55,10 @@ public class ElementBufferObject : IDisposable
 
     protected virtual void Dispose(bool disposing)
     {
-        if (disposing)
+        if (!_disposed)
         {
-            if (!_disposed)
-            {
-                _gl.DeleteBuffer(_handle);
-                _disposed = true;
-            }
+            _gl.DeleteBuffer(_handle);
+            _disposed = true;
         }
     }
 }
