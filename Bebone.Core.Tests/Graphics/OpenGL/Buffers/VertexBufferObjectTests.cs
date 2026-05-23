@@ -97,7 +97,7 @@ public class VertexBufferObjectTests
         var buffer = new VertexBufferObject(mockGL.Object);
 
         // Act & Assert
-        Assert.Throws<ArgumentException>(() => buffer.BufferData<int>([]));
+        Assert.Throws<ArgumentException>(() => buffer.BufferSubData<int>([]));
     }
 
     [Test]
