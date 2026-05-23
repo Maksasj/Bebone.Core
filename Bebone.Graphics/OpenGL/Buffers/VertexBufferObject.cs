@@ -34,6 +34,9 @@ public class VertexBufferObject : IDisposable
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
 
+        if (data.Length == 0)
+            throw new ArgumentException("Buffer data cannot be empty.", nameof(data));
+
         fixed (void* v = &data[0])
             _gl.BufferData(BufferTargetARB.ArrayBuffer, (nuint)(data.Length * sizeof(T)), v, BufferUsageARB.StaticDraw);
     }
@@ -41,6 +44,9 @@ public class VertexBufferObject : IDisposable
     public unsafe void BufferSubData<T>(T[] data) where T : unmanaged
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
+
+        if (data.Length == 0)
+            throw new ArgumentException("Buffer data cannot be empty.", nameof(data));
 
         fixed (void* v = &data[0])
             _gl.BufferSubData(BufferTargetARB.ArrayBuffer, 0, (nuint)(data.Length * sizeof(T)), v);
