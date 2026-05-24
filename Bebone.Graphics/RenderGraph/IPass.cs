@@ -2,7 +2,7 @@
 
 public interface IPass
 {
-    void Compile(Dictionary<string, object> resources);
+    void Compile(IReadOnlyDictionary<string, object> resources);
 
     void Execute();
 }

@@ -12,7 +12,7 @@ namespace Bebone.Graphics.Renderer
         private readonly List<IDrawTask<int>> _renderQueue = renderQueue;
         private readonly bool _enableDepthTest = enableDepthTest;
 
-        public void Compile(Dictionary<string, object> resources)
+        public void Compile(IReadOnlyDictionary<string, object> resources)
         {
 
         }
