@@ -1,4 +1,5 @@
 using Silk.NET.OpenGL;
+using System.Drawing;
 using System.Numerics;
 
 namespace Bebone.Graphics.Abstractions;
@@ -17,7 +18,7 @@ public interface IGLContext
     // Program
     uint CreateProgram();
     void LinkProgram(uint program);
-    unsafe void GetProgram(uint program, GLEnum pname, out int @params);
+    void GetProgram(uint program, GLEnum pname, out int @params);
     string GetProgramInfoLog(uint program);
     void UseProgram(uint program);
     void DeleteProgram(uint program);
@@ -56,4 +57,14 @@ public interface IGLContext
     // Draw
     void DrawArrays(PrimitiveType mode, int first, uint count);
     unsafe void DrawElements(PrimitiveType mode, uint count, DrawElementsType type, void* indices);
+
+    // State
+    void SetViewport(int x, int y, uint width, uint height);
+    void ClearColor(Color color);
+    void ClearBuffers();
+    void EnableDepthTest();
+    void DisableDepthTest();
+    void Enable(EnableCap blend);
+    void DepthFunc(GLEnum func);
+    void BlendFunc(BlendingFactor sfactor, BlendingFactor dfactor);
 }
