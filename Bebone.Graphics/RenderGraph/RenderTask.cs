@@ -1,12 +1,26 @@
 ﻿namespace Bebone.Graphics.RenderGraph;
 
-public class RenderTask<PassData>(Func<Dictionary<string, object>, PassData> compile, Action<PassData> execute) : IPass
+public class RenderTask<PassData>(Func<IReadOnlyDictionary<string, object>, PassData> compile, Action<PassData> execute) : IPass
 {
-    public PassData? data = default;
+    private PassData? _data = default;
+    private readonly Func<IReadOnlyDictionary<string, object>, PassData> _compile = compile;
+    private readonly Action<PassData> _execute = execute;
 
-    public Func<Dictionary<string, object>, PassData> compile = compile;
-    public Action<PassData> execute = execute;
+    private bool _compiled = false;
 
-    public void Compile(Dictionary<string, object> resources) => data = compile(resources);
-    public void Execute() => execute(data!);
+    public void Compile(IReadOnlyDictionary<string, object> resources)
+    {
+        _data = _compile(resources);
+        _compiled = true;
+    }
+
+    public void Execute()
+    {
+        if (!_compiled)
+        {
+            throw new InvalidOperationException("RenderTask must be compiled before execution.");
+        }
+
+        _execute(_data!);
+    }
 }
