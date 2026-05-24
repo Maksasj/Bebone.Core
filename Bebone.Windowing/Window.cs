@@ -17,6 +17,8 @@ public abstract class Window
     public abstract bool WindowShouldClose();
     public abstract void Destroy();
 
+    public abstract Func<string, IntPtr> GetProcAddressLoader();
+
     public Action<Vector2> OnCursorPositionChange = (_) => { };
     public Action<Key, bool> OnInputChange = (_, _) => { };
     public Action<MouseButton, bool> OnMouseButtonChange = (_, _) => { };

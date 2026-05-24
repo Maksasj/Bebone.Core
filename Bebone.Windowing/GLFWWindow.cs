@@ -85,6 +85,8 @@ public class GLFWWindow : Window
         }
     }
 
+    public override Func<string, IntPtr> GetProcAddressLoader() => _glfw.GetProcAddress;
+
     public override float GetTime() => (float)_glfw.GetTime();
 
     public override int GetWidth() => (int)GetSize().X;
