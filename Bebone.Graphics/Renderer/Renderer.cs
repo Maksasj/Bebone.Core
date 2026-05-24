@@ -39,14 +39,14 @@ namespace Bebone.Graphics.Renderer
             }
             """;
 
-        private readonly List<IDrawTask<int>> MainPassTasks;
-        private readonly List<IDrawTask<int>> UIPassTasks;
+        private readonly List<IDrawTask<int>> _mainPassTasks;
+        private readonly List<IDrawTask<int>> _uiPassTasks;
 
         public PerspectiveCamera PerspectiveCamera { get; init; }
         public OrthographicCamera OrthographicCamera { get; init; }
 
-        private readonly FrameGraph frameGraph;
-        private readonly IShaderProgram shaderProgram;
+        private readonly FrameGraph _frameGraph;
+        private readonly IShaderProgram _shaderProgram;
 
         public Renderer(IGLContext context, IGraphicsFactory factory)
         {
@@ -54,7 +54,7 @@ namespace Bebone.Graphics.Renderer
             UIPassTasks = [];
 
             PerspectiveCamera = new PerspectiveCamera();
-            OrthographicCamera = new OrthographicCamera(0, 1920, 1080, 0, -1.0f, 1.0f);
+            OrthographicCamera = new OrthographicCamera(left: 0, right: 1920, bottom: 1080, top: 0, zNearPlane: -1.0f, zFarPlane: 1.0f);
 
             shaderProgram = factory.CreateShader(DefaultVertexShader, DefaultFragmentShader);
 
@@ -67,20 +67,20 @@ namespace Bebone.Graphics.Renderer
 
             // Clear & Clear buffers
             graph.AddPass(new RenderTask<int>(
-                (resources) => 0,
-                (shader) =>
+                _ => 0,
+                _ =>
                 {
                     context.ClearColor(Color.FromArgb(255, 135, 206, 235));
                     context.ClearBuffers();
                 }));
 
-            graph.AddPass(new RenderQueuePass(context, PerspectiveCamera, shaderProgram, MainPassTasks, true));
-            graph.AddPass(new RenderQueuePass(context, OrthographicCamera, shaderProgram, UIPassTasks, false));
+            graph.AddPass(new RenderQueuePass(context, PerspectiveCamera, shaderProgram, MainPassTasks, enableDepthTest: true));
+            graph.AddPass(new RenderQueuePass(context, OrthographicCamera, shaderProgram, UIPassTasks, enableDepthTest: false));
 
             // Clear queues
             graph.AddPass(new RenderTask<int>(
-                (resources) => 0,
-                (shader) =>
+                _ => 0,
+                _ =>
                 {
                     MainPassTasks.Clear();
                     UIPassTasks.Clear();
