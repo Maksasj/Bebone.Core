@@ -23,10 +23,10 @@ public class FrameGraph : IFrameGraph
             pass.Compile(_resources);
     }
 
-    public void Execute()
+    public void Execute(FrameData frameData)
     {
         foreach (var pass in _passes)
-            pass.Execute();
+            pass.Execute(frameData);
     }
 
     public void AddResource(string name, object resource) => _resources[name] = resource;

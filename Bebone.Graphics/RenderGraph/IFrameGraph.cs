@@ -6,5 +6,5 @@ public interface IFrameGraph
     public void AddResource(string name, object resource);
 
     public void Compile();
-    public void Execute();
+    public void Execute(FrameData frameData);
 }

@@ -18,12 +18,12 @@ public class RenderQueuePass(IGLContext context, IShaderProgram shader, bool ena
 
     }
 
-    public void Execute()
+    public void Execute(FrameData frameData)
     {
         if (Camera is null)
             throw new InvalidOperationException($"Camera is not set for {nameof(RenderQueuePass)}");
 
-        _context.SetViewport(0, 0, 1920, 1080);
+        _context.SetViewport(0, 0, frameData.Width, frameData.Height);
 
         if (_enableDepthTest)
             _context.EnableDepthTest();
@@ -31,7 +31,7 @@ public class RenderQueuePass(IGLContext context, IShaderProgram shader, bool ena
             _context.DisableDepthTest();
 
         _shader.Activate();
-        _shader.SetUniform("cam", Camera.GetViewMatrix() * Camera.GetProjectionMatrix((float)1920 / (float)1080));
+        _shader.SetUniform("cam", Camera.GetViewMatrix() * Camera.GetProjectionMatrix(frameData.AspectRatio()));
 
         foreach (var task in RenderQueue)
             task.Execute(_shader);

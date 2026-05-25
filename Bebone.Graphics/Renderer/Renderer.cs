@@ -24,13 +24,22 @@ public class Renderer
         _frameGraph.Compile();
     }
 
-    public void Execute() => _frameGraph.Execute();
+    public void Execute()
+    {
+        var frameData = new FrameData
+        {
+            Width = 1920,
+            Height = 1080
+        };
+
+        _frameGraph.Execute(frameData);
+    }
 
     private static RenderTask<int> CreateClearPass(IGLContext context)
     {
         return new RenderTask<int>(
         _ => 0,
-        _ =>
+        (_, _) =>
         {
             context.ClearColor(Color.FromArgb(255, 135, 206, 235));
             context.ClearBuffers();
