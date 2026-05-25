@@ -8,4 +8,8 @@
 	  <PackageReference Include="Silk.NET" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Bebone.Math\Bebone.Math.csproj" />
+  </ItemGroup>
+
 </Project>

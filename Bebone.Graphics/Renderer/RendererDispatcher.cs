@@ -1,6 +1,7 @@
 ﻿using Bebone.Graphics.Abstractions;
 using Bebone.Graphics.Abstractions.Mesh;
 using Bebone.Graphics.Utils;
+using Bebone.Math;
 
 namespace Bebone.Graphics.Renderer;
 

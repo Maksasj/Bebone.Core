@@ -6,8 +6,8 @@ namespace Bebone.Graphics.Renderer;
 
 public class Renderer
 {
-    public RenderQueuePass MainPass { get; private set; }
-    public RenderQueuePass UiPass { get; private set; }
+    public RenderQueuePass MainPass { get; init; }
+    public RenderQueuePass UiPass { get; init; }
 
     private readonly FrameGraph _frameGraph;
 
@@ -24,10 +24,7 @@ public class Renderer
         _frameGraph.Compile();
     }
 
-    public void Execute()
-    {
-        _frameGraph.Execute();
-    }
+    public void Execute() => _frameGraph.Execute();
 
     private static RenderTask<int> CreateClearPass(IGLContext context)
     {
