@@ -9,15 +9,16 @@ public static class DefaultShaderConstants
         layout(location = 2) in vec2 aTexCoords;
 
         uniform mat4 cam;
+        uniform mat4 model;
 
         out vec2 texCoords;
         out vec3 normal;
 
         void main()
         {
-            gl_Position = cam * vec4(aPosition, 1.0);
+            gl_Position = cam * model * vec4(aPosition, 1.0);
             texCoords = aTexCoords;
-            normal = aNormal;
+            normal = mat3(transpose(inverse(model))) * aNormal;
         }
         """;
 
