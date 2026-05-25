@@ -1,4 +1,6 @@
-﻿namespace Bebone.Text;
+﻿using Bebone.Text.Native;
+
+namespace Bebone.Text;
 
 public sealed class FreeType : IDisposable
 {
@@ -9,9 +11,7 @@ public sealed class FreeType : IDisposable
         var error = FreeTypeInternal.FT_Init_FreeType(out nint library);
 
         if (error != 0)
-        {
             throw new InvalidOperationException($"Could not initialize FreeType. Error code: {error}");
-        }
 
         _handle = library;
     }
@@ -21,9 +21,7 @@ public sealed class FreeType : IDisposable
         var error = FreeTypeInternal.FT_New_Face(_handle, filePath, 0, out var face);
 
         if (error != 0)
-        {
             throw new InvalidOperationException($"Could not load font face. Error code: {error}");
-        }
 
         return new FontFace(face);
     }
@@ -31,16 +29,12 @@ public sealed class FreeType : IDisposable
     public void Dispose()
     {
         if (_handle == 0)
-        {
             return;
-        }
 
         var error = FreeTypeInternal.FT_Done_FreeType(_handle);
         _handle = 0;
 
         if (error != 0)
-        {
             throw new InvalidOperationException($"Could not dispose FreeType. Error code: {error}");
-        }
     }
 }

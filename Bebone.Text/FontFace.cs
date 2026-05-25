@@ -23,9 +23,7 @@ public sealed class FontFace(nint faceHandle) : IDisposable
         var error = FreeTypeInternal.FT_Set_Pixel_Sizes(_handle, width, height);
 
         if (error != 0)
-        {
             throw new InvalidOperationException($"Could not set font pixel size. Error code: {error}");
-        }
     }
 
     public GlyphData LoadGlyph(char character)
@@ -35,9 +33,7 @@ public sealed class FontFace(nint faceHandle) : IDisposable
         var error = FreeTypeInternal.FT_Load_Char(_handle, character, _renderLoad);
 
         if (error != 0)
-        {
             throw new InvalidOperationException($"Could not load glyph '{character}'. Error code: {error}");
-        }
 
         var face = Marshal.PtrToStructure<FT_FaceRec>(_handle);
         var glyph = Marshal.PtrToStructure<FT_GlyphSlotRec>(face.glyph);
@@ -57,17 +53,13 @@ public sealed class FontFace(nint faceHandle) : IDisposable
     public void Dispose()
     {
         if (_handle == 0)
-        {
             return;
-        }
 
         var error = FreeTypeInternal.FT_Done_Face(_handle);
         _handle = 0;
 
         if (error != 0)
-        {
             throw new InvalidOperationException($"Could not dispose font face. Error code: {error}");
-        }
     }
 
     private void ThrowIfDisposed()

@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace Bebone.Text;
+namespace Bebone.Text.Native;
 
 internal static class FreeTypeInternal
 {

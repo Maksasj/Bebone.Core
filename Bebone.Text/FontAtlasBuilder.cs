@@ -5,19 +5,13 @@ public static class FontAtlasBuilder
     public static FontAtlas BuildAscii(FontFace face, uint pixelSize, int width, int height, int padding)
     {
         if (width <= 0)
-        {
             throw new ArgumentOutOfRangeException(nameof(width));
-        }
 
         if (height <= 0)
-        {
             throw new ArgumentOutOfRangeException(nameof(height));
-        }
 
         if (padding < 0)
-        {
             throw new ArgumentOutOfRangeException(nameof(padding));
-        }
 
         face.SetPixelSize(pixelSize);
 
@@ -43,9 +37,7 @@ public static class FontAtlasBuilder
             }
 
             if (y + glyph.Height + padding > height)
-            {
                 throw new InvalidOperationException("Font atlas is too small.");
-            }
 
             CopyGlyphToAtlas(glyph.Bitmap, glyph.Width, glyph.Height, atlasPixels, width, x, y);
 
@@ -73,9 +65,7 @@ public static class FontAtlasBuilder
     private static void CopyGlyphToAtlas(byte[] glyphPixels, int glyphWidth, int glyphHeight, byte[] atlasPixels, int atlasWidth, int atlasX, int atlasY)
     {
         if (glyphWidth == 0 || glyphHeight == 0)
-        {
             return;
-        }
 
         for (var row = 0; row < glyphHeight; row++)
         {
