@@ -2,6 +2,6 @@
 
 public interface IGraphicsFactory
 {
-    public IShaderProgram CreateShader(string vertexShaderPath, string fragmentShaderPath);
+    public IShaderProgram CreateShader(string vertexShaderSource, string fragmentShaderSource);
     public ITexture CreateTexture(int width, int height, byte[] data);
 }

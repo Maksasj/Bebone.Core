@@ -1,4 +1,5 @@
-﻿using Silk.NET.OpenGL;
+﻿using Bebone.Graphics.Abstractions;
+using Silk.NET.OpenGL;
 
 namespace Bebone.Graphics.OpenGL;
 
@@ -18,5 +19,7 @@ public class OpenGLGraphicsDevice
         _context.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
     }
 
-    public OpenGLFactory CreateFactory() => new(_context);
+    public IGLContext GetContext() => _context;
+
+    public IGraphicsFactory CreateFactory() => new OpenGLFactory(_context);
 }
