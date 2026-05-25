@@ -8,6 +8,10 @@ namespace Bebone.Graphics.OpenGL;
 public class OpenGLFactory(IGLContext gl) : IGraphicsFactory
 {
     private readonly IGLContext _gl = gl;
+    public IMeshBuilder<T> CreateMeshBuilder<T>() where T : unmanaged, IVertex
+    {
+        return new MeshBuilder<T>(_gl);
+    }
 
     public IMesh<T> CreateMesh<T>(T[] vertices, uint[] indices) where T : unmanaged, IVertex
     {
