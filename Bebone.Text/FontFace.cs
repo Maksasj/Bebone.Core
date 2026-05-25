@@ -1,4 +1,7 @@
-﻿namespace Bebone.Text;
+﻿using Bebone.Text.Native;
+using System.Runtime.InteropServices;
+
+namespace Bebone.Text;
 
 public sealed class FontFace(nint faceHandle) : IDisposable
 {
@@ -25,7 +28,7 @@ public sealed class FontFace(nint faceHandle) : IDisposable
         }
     }
 
-    public void LoadGlyph(char character)
+    public GlyphData LoadGlyph(char character)
     {
         ThrowIfDisposed();
 
@@ -35,6 +38,20 @@ public sealed class FontFace(nint faceHandle) : IDisposable
         {
             throw new InvalidOperationException($"Could not load glyph '{character}'. Error code: {error}");
         }
+
+        var face = Marshal.PtrToStructure<FT_FaceRec>(_handle);
+        var glyph = Marshal.PtrToStructure<FT_GlyphSlotRec>(face.glyph);
+
+        var rawBitmap = glyph.bitmap;
+        var bitmap = new byte[rawBitmap.width * rawBitmap.rows];
+
+        if (rawBitmap.buffer != 0 && bitmap.Length > 0)
+        {
+            Marshal.Copy(rawBitmap.buffer, bitmap, startIndex: 0, bitmap.Length);
+        }
+
+        var advance = FreeTypeHelper.From26Dot6((int)glyph.advance.x);
+        return new GlyphData(bitmap, (int)rawBitmap.width, (int)rawBitmap.rows, glyph.bitmapLeft, glyph.bitmapTop, advance);
     }
 
     public void Dispose()
