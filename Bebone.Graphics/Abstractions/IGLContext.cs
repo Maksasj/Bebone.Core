@@ -44,6 +44,7 @@ public interface IGLContext
     unsafe void TexImage2D(TextureTarget target, int level, InternalFormat internalFormat, uint width, uint height, int border, PixelFormat format, PixelType type, byte* pixels);
     void TextureParameter(uint texture, TextureParameterName pname, int param);
     void GenerateMipmap(TextureTarget target);
+    void DeleteTexture(uint texture);
 
     // Uniforms
     unsafe int GetUniformLocation(uint program, string name);
