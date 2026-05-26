@@ -3,107 +3,218 @@ using System.Numerics;
 
 namespace Bebone.Windowing;
 
-public class GLFWWindow : Window
+public sealed class GlfwWindow : IWindow
 {
     private readonly Glfw _glfw;
-    private readonly IntPtr _windowHandle;
+    private readonly unsafe WindowHandle* _windowHandle;
 
-    public GLFWWindow(string title, int width, int height)
+    private bool _disposed;
+
+    private int _currentWidth;
+    private int _currentHeight;
+    private Vector2 _currentCursorPosition;
+
+    public event EventHandler<CursorPositionChangedEventArgs>? CursorPositionChanged;
+    public event EventHandler<InputChangedEventArgs>? InputChanged;
+    public event EventHandler<MouseButtonStatusChangedEventArgs>? MouseButtonStatusChanged;
+    public event EventHandler<MouseScrollChangedEventArgs>? MouseScrollChanged;
+    public event EventHandler<WindowSizeChangedEventArgs>? WindowSizeChanged;
+
+    public int Width
+    {
+        get
+        {
+            ThrowIfDisposed();
+            return _currentWidth;
+        }
+    }
+
+    public int Height
+    {
+        get
+        {
+            ThrowIfDisposed();
+            return _currentHeight;
+        }
+    }
+
+    public Vector2 CursorPosition
+    {
+        get
+        {
+            ThrowIfDisposed();
+            return _currentCursorPosition;
+        }
+    }
+
+    public GlfwWindow(string title, int width, int height, bool isResizable)
     {
         _glfw = Glfw.GetApi();
 
         if (!_glfw.Init())
-            throw new Exception("GLFW initialization failed.");
+            throw new InvalidOperationException("GLFW initialization failed.");
 
         _glfw.WindowHint(WindowHintClientApi.ClientApi, ClientApi.OpenGL);
         _glfw.WindowHint(WindowHintOpenGlProfile.OpenGlProfile, OpenGlProfile.Core);
         _glfw.WindowHint(WindowHintInt.ContextVersionMajor, 3);
         _glfw.WindowHint(WindowHintInt.ContextVersionMinor, 3);
-        _glfw.WindowHint(WindowHintBool.Resizable, false);
+        _glfw.WindowHint(WindowHintBool.Resizable, isResizable);
 
         unsafe
         {
-            var windowPtr = _glfw.CreateWindow(width, height, title, null, null);
+            _windowHandle = _glfw.CreateWindow(width, height, title, null, null);
 
-            if (windowPtr is null)
+            if (_windowHandle is null)
             {
                 _glfw.Terminate();
                 throw new InvalidOperationException("Failed to create GLFW window.");
             }
 
-            _windowHandle = (IntPtr)windowPtr;
-
-            _glfw.MakeContextCurrent((WindowHandle*)_windowHandle.ToPointer());
+            _glfw.MakeContextCurrent(_windowHandle);
         }
 
         unsafe
         {
-            _glfw.SetKeyCallback((WindowHandle*)_windowHandle, KeyInputCallback);
-            _glfw.SetCursorPosCallback((WindowHandle*)_windowHandle, CursorPosInputCallback);
-            _glfw.SetMouseButtonCallback((WindowHandle*)_windowHandle, MouseButtonCallback);
-            _glfw.SetScrollCallback((WindowHandle*)_windowHandle, ScrollCallback);
+            _glfw.SetKeyCallback(_windowHandle, KeyCallback);
+            _glfw.SetCursorPosCallback(_windowHandle, CursorPositionCallback);
+            _glfw.SetMouseButtonCallback(_windowHandle, MouseButtonCallback);
+            _glfw.SetScrollCallback(_windowHandle, ScrollCallback);
+            _glfw.SetWindowSizeCallback(_windowHandle, WindowSizeCallback);
 
             _glfw.SwapInterval(0);
         }
-    }
 
-    public override void SwapBuffers()
-    {
+        _currentWidth = width;
+        _currentHeight = height;
+
         unsafe
         {
-            _glfw.SwapBuffers((WindowHandle*)_windowHandle);
+            _glfw.GetCursorPos(_windowHandle, out var x, out var y);
+            _currentCursorPosition = new Vector2((float)x, (float)y);
         }
     }
 
-    public override void PollEvents() => _glfw.PollEvents();
-
-    public override bool WindowShouldClose()
+    public unsafe void SwapBuffers()
     {
-        unsafe
-        {
-            return _glfw.WindowShouldClose((WindowHandle*)_windowHandle);
-        }
+        ThrowIfDisposed();
+
+        _glfw.SwapBuffers(_windowHandle);
     }
 
-    public override void Destroy()
+    public void PollEvents()
     {
-        unsafe
-        {
-            _glfw.DestroyWindow((WindowHandle*)_windowHandle);
-        }
+        ThrowIfDisposed();
+
+        _glfw.PollEvents();
     }
 
-    public override unsafe void HideCursor() => _glfw.SetInputMode((WindowHandle*)_windowHandle, CursorStateAttribute.Cursor, CursorModeValue.CursorDisabled);
-    public override unsafe void ShowCursor() => _glfw.SetInputMode((WindowHandle*)_windowHandle, CursorStateAttribute.Cursor, CursorModeValue.CursorNormal);
-
-    public Vector2 GetCursorPosition()
+    public unsafe bool WindowShouldClose()
     {
-        unsafe
-        {
-            _glfw.GetCursorPos((WindowHandle*)_windowHandle, out var xpos, out var ypos);
-            return new Vector2((float)xpos, (float)ypos);
-        }
+        ThrowIfDisposed();
+
+        return _glfw.WindowShouldClose(_windowHandle);
     }
 
-    public override Func<string, IntPtr> GetProcAddressLoader() => _glfw.GetProcAddress;
-
-    public override float GetTime() => (float)_glfw.GetTime();
-
-    public override int GetWidth() => (int)GetSize().X;
-
-    public override int GetHeight() => (int)GetSize().Y;
-
-    private Vector2 GetSize()
+    public unsafe void HideCursor()
     {
-        unsafe
-        {
-            _glfw.GetWindowSize((WindowHandle*)_windowHandle, out int width, out int height);
-            return new Vector2(width, height);
-        }
+        ThrowIfDisposed();
+
+        _glfw.SetInputMode(_windowHandle, CursorStateAttribute.Cursor, CursorModeValue.CursorDisabled);
     }
 
-    private unsafe void KeyInputCallback(WindowHandle* window, Keys key, int scancode, InputAction action, KeyModifiers mods) => OnInputChange((Key)key, action != InputAction.Release);
-    private unsafe void CursorPosInputCallback(WindowHandle* window, double xpos, double ypos) => OnCursorPositionChange(new Vector2((float)xpos, (float)ypos));
-    private unsafe void MouseButtonCallback(WindowHandle* window, Silk.NET.GLFW.MouseButton button, InputAction action, KeyModifiers mods) => OnMouseButtonChange((MouseButton)button, action != InputAction.Release);
-    private unsafe void ScrollCallback(WindowHandle* window, double xoffset, double yoffset) => OnMouseScrollChange(new Vector2((float)xoffset, (float)yoffset));
+    public unsafe void ShowCursor()
+    {
+        ThrowIfDisposed();
+
+        _glfw.SetInputMode(_windowHandle, CursorStateAttribute.Cursor, CursorModeValue.CursorNormal);
+    }
+
+    public Func<string, IntPtr> GetProcAddressLoader()
+    {
+        ThrowIfDisposed();
+
+        return _glfw.GetProcAddress;
+    }
+
+    public float GetTime()
+    {
+        ThrowIfDisposed();
+
+        return (float)_glfw.GetTime();
+    }
+
+    private unsafe void KeyCallback(WindowHandle* window, Keys key, int scancode, InputAction action, KeyModifiers mods)
+    {
+        if (_disposed)
+            return;
+
+        var args = new InputChangedEventArgs((Key)key, action != InputAction.Release);
+        InputChanged?.Invoke(this, args);
+    }
+
+    private unsafe void CursorPositionCallback(WindowHandle* window, double xPosition, double yPosition)
+    {
+        if (_disposed)
+            return;
+
+        var cursorPosition = new Vector2((float)xPosition, (float)yPosition);
+        _currentCursorPosition = cursorPosition;
+
+        var args = new CursorPositionChangedEventArgs(cursorPosition);
+        CursorPositionChanged?.Invoke(this, args);
+    }
+
+    private unsafe void MouseButtonCallback(WindowHandle* window, Silk.NET.GLFW.MouseButton button, InputAction action, KeyModifiers mods)
+    {
+        if (_disposed)
+            return;
+
+        var args = new MouseButtonStatusChangedEventArgs((MouseButton)button, action != InputAction.Release);
+        MouseButtonStatusChanged?.Invoke(this, args);
+    }
+
+    private unsafe void ScrollCallback(WindowHandle* window, double xOffset, double yOffset)
+    {
+        if (_disposed)
+            return;
+
+        var offset = new Vector2((float)xOffset, (float)yOffset);
+        var args = new MouseScrollChangedEventArgs(offset);
+        MouseScrollChanged?.Invoke(this, args);
+    }
+
+    private unsafe void WindowSizeCallback(WindowHandle* window, int width, int height)
+    {
+        if (_disposed)
+            return;
+
+        _currentWidth = width;
+        _currentHeight = height;
+
+        var args = new WindowSizeChangedEventArgs(width, height);
+        WindowSizeChanged?.Invoke(this, args);
+    }
+
+    public unsafe void Dispose()
+    {
+        if (_disposed)
+            return;
+
+        _glfw.SetKeyCallback(_windowHandle, null);
+        _glfw.SetCursorPosCallback(_windowHandle, null);
+        _glfw.SetMouseButtonCallback(_windowHandle, null);
+        _glfw.SetScrollCallback(_windowHandle, null);
+        _glfw.SetWindowSizeCallback(_windowHandle, null);
+
+        _glfw.DestroyWindow(_windowHandle);
+        _glfw.Terminate();
+
+        _disposed = true;
+    }
+
+    private void ThrowIfDisposed()
+    {
+        if (_disposed)
+            throw new ObjectDisposedException(nameof(GlfwWindow));
+    }
 }
