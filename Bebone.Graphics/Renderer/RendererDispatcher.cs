@@ -7,10 +7,10 @@ namespace Bebone.Graphics.Renderer;
 
 public class RendererDispatcher(Renderer renderer, IGraphicsFactory factory)
 {
-    private readonly Renderer renderer = renderer;
+    private readonly Renderer _renderer = renderer;
 
     // Pregenerate often used geometry
-    private readonly IMesh<Vertex> cubeMesh = new CubeMeshGenerator().GenerateMesh(factory.CreateMeshBuilder<Vertex>());
+    private readonly IMesh<Vertex> _cubeMesh = new CubeMeshGenerator().GenerateMesh(factory.CreateMeshBuilder<Vertex>());
 
     public void DrawCube()
     {
