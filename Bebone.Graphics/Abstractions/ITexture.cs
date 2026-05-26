@@ -5,6 +5,6 @@ public interface ITexture
     int Width { get; }
     int Height { get; }
 
-    void ActivateBind(int slot);
+    void Bind(uint slot);
     void Unbind();
 }

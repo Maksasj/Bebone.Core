@@ -3,7 +3,7 @@ using Silk.NET.OpenGL;
 
 namespace Bebone.Graphics.OpenGL;
 
-public class Texture2D : ITexture
+public sealed class Texture2D : ITexture, IDisposable
 {
     private readonly IGLContext _gl;
     private readonly uint _handle;
@@ -13,46 +13,35 @@ public class Texture2D : ITexture
     public int Width { get; }
     public int Height { get; }
 
-    public unsafe Texture2D(IGLContext gl, int width, int height, byte[] data)
+    public Texture2D(IGLContext gl, byte[] data, TextureConfiguration configuration)
     {
         _gl = gl;
-        Width = width;
-        Height = height;
+        Width = configuration.Width;
+        Height = configuration.Height;
 
-        _handle = CreateTexture(false, TextureMinFilterType.Linear, TextureMagFilterType.Linear);
-        ActivateBind(slot: 0);
-
-        fixed (byte* ptr = data)
-        {
-            _gl.TexImage2D(TextureTarget.Texture2D, 0, InternalFormat.Rgba, (uint)width,
-                (uint)height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, ptr);
-        }
-
-        _gl.GenerateMipmap(TextureTarget.Texture2D);
-
-        Unbind();
+        _handle = CreateTexture(configuration, data);
     }
 
-    public void ActivateBind(int slot)
+    public void Bind(uint slot)
     {
-        if (slot < 0 || slot >= _maxTextureSlots)
+        if (slot >= _maxTextureSlots)
             throw new ArgumentOutOfRangeException(nameof(slot), $"Texture slot {slot} is out of bounds. Valid range is 0 to {_maxTextureSlots - 1}.");
 
-        _gl.ActiveTexture(TextureUnit.Texture0 + slot);
+        _gl.ActiveTexture(TextureUnit.Texture0 + (int)slot);
         _gl.BindTexture(TextureTarget.Texture2D, _handle);
     }
 
     public void Unbind() => _gl.BindTexture(TextureTarget.Texture2D, 0);
 
-    private uint CreateTexture(bool isFboAttachment = false, TextureMinFilterType minFilter = TextureMinFilterType.Linear, TextureMagFilterType magFilter = TextureMagFilterType.Linear)
+    private unsafe uint CreateTexture(TextureConfiguration configuration, byte[] data, bool isFboAttachment = false)
     {
         var created = _gl.GenTexture();
 
         _gl.ActiveTexture(TextureUnit.Texture0);
         _gl.BindTexture(TextureTarget.Texture2D, created);
 
-        _gl.TextureParameter(created, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat);
-        _gl.TextureParameter(created, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Repeat);
+        _gl.TextureParameter(created, TextureParameterName.TextureWrapS, (int)configuration.STextureWrap);
+        _gl.TextureParameter(created, TextureParameterName.TextureWrapT, (int)configuration.TTextureWrap);
 
         if (isFboAttachment)
         {
@@ -61,12 +50,33 @@ public class Texture2D : ITexture
         }
         else
         {
-            _gl.TextureParameter(created, TextureParameterName.TextureMinFilter, (int)minFilter);
-            _gl.TextureParameter(created, TextureParameterName.TextureMagFilter, (int)magFilter);
+            _gl.TextureParameter(created, TextureParameterName.TextureMinFilter, (int)configuration.MinFilter);
+            _gl.TextureParameter(created, TextureParameterName.TextureMagFilter, (int)configuration.MagFilter);
         }
 
-        _gl.BindTexture(TextureTarget.Texture2D, 0);
+        fixed (byte* ptr = data)
+        {
+            _gl.TexImage2D(TextureTarget.Texture2D, 0, InternalFormat.Rgba, (uint)Width,
+                (uint)Height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, ptr);
+        }
+
+        var isMipmapFilter = configuration.MinFilter == TextureMinFilter.LinearMipmapLinear
+            || configuration.MinFilter == TextureMinFilter.NearestMipmapLinear
+            || configuration.MinFilter == TextureMinFilter.LinearMipmapNearest
+            || configuration.MinFilter == TextureMinFilter.NearestMipmapNearest;
+        
+        if (isMipmapFilter)
+        {
+            _gl.GenerateMipmap(TextureTarget.Texture2D);
+        }
+
+        Unbind();
 
         return created;
+    }
+
+    public void Dispose()
+    {
+        _gl.DeleteTexture(_handle);
     }
 }
