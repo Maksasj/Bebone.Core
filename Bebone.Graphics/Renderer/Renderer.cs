@@ -26,11 +26,7 @@ public class Renderer
 
     public void Execute()
     {
-        var frameData = new FrameData
-        {
-            Width = 1920,
-            Height = 1080
-        };
+        var frameData = new FrameData(1920, 1080, 0);
 
         _frameGraph.Execute(frameData);
     }

@@ -31,7 +31,7 @@ public class RenderQueuePass(IGLContext context, IShaderProgram shader, bool ena
             _context.DisableDepthTest();
 
         _shader.Activate();
-        _shader.SetUniform("cam", Camera.GetViewMatrix() * Camera.GetProjectionMatrix(frameData.AspectRatio()));
+        _shader.SetUniform("cam", Camera.GetViewMatrix() * Camera.GetProjectionMatrix(frameData.AspectRatio));
 
         foreach (var task in RenderQueue)
             task.Execute(_shader);
