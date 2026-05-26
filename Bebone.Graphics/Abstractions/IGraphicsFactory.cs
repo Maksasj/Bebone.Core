@@ -1,5 +1,6 @@
 ﻿using Bebone.Graphics.Abstractions.Mesh;
 using Bebone.Graphics.OpenGL;
+using System.Drawing;
 
 namespace Bebone.Graphics.Abstractions;
 
@@ -13,4 +14,5 @@ public interface IGraphicsFactory
 
     public ITexture CreateTexture(byte[] data, TextureConfiguration textureConfiguration);
     public ITexture CreateEmptyTexture(int width, int height);
+    public ITexture CreateFlatColorTexture(Color color, TextureConfiguration configuration);
 }
