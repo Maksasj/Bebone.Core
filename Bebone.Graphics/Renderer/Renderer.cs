@@ -1,23 +1,32 @@
 ﻿using Bebone.Graphics.Abstractions;
 using Bebone.Graphics.RenderGraph;
+using Bebone.Math;
 
 namespace Bebone.Graphics.Renderer;
 
 public class Renderer
 {
-    public ClearPass ClearPass { get; init; }
-    public RenderQueuePass MainPass { get; init; }
-    public RenderQueuePass UiPass { get; init; }
+    private readonly IGLContext _context;
+    private readonly IGraphicsFactory _factory;
+    public Vector2Int _targetViewportSize;
 
-    private readonly FrameGraph _frameGraph;
+    private FrameGraph _frameGraph;
 
-    public Renderer(IGLContext context, IGraphicsFactory factory)
+    public ClearPass ClearPass { get; private set; }
+    public RenderQueuePass MainPass { get; private set; }
+    public RenderQueuePass UiPass { get; private set; }
+
+    public Renderer(Vector2Int targetViewportSize, IGLContext context, IGraphicsFactory factory)
     {
-        var shaderProgram = factory.CreateShader(DefaultShaderConstants.DefaultVertexShader, DefaultShaderConstants.DefaultFragmentShader);
+        _context = context;
+        _factory = factory;
+        _targetViewportSize = targetViewportSize;
 
-        ClearPass = new ClearPass(context);
-        MainPass = new RenderQueuePass(context, shaderProgram, enableDepthTest: true);
-        UiPass = new RenderQueuePass(context, shaderProgram, enableDepthTest: false);
+        var shaderProgram = _factory.CreateShader(DefaultShaderConstants.DefaultVertexShader, DefaultShaderConstants.DefaultFragmentShader);
+
+        ClearPass = new ClearPass(_context);
+        MainPass = new RenderQueuePass(_context, shaderProgram, enableDepthTest: true);
+        UiPass = new RenderQueuePass(_context, shaderProgram, enableDepthTest: false);
 
         _frameGraph = new FrameGraphBuilder()
             .AddPass(ClearPass)
@@ -26,10 +35,26 @@ public class Renderer
             .Compile();
     }
 
-    public void Render()
+    public void Render(float time = 0.0f)
     {
-        var frameData = new FrameData(1920, 1080, 0);
-
+        var frameData = new FrameData((uint)_targetViewportSize.X, (uint)_targetViewportSize.Y, time);
         _frameGraph.Execute(frameData);
+    }
+
+    public void ResizeViewport(Vector2Int newSize)
+    {
+        _targetViewportSize = newSize;
+
+        var shaderProgram = _factory.CreateShader(DefaultShaderConstants.DefaultVertexShader, DefaultShaderConstants.DefaultFragmentShader);
+
+        ClearPass = new ClearPass(_context);
+        MainPass = new RenderQueuePass(_context, shaderProgram, enableDepthTest: true);
+        UiPass = new RenderQueuePass(_context, shaderProgram, enableDepthTest: false);
+
+        _frameGraph = new FrameGraphBuilder()
+            .AddPass(ClearPass)
+            .AddPass(MainPass)
+            .AddPass(UiPass)
+            .Compile();
     }
 }
