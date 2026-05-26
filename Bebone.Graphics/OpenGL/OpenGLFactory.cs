@@ -2,6 +2,7 @@
 using Bebone.Graphics.Abstractions.Mesh;
 using Bebone.Graphics.OpenGL.Mesh;
 using Bebone.Graphics.OpenGL.Shaders;
+using System.Drawing;
 
 namespace Bebone.Graphics.OpenGL;
 
@@ -19,6 +20,31 @@ public class OpenGLFactory(IGLContext gl) : IGraphicsFactory
     }
 
     public IShaderProgram CreateShader(string vertexShaderSource, string fragmentShaderSource) => new ShaderProgram(_gl, vertexShaderSource, fragmentShaderSource);
-    public ITexture CreateTexture(byte[] data, TextureConfiguration textureConfiguration) => new Texture2D(_gl, data, textureConfiguration);
+    
+    public ITexture CreateTexture(byte[] data, TextureConfiguration configuration) => new Texture2D(_gl, data, configuration);
     public ITexture CreateEmptyTexture(int width, int height) => new Texture2D(_gl, width, height);
+    public ITexture CreateFlatColorTexture(Color color, TextureConfiguration configuration)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(configuration.Width, nameof(configuration.Width));
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(configuration.Height, nameof(configuration.Height));
+
+        var width = configuration.Width;
+        var height = configuration.Height;
+
+        byte[] data = new byte[width * height * 4];
+
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                int index = (y * width + x) * 4;
+                data[index + 0] = color.R;
+                data[index + 1] = color.G;
+                data[index + 2] = color.B;
+                data[index + 3] = color.A;
+            }
+        }
+
+        return new Texture2D(_gl, data, new TextureConfiguration(width, height));
+    }
 }

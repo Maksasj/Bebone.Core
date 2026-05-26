@@ -17,8 +17,6 @@ public sealed class Texture2D : ITexture, IDisposable
 
     public Texture2D(IGLContext gl, byte[] data, TextureConfiguration configuration)
     {
-        ArgumentNullException.ThrowIfNull(gl);
-        ArgumentNullException.ThrowIfNull(data);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(configuration.Width, nameof(configuration.Width));
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(configuration.Height, nameof(configuration.Height));
 
@@ -31,7 +29,6 @@ public sealed class Texture2D : ITexture, IDisposable
 
     public Texture2D(IGLContext gl, int width, int height)
     {
-        ArgumentNullException.ThrowIfNull(gl);
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(width, nameof(width));
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(height, nameof(height));
 
