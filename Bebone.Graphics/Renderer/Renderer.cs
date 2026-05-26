@@ -63,10 +63,9 @@ public class Renderer
 
     private FrameGraph CreateFrameGraph(IGLContext context)
     {
-        var graph = new FrameGraph();
+        var builder = new FrameGraphBuilder();
 
-        // Clear & Clear buffers
-        graph.AddPass(new RenderTask<int>(
+        builder.AddPass(new RenderTask<int>(
             _ => 0,
             _ =>
             {
@@ -74,11 +73,10 @@ public class Renderer
                 context.ClearBuffers();
             }));
 
-        graph.AddPass(new RenderQueuePass(context, PerspectiveCamera, _shaderProgram, _mainPassTasks, enableDepthTest: true));
-        graph.AddPass(new RenderQueuePass(context, OrthographicCamera, _shaderProgram, _uiPassTasks, enableDepthTest: false));
+        builder.AddPass(new RenderQueuePass(context, PerspectiveCamera, _shaderProgram, _mainPassTasks, enableDepthTest: true));
+        builder.AddPass(new RenderQueuePass(context, OrthographicCamera, _shaderProgram, _uiPassTasks, enableDepthTest: false));
 
-        // Clear queues
-        graph.AddPass(new RenderTask<int>(
+        builder.AddPass(new RenderTask<int>(
             _ => 0,
             _ =>
             {
@@ -86,9 +84,7 @@ public class Renderer
                 _uiPassTasks.Clear();
             }));
 
-        graph.Compile();
-
-        return graph;
+        return builder.Compile();
     }
 
     public void Execute() => _frameGraph.Execute();
