@@ -1,6 +1,6 @@
 ﻿using Bebone.Graphics.Abstractions;
 using Bebone.Graphics.Abstractions.Mesh;
-using Bebone.Graphics.Utils;
+using Bebone.Graphics.MeshGeneration;
 using Bebone.Math;
 
 namespace Bebone.Graphics.Renderer;
@@ -9,14 +9,14 @@ public class RendererDispatcher(Renderer renderer, IGraphicsFactory factory)
 {
     private readonly Renderer _renderer = renderer;
 
-    // Pregenerate often used geometry
+    // Pregenerate often used resources
     private readonly IMesh<Vertex> _cubeMesh = new CubeMeshGenerator().GenerateMesh(factory.CreateMeshBuilder<Vertex>());
 
     public void DrawCube()
     {
-        renderer.MainPass.RenderQueue.Add(new MeshDrawTask()
+        _renderer.MainPass.RenderQueue.Add(new MeshDrawTask()
         {
-            Mesh = cubeMesh,
+            Mesh = _cubeMesh,
             Transform = Transform.Identity
         });
     }
