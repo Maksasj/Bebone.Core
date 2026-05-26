@@ -24,7 +24,7 @@ public class Renderer
         _frameGraph.Compile();
     }
 
-    public void Execute()
+    public void Render()
     {
         var frameData = new FrameData(1920, 1080, 0);
 
