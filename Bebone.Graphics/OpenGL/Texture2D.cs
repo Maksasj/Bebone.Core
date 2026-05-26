@@ -22,6 +22,15 @@ public sealed class Texture2D : ITexture, IDisposable
         _handle = CreateTexture(configuration, data);
     }
 
+    public Texture2D(IGLContext gl, int width, int height)
+    {
+        _gl = gl;
+        Width = width;
+        Height = height;
+
+        _handle = CreateEmptyTexture(width, height);
+    }
+
     public void Bind(uint slot)
     {
         if (slot >= _maxTextureSlots)
@@ -33,7 +42,24 @@ public sealed class Texture2D : ITexture, IDisposable
 
     public void Unbind() => _gl.BindTexture(TextureTarget.Texture2D, 0);
 
-    private unsafe uint CreateTexture(TextureConfiguration configuration, byte[] data, bool isFboAttachment = false)
+    private unsafe uint CreateEmptyTexture(int width, int height)
+    {
+        var created = _gl.GenTexture();
+        
+        _gl.ActiveTexture(TextureUnit.Texture0);
+        _gl.BindTexture(TextureTarget.Texture2D, created);
+
+        _gl.TexImage2D(TextureTarget.Texture2D, 0, InternalFormat.Rgba, (uint)width, (uint)height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, null);
+
+        _gl.TextureParameter(_handle, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
+        _gl.TextureParameter(_handle, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+
+        Unbind();
+
+        return created;
+    }
+
+    private unsafe uint CreateTexture(TextureConfiguration configuration, byte[] data)
     {
         var created = _gl.GenTexture();
 
@@ -43,16 +69,8 @@ public sealed class Texture2D : ITexture, IDisposable
         _gl.TextureParameter(created, TextureParameterName.TextureWrapS, (int)configuration.STextureWrap);
         _gl.TextureParameter(created, TextureParameterName.TextureWrapT, (int)configuration.TTextureWrap);
 
-        if (isFboAttachment)
-        {
-            _gl.TextureParameter(created, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
-            _gl.TextureParameter(created, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
-        }
-        else
-        {
-            _gl.TextureParameter(created, TextureParameterName.TextureMinFilter, (int)configuration.MinFilter);
-            _gl.TextureParameter(created, TextureParameterName.TextureMagFilter, (int)configuration.MagFilter);
-        }
+        _gl.TextureParameter(created, TextureParameterName.TextureMinFilter, (int)configuration.MinFilter);
+        _gl.TextureParameter(created, TextureParameterName.TextureMagFilter, (int)configuration.MagFilter);
 
         fixed (byte* ptr = data)
         {
