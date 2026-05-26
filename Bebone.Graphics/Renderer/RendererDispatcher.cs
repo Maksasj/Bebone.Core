@@ -14,7 +14,7 @@ public class RendererDispatcher(Renderer renderer, IGraphicsFactory factory)
 
     public void DrawCube()
     {
-        _renderer.MainPass.RenderQueue.Add(new MeshDrawTask()
+        _renderer.MainPass.SubmitTask(new MeshDrawTask()
         {
             Mesh = _cubeMesh,
             Transform = Transform.Identity
