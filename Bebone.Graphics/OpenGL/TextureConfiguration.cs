@@ -7,4 +7,4 @@ public record TextureConfiguration(
     TextureMagFilter MagFilter = TextureMagFilter.Linear,
     TextureWrapMode STextureWrap = TextureWrapMode.Repeat,
     TextureWrapMode TTextureWrap = TextureWrapMode.Repeat,
-    bool CreateMipmap = false);
+    bool CreateMipmap = true);
