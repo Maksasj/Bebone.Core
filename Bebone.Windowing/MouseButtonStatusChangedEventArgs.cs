@@ -1,6 +1,4 @@
-﻿using Silk.NET.GLFW;
-
-namespace Bebone.Windowing;
+﻿namespace Bebone.Windowing;
 
 public class MouseButtonStatusChangedEventArgs(MouseButton mouseButton, bool isPressed) : EventArgs
 {

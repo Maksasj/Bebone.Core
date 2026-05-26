@@ -1,6 +1,6 @@
 ﻿namespace Bebone.Windowing;
 
-public abstract class Window
+public abstract class Window : IDisposable
 {
     public abstract int GetWidth();
     public abstract int GetHeight();
@@ -13,7 +13,8 @@ public abstract class Window
     public abstract void SwapBuffers();
     public abstract void PollEvents();
     public abstract bool WindowShouldClose();
-    public abstract void Destroy();
+
+    public abstract void Dispose();
 
     public abstract Func<string, IntPtr> GetProcAddressLoader();
 
