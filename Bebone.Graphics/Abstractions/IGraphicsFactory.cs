@@ -11,6 +11,6 @@ public interface IGraphicsFactory
 
     public IShaderProgram CreateShader(string vertexShaderSource, string fragmentShaderSource);
 
-    public ITexture CreateTexture(byte[] data, TextureConfiguration textureConfiguration);
-    public ITexture CreateEmptyTexture(int width, int height);
+    public ITexture2D CreateTexture(byte[] data, TextureConfiguration textureConfiguration);
+    public ITexture2D CreateEmptyTexture(int width, int height);
 }

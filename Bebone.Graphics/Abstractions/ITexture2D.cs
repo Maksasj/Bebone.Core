@@ -1,6 +1,6 @@
 ﻿namespace Bebone.Graphics.Abstractions;
 
-public interface ITexture
+public interface ITexture2D
 {
     int Width { get; }
     int Height { get; }

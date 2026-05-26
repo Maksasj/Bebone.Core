@@ -19,6 +19,6 @@ public class OpenGLFactory(IGLContext gl) : IGraphicsFactory
     }
 
     public IShaderProgram CreateShader(string vertexShaderSource, string fragmentShaderSource) => new ShaderProgram(_gl, vertexShaderSource, fragmentShaderSource);
-    public ITexture CreateTexture(byte[] data, TextureConfiguration textureConfiguration) => new Texture2D(_gl, data, textureConfiguration);
-    public ITexture CreateEmptyTexture(int width, int height) => new Texture2D(_gl, width, height);
+    public ITexture2D CreateTexture(byte[] data, TextureConfiguration textureConfiguration) => new Texture2D(_gl, data, textureConfiguration);
+    public ITexture2D CreateEmptyTexture(int width, int height) => new Texture2D(_gl, width, height);
 }
