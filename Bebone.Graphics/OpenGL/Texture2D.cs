@@ -42,7 +42,7 @@ public sealed class Texture2D : ITexture, IDisposable
         _handle = CreateEmptyTexture(width, height);
     }
 
-    public void Bind(uint slot)
+    public void ActiveBind(uint slot)
     {
         ObjectDisposedException.ThrowIf(_disposed, nameof(Texture2D));
 
