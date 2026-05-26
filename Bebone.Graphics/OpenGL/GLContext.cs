@@ -164,6 +164,11 @@ public class GLContext(GL gl) : IGLContext
         _gl.GenerateMipmap(target);
     }
 
+    public void DeleteTexture(uint texture)
+    {
+        _gl.DeleteTexture(texture);
+    }
+
     // Uniforms
 
     public unsafe int GetUniformLocation(uint program, string name)

@@ -3,73 +3,121 @@ using Silk.NET.OpenGL;
 
 namespace Bebone.Graphics.OpenGL;
 
-public class Texture2D : ITexture
+public sealed class Texture2D : ITexture, IDisposable
 {
     private readonly IGLContext _gl;
     private readonly uint _handle;
 
-    private readonly int _width;
-    private readonly int _height;
-
     private const int _maxTextureSlots = 16; // Todo: This can be more depending on device, 16 is minimum
 
-    public unsafe Texture2D(IGLContext gl, int width, int height, byte[] data)
+    public int Width { get; }
+    public int Height { get; }
+
+    private bool _disposed;
+
+    public Texture2D(IGLContext gl, byte[] data, TextureConfiguration configuration)
     {
+        ArgumentNullException.ThrowIfNull(gl);
+        ArgumentNullException.ThrowIfNull(data);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(configuration.Width, nameof(configuration.Width));
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(configuration.Height, nameof(configuration.Height));
+
         _gl = gl;
-        _width = width;
-        _height = height;
+        Width = configuration.Width;
+        Height = configuration.Height;
 
-        _handle = CreateTexture(false, TextureMinFilterType.Linear, TextureMagFilterType.Linear);
-        ActivateBind(slot: 0);
-
-        fixed (byte* ptr = data)
-        {
-            _gl.TexImage2D(TextureTarget.Texture2D, 0, InternalFormat.Rgba, (uint)width,
-                (uint)height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, ptr);
-        }
-
-        _gl.GenerateMipmap(TextureTarget.Texture2D);
-
-        Unbind();
+        _handle = CreateTexture(configuration, data);
     }
 
-    public void ActivateBind(int slot)
+    public Texture2D(IGLContext gl, int width, int height)
     {
-        if (slot < 0 || slot >= _maxTextureSlots)
+        ArgumentNullException.ThrowIfNull(gl);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(width, nameof(width));
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(height, nameof(height));
+
+        _gl = gl;
+        Width = width;
+        Height = height;
+
+        _handle = CreateEmptyTexture(width, height);
+    }
+
+    public void ActiveBind(uint slot)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, nameof(Texture2D));
+
+        if (slot >= _maxTextureSlots)
             throw new ArgumentOutOfRangeException(nameof(slot), $"Texture slot {slot} is out of bounds. Valid range is 0 to {_maxTextureSlots - 1}.");
 
-        _gl.ActiveTexture(TextureUnit.Texture0 + slot);
+        _gl.ActiveTexture(TextureUnit.Texture0 + (int)slot);
         _gl.BindTexture(TextureTarget.Texture2D, _handle);
     }
 
-    public void Unbind() => _gl.BindTexture(TextureTarget.Texture2D, 0);
+    public void Unbind()
+    {
+        ObjectDisposedException.ThrowIf(_disposed, nameof(Texture2D));
 
-    public int GetWidth() => _width;
-    public int GetHeight() => _height;
+        _gl.BindTexture(TextureTarget.Texture2D, 0);
+    }
 
-    private uint CreateTexture(bool isFboAttachment = false, TextureMinFilterType minFilter = TextureMinFilterType.Linear, TextureMagFilterType magFilter = TextureMagFilterType.Linear)
+    private unsafe uint CreateEmptyTexture(int width, int height)
+    {
+        var created = _gl.GenTexture();
+        
+        _gl.ActiveTexture(TextureUnit.Texture0);
+        _gl.BindTexture(TextureTarget.Texture2D, created);
+
+        _gl.TexImage2D(TextureTarget.Texture2D, 0, InternalFormat.Rgba, (uint)width, (uint)height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, null);
+
+        _gl.TextureParameter(created, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
+        _gl.TextureParameter(created, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+
+        Unbind();
+
+        return created;
+    }
+
+    private unsafe uint CreateTexture(TextureConfiguration configuration, byte[] data)
     {
         var created = _gl.GenTexture();
 
         _gl.ActiveTexture(TextureUnit.Texture0);
         _gl.BindTexture(TextureTarget.Texture2D, created);
 
-        _gl.TextureParameter(created, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat);
-        _gl.TextureParameter(created, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Repeat);
+        _gl.TextureParameter(created, TextureParameterName.TextureWrapS, (int)configuration.STextureWrap);
+        _gl.TextureParameter(created, TextureParameterName.TextureWrapT, (int)configuration.TTextureWrap);
 
-        if (isFboAttachment)
+        _gl.TextureParameter(created, TextureParameterName.TextureMinFilter, (int)configuration.MinFilter);
+        _gl.TextureParameter(created, TextureParameterName.TextureMagFilter, (int)configuration.MagFilter);
+
+        fixed (byte* ptr = data)
         {
-            _gl.TextureParameter(created, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
-            _gl.TextureParameter(created, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
-        }
-        else
-        {
-            _gl.TextureParameter(created, TextureParameterName.TextureMinFilter, (int)minFilter);
-            _gl.TextureParameter(created, TextureParameterName.TextureMagFilter, (int)magFilter);
+            _gl.TexImage2D(TextureTarget.Texture2D, 0, InternalFormat.Rgba, (uint)Width,
+                (uint)Height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, ptr);
         }
 
-        _gl.BindTexture(TextureTarget.Texture2D, 0);
+        var isMipmapFilter = configuration.MinFilter == TextureMinFilter.LinearMipmapLinear
+            || configuration.MinFilter == TextureMinFilter.NearestMipmapLinear
+            || configuration.MinFilter == TextureMinFilter.LinearMipmapNearest
+            || configuration.MinFilter == TextureMinFilter.NearestMipmapNearest;
+        
+        if (isMipmapFilter && configuration.CreateMipmap)
+        {
+            _gl.GenerateMipmap(TextureTarget.Texture2D);
+        }
+
+        Unbind();
 
         return created;
+    }
+
+    public void Dispose()
+    {
+        if (_disposed)
+            return;
+
+        _gl.DeleteTexture(_handle);
+
+        _disposed = true;
     }
 }
