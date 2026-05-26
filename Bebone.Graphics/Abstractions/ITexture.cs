@@ -2,9 +2,9 @@
 
 public interface ITexture
 {
+    int Width { get; }
+    int Height { get; }
+
     void ActivateBind(int slot);
     void Unbind();
-
-    int GetWidth();
-    int GetHeight();
 }

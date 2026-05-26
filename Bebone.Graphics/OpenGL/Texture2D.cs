@@ -8,16 +8,16 @@ public class Texture2D : ITexture
     private readonly IGLContext _gl;
     private readonly uint _handle;
 
-    private readonly int _width;
-    private readonly int _height;
-
     private const int _maxTextureSlots = 16; // Todo: This can be more depending on device, 16 is minimum
+
+    public int Width { get; }
+    public int Height { get; }
 
     public unsafe Texture2D(IGLContext gl, int width, int height, byte[] data)
     {
         _gl = gl;
-        _width = width;
-        _height = height;
+        Width = width;
+        Height = height;
 
         _handle = CreateTexture(false, TextureMinFilterType.Linear, TextureMagFilterType.Linear);
         ActivateBind(slot: 0);
@@ -43,9 +43,6 @@ public class Texture2D : ITexture
     }
 
     public void Unbind() => _gl.BindTexture(TextureTarget.Texture2D, 0);
-
-    public int GetWidth() => _width;
-    public int GetHeight() => _height;
 
     private uint CreateTexture(bool isFboAttachment = false, TextureMinFilterType minFilter = TextureMinFilterType.Linear, TextureMagFilterType magFilter = TextureMagFilterType.Linear)
     {
