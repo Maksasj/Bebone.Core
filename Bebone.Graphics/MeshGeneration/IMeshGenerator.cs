@@ -1,6 +1,6 @@
 ﻿using Bebone.Graphics.Abstractions.Mesh;
 
-namespace Bebone.Graphics.Utils;
+namespace Bebone.Graphics.MeshGeneration;
 
 public interface IMeshGenerator<T> where T : IVertex
 {

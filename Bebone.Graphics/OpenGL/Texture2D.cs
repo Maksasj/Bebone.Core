@@ -63,7 +63,7 @@ public sealed class Texture2D : ITexture, IDisposable
     private unsafe uint CreateEmptyTexture(int width, int height)
     {
         var created = _gl.GenTexture();
-        
+
         _gl.ActiveTexture(TextureUnit.Texture0);
         _gl.BindTexture(TextureTarget.Texture2D, created);
 
@@ -100,7 +100,7 @@ public sealed class Texture2D : ITexture, IDisposable
             || configuration.MinFilter == TextureMinFilter.NearestMipmapLinear
             || configuration.MinFilter == TextureMinFilter.LinearMipmapNearest
             || configuration.MinFilter == TextureMinFilter.NearestMipmapNearest;
-        
+
         if (isMipmapFilter && configuration.CreateMipmap)
         {
             _gl.GenerateMipmap(TextureTarget.Texture2D);
