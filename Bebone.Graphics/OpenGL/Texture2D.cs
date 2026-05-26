@@ -101,7 +101,7 @@ public sealed class Texture2D : ITexture, IDisposable
             || configuration.MinFilter == TextureMinFilter.LinearMipmapNearest
             || configuration.MinFilter == TextureMinFilter.NearestMipmapNearest;
         
-        if (isMipmapFilter)
+        if (isMipmapFilter && configuration.CreateMipmap)
         {
             _gl.GenerateMipmap(TextureTarget.Texture2D);
         }
