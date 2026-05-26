@@ -13,8 +13,15 @@ public sealed class Texture2D : ITexture, IDisposable
     public int Width { get; }
     public int Height { get; }
 
+    private bool _disposed;
+
     public Texture2D(IGLContext gl, byte[] data, TextureConfiguration configuration)
     {
+        ArgumentNullException.ThrowIfNull(gl);
+        ArgumentNullException.ThrowIfNull(data);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(configuration.Width, nameof(configuration.Width));
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(configuration.Height, nameof(configuration.Height));
+
         _gl = gl;
         Width = configuration.Width;
         Height = configuration.Height;
@@ -24,6 +31,10 @@ public sealed class Texture2D : ITexture, IDisposable
 
     public Texture2D(IGLContext gl, int width, int height)
     {
+        ArgumentNullException.ThrowIfNull(gl);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(width, nameof(width));
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(height, nameof(height));
+
         _gl = gl;
         Width = width;
         Height = height;
@@ -33,6 +44,8 @@ public sealed class Texture2D : ITexture, IDisposable
 
     public void Bind(uint slot)
     {
+        ObjectDisposedException.ThrowIf(_disposed, nameof(Texture2D));
+
         if (slot >= _maxTextureSlots)
             throw new ArgumentOutOfRangeException(nameof(slot), $"Texture slot {slot} is out of bounds. Valid range is 0 to {_maxTextureSlots - 1}.");
 
@@ -40,7 +53,12 @@ public sealed class Texture2D : ITexture, IDisposable
         _gl.BindTexture(TextureTarget.Texture2D, _handle);
     }
 
-    public void Unbind() => _gl.BindTexture(TextureTarget.Texture2D, 0);
+    public void Unbind()
+    {
+        ObjectDisposedException.ThrowIf(_disposed, nameof(Texture2D));
+
+        _gl.BindTexture(TextureTarget.Texture2D, 0);
+    }
 
     private unsafe uint CreateEmptyTexture(int width, int height)
     {
@@ -51,8 +69,8 @@ public sealed class Texture2D : ITexture, IDisposable
 
         _gl.TexImage2D(TextureTarget.Texture2D, 0, InternalFormat.Rgba, (uint)width, (uint)height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, null);
 
-        _gl.TextureParameter(_handle, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
-        _gl.TextureParameter(_handle, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+        _gl.TextureParameter(created, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
+        _gl.TextureParameter(created, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
 
         Unbind();
 
@@ -95,6 +113,11 @@ public sealed class Texture2D : ITexture, IDisposable
 
     public void Dispose()
     {
+        if (_disposed)
+            return;
+
         _gl.DeleteTexture(_handle);
+
+        _disposed = true;
     }
 }
