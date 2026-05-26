@@ -1,6 +1,4 @@
-﻿using System.Numerics;
-
-namespace Bebone.Windowing;
+﻿namespace Bebone.Windowing;
 
 public abstract class Window
 {
@@ -19,8 +17,13 @@ public abstract class Window
 
     public abstract Func<string, IntPtr> GetProcAddressLoader();
 
-    public Action<Vector2> OnCursorPositionChange = (_) => { };
-    public Action<Key, bool> OnInputChange = (_, _) => { };
-    public Action<MouseButton, bool> OnMouseButtonChange = (_, _) => { };
-    public Action<Vector2> OnMouseScrollChange = (_) => { };
+    public event EventHandler<CursorPositionChangedEventArgs>? CursorPositionChanged;
+    public event EventHandler<InputChangedEventArgs>? InputChanged;
+    public event EventHandler<MouseButtonStatusChangedEventArgs>? MouseButtonStatusChanged;
+    public event EventHandler<MouseScrollChangedEventArgs>? MouseScrollChanged;
+
+    protected virtual void OnCursorPositionChanged(CursorPositionChangedEventArgs args) => CursorPositionChanged?.Invoke(this, args);
+    protected virtual void OnInputChanged(InputChangedEventArgs args) => InputChanged?.Invoke(this, args);
+    protected virtual void OnMouseButtonStatusChanged(MouseButtonStatusChangedEventArgs args) => MouseButtonStatusChanged?.Invoke(this, args);
+    protected virtual void OnMouseScrollChanged(MouseScrollChangedEventArgs args) => MouseScrollChanged?.Invoke(this, args);
 }
