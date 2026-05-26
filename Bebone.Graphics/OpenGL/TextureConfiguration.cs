@@ -1,6 +1,4 @@
-﻿using Silk.NET.OpenGL;
-
-namespace Bebone.Graphics.OpenGL;
+﻿namespace Bebone.Graphics.OpenGL;
 
 public record TextureConfiguration(
     int Width,
