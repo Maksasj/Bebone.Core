@@ -3,14 +3,51 @@ using System.Numerics;
 
 namespace Bebone.Windowing;
 
-public sealed class GLFWWindow : Window, IDisposable
+public sealed class GlfwWindow : IWindow
 {
     private readonly Glfw _glfw;
     private readonly unsafe WindowHandle* _windowHandle;
 
     private bool _disposed;
 
-    public GLFWWindow(string title, int width, int height)
+    private int _currentWidth;
+    private int _currentHeight;
+    private Vector2 _currentCursorPosition;
+
+    public event EventHandler<CursorPositionChangedEventArgs>? CursorPositionChanged;
+    public event EventHandler<InputChangedEventArgs>? InputChanged;
+    public event EventHandler<MouseButtonStatusChangedEventArgs>? MouseButtonStatusChanged;
+    public event EventHandler<MouseScrollChangedEventArgs>? MouseScrollChanged;
+    public event EventHandler<WindowSizeChangedEventArgs>? WindowSizeChanged;
+
+    public int Width
+    {
+        get
+        {
+            ThrowIfDisposed();
+            return _currentWidth;
+        }
+    }
+
+    public int Height
+    {
+        get
+        {
+            ThrowIfDisposed();
+            return _currentHeight;
+        }
+    }
+
+    public Vector2 CursorPosition
+    {
+        get
+        {
+            ThrowIfDisposed();
+            return _currentCursorPosition;
+        }
+    }
+
+    public GlfwWindow(string title, int width, int height, bool isResizable)
     {
         _glfw = Glfw.GetApi();
 
@@ -21,7 +58,7 @@ public sealed class GLFWWindow : Window, IDisposable
         _glfw.WindowHint(WindowHintOpenGlProfile.OpenGlProfile, OpenGlProfile.Core);
         _glfw.WindowHint(WindowHintInt.ContextVersionMajor, 3);
         _glfw.WindowHint(WindowHintInt.ContextVersionMinor, 3);
-        _glfw.WindowHint(WindowHintBool.Resizable, false);
+        _glfw.WindowHint(WindowHintBool.Resizable, isResizable);
 
         unsafe
         {
@@ -42,84 +79,68 @@ public sealed class GLFWWindow : Window, IDisposable
             _glfw.SetCursorPosCallback(_windowHandle, CursorPositionCallback);
             _glfw.SetMouseButtonCallback(_windowHandle, MouseButtonCallback);
             _glfw.SetScrollCallback(_windowHandle, ScrollCallback);
+            _glfw.SetWindowSizeCallback(_windowHandle, WindowSizeCallback);
 
             _glfw.SwapInterval(0);
         }
+
+        _currentWidth = width;
+        _currentHeight = height;
+
+        unsafe
+        {
+            _glfw.GetCursorPos(_windowHandle, out var x, out var y);
+            _currentCursorPosition = new Vector2((float)x, (float)y);
+        }
     }
 
-    public unsafe override void SwapBuffers()
+    public unsafe void SwapBuffers()
     {
         ThrowIfDisposed();
 
         _glfw.SwapBuffers(_windowHandle);
     }
 
-    public override void PollEvents()
+    public void PollEvents()
     {
         ThrowIfDisposed();
 
         _glfw.PollEvents();
     }
 
-    public unsafe override bool WindowShouldClose()
+    public unsafe bool WindowShouldClose()
     {
         ThrowIfDisposed();
 
         return _glfw.WindowShouldClose(_windowHandle);
     }
 
-    public override unsafe void HideCursor()
+    public unsafe void HideCursor()
     {
         ThrowIfDisposed();
 
         _glfw.SetInputMode(_windowHandle, CursorStateAttribute.Cursor, CursorModeValue.CursorDisabled);
     }
 
-    public override unsafe void ShowCursor()
+    public unsafe void ShowCursor()
     {
         ThrowIfDisposed();
 
         _glfw.SetInputMode(_windowHandle, CursorStateAttribute.Cursor, CursorModeValue.CursorNormal);
     }
 
-    public unsafe Vector2 GetCursorPosition()
-    {
-        ThrowIfDisposed();
-
-        _glfw.GetCursorPos(_windowHandle, out var xPos, out var yPos);
-        return new Vector2((float)xPos, (float)yPos);
-    }
-
-    public override Func<string, IntPtr> GetProcAddressLoader()
+    public Func<string, IntPtr> GetProcAddressLoader()
     {
         ThrowIfDisposed();
 
         return _glfw.GetProcAddress;
     }
 
-    public override float GetTime()
+    public float GetTime()
     {
         ThrowIfDisposed();
 
         return (float)_glfw.GetTime();
-    }
-
-    public override int GetWidth()
-    {
-        return (int)GetSize().X;
-    }
-
-    public override int GetHeight()
-    {
-        return (int)GetSize().Y;
-    }
-
-    private unsafe Vector2 GetSize()
-    {
-        ThrowIfDisposed();
-
-        _glfw.GetWindowSize(_windowHandle, out var width, out var height);
-        return new Vector2(width, height);
     }
 
     private unsafe void KeyCallback(WindowHandle* window, Keys key, int scancode, InputAction action, KeyModifiers mods)
@@ -128,7 +149,7 @@ public sealed class GLFWWindow : Window, IDisposable
             return;
 
         var args = new InputChangedEventArgs((Key)key, action != InputAction.Release);
-        OnInputChanged(args);
+        InputChanged?.Invoke(this, args);
     }
 
     private unsafe void CursorPositionCallback(WindowHandle* window, double xPosition, double yPosition)
@@ -137,8 +158,10 @@ public sealed class GLFWWindow : Window, IDisposable
             return;
 
         var cursorPosition = new Vector2((float)xPosition, (float)yPosition);
+        _currentCursorPosition = cursorPosition;
+
         var args = new CursorPositionChangedEventArgs(cursorPosition);
-        OnCursorPositionChanged(args);
+        CursorPositionChanged?.Invoke(this, args);
     }
 
     private unsafe void MouseButtonCallback(WindowHandle* window, Silk.NET.GLFW.MouseButton button, InputAction action, KeyModifiers mods)
@@ -147,7 +170,7 @@ public sealed class GLFWWindow : Window, IDisposable
             return;
 
         var args = new MouseButtonStatusChangedEventArgs((MouseButton)button, action != InputAction.Release);
-        OnMouseButtonStatusChanged(args);
+        MouseButtonStatusChanged?.Invoke(this, args);
     }
 
     private unsafe void ScrollCallback(WindowHandle* window, double xOffset, double yOffset)
@@ -157,13 +180,31 @@ public sealed class GLFWWindow : Window, IDisposable
 
         var offset = new Vector2((float)xOffset, (float)yOffset);
         var args = new MouseScrollChangedEventArgs(offset);
-        OnMouseScrollChanged(args);
+        MouseScrollChanged?.Invoke(this, args);
     }
 
-    public unsafe override void Dispose()
+    private unsafe void WindowSizeCallback(WindowHandle* window, int width, int height)
     {
         if (_disposed)
             return;
+
+        _currentWidth = width;
+        _currentHeight = height;
+
+        var args = new WindowSizeChangedEventArgs(width, height);
+        WindowSizeChanged?.Invoke(this, args);
+    }
+
+    public unsafe void Dispose()
+    {
+        if (_disposed)
+            return;
+
+        _glfw.SetKeyCallback(_windowHandle, null);
+        _glfw.SetCursorPosCallback(_windowHandle, null);
+        _glfw.SetMouseButtonCallback(_windowHandle, null);
+        _glfw.SetScrollCallback(_windowHandle, null);
+        _glfw.SetWindowSizeCallback(_windowHandle, null);
 
         _glfw.DestroyWindow(_windowHandle);
         _glfw.Terminate();
@@ -174,6 +215,6 @@ public sealed class GLFWWindow : Window, IDisposable
     private void ThrowIfDisposed()
     {
         if (_disposed)
-            throw new ObjectDisposedException(nameof(GLFWWindow));
+            throw new ObjectDisposedException(nameof(GlfwWindow));
     }
 }
