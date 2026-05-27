@@ -129,6 +129,14 @@ public sealed class GlfwWindow : IWindow
         _glfw.SetInputMode(_windowHandle, CursorStateAttribute.Cursor, CursorModeValue.CursorNormal);
     }
 
+    public unsafe void SetCursorPosition(Vector2 position)
+    {
+        ThrowIfDisposed();
+
+        _glfw.SetCursorPos(_windowHandle, position.X, position.Y);
+        _currentCursorPosition = position;
+    }
+
     public Func<string, IntPtr> GetProcAddressLoader()
     {
         ThrowIfDisposed();

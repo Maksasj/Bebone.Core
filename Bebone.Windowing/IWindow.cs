@@ -16,6 +16,7 @@ public interface IWindow : IDisposable
 
     void HideCursor();
     void ShowCursor();
+    void SetCursorPosition(Vector2 position);
 
     float GetTime();
 
