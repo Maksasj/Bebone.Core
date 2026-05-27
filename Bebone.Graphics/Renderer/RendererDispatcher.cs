@@ -35,20 +35,29 @@ public class RendererDispatcher(Renderer renderer, IGraphicsFactory factory)
 
     public void DrawQuad(Vector3 position, Quaternion rotation, Vector3 scale, ITexture2D? texture = null, Color? tint = null)
     {
-        _renderer.SubmitMain(new MeshDrawTask()
-        {
-            Mesh = _quadMesh,
-            Transform = new Transform(position, rotation, scale),
-            Texture = texture ?? _whiteTexture,
-            Tint = tint ?? Color.White
-        });
+        SubmitMainGeometry(_quadMesh, position, rotation, scale, texture, tint);
     }
 
     public void DrawCube(Vector3 position, Quaternion rotation, Vector3 scale, ITexture2D? texture = null, Color? tint = null)
     {
+        SubmitMainGeometry(_cubeMesh, position, rotation, scale, texture, tint);
+    }
+
+    public void DrawIcosahedron(Vector3 position, Quaternion rotation, Vector3 scale, ITexture2D? texture = null, Color? tint = null)
+    {
+        SubmitMainGeometry(_icosahedron, position, rotation, scale, texture, tint);
+    }
+
+    public void DrawSphere(Vector3 position, Quaternion rotation, Vector3 scale, ITexture2D? texture = null, Color? tint = null)
+    {
+        SubmitMainGeometry(_sphereMesh, position, rotation, scale, texture, tint);
+    }
+
+    private void SubmitMainGeometry(IMesh<Vertex> mesh, Vector3 position, Quaternion rotation, Vector3 scale, ITexture2D? texture = null, Color? tint = null)
+    {
         _renderer.SubmitMain(new MeshDrawTask()
         {
-            Mesh = _cubeMesh,
+            Mesh = mesh,
             Transform = new Transform(position, rotation, scale),
             Texture = texture ?? _whiteTexture,
             Tint = tint ?? Color.White
