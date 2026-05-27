@@ -19,7 +19,7 @@ public class RendererDispatcher(Renderer renderer, IGraphicsFactory factory)
 
     public void DrawQuad(Vector3 position, Quaternion rotation, Vector3 scale)
     {
-        _renderer.MainPass.SubmitTask(new MeshDrawTask()
+        _renderer.SubmitMain(new MeshDrawTask()
         {
             Mesh = _quadMesh,
             Transform = new Transform(position, rotation, scale)
@@ -28,7 +28,7 @@ public class RendererDispatcher(Renderer renderer, IGraphicsFactory factory)
 
     public void DrawCube(Vector3 position, Quaternion rotation, Vector3 scale)
     {
-        _renderer.MainPass.SubmitTask(new MeshDrawTask()
+        _renderer.SubmitMain(new MeshDrawTask()
         {
             Mesh = _cubeMesh,
             Transform = new Transform(position, rotation, scale)
