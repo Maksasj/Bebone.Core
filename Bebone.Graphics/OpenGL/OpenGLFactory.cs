@@ -8,6 +8,7 @@ namespace Bebone.Graphics.OpenGL;
 
 public class OpenGLFactory(IGLContext gl) : IGraphicsFactory
 {
+    private const int RgbaChannelCount = 4;
     private readonly IGLContext _gl = gl;
     public IMeshBuilder<T> CreateMeshBuilder<T>() where T : unmanaged, IVertex
     {
@@ -31,13 +32,13 @@ public class OpenGLFactory(IGLContext gl) : IGraphicsFactory
         var width = configuration.Width;
         var height = configuration.Height;
 
-        byte[] data = new byte[width * height * 4];
+        byte[] data = new byte[width * height * RgbaChannelCount];
 
         for (int y = 0; y < height; y++)
         {
             for (int x = 0; x < width; x++)
             {
-                int index = (y * width + x) * 4;
+                int index = (y * width + x) * RgbaChannelCount;
                 data[index + 0] = color.R;
                 data[index + 1] = color.G;
                 data[index + 2] = color.B;
