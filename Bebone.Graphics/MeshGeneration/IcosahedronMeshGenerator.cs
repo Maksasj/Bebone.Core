@@ -53,7 +53,7 @@ public class IcosahedronMeshGenerator : IMeshGenerator<Vertex>
 
         var triangles = new List<VertexTriangle>();
 
-        foreach (var tri in triangleIndices)
+        foreach (var triangle in triangleIndices)
         {
             var p0 = positions[tri[0]];
             var p1 = positions[tri[1]];
