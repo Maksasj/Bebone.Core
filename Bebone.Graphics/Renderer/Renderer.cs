@@ -1,91 +1,62 @@
 ﻿using Bebone.Graphics.Abstractions;
 using Bebone.Graphics.Camera;
 using Bebone.Graphics.RenderGraph;
+using Bebone.Math;
 using System.Drawing;
 
 namespace Bebone.Graphics.Renderer;
 
 public class Renderer
 {
-    private const string DefaultVertexShader = """
-        #version 330 core
-        layout(location = 0) in vec3 aPosition;
-        layout(location = 1) in vec3 aNormal;
-        layout(location = 2) in vec2 aTexCoords;
-
-        uniform mat4 cam;
-
-        out vec2 texCoords;
-        out vec3 normal;
-
-        void main()
-        {
-            gl_Position = cam * vec4(aPosition, 1.0);
-            texCoords = aTexCoords;
-            normal = aNormal;
-        }
-        """;
-
-    private const string DefaultFragmentShader = """
-        #version 330 core
-        in vec2 texCoords;
-        in vec3 normal;
-
-        out vec4 fragColor;
-
-        void main()
-        {
-            fragColor = vec4(normal * 0.5 + 0.5, 1.0);
-        }
-        """;
-
-    private readonly List<IDrawTask<int>> _mainPassTasks;
-    private readonly List<IDrawTask<int>> _uiPassTasks;
-
-    public PerspectiveCamera PerspectiveCamera { get; init; }
-    public OrthographicCamera OrthographicCamera { get; init; }
-
-    private readonly FrameGraph _frameGraph;
+    private readonly IGLContext _context;
+    private readonly IGraphicsFactory _factory;
     private readonly IShaderProgram _shaderProgram;
 
-    public Renderer(IGLContext context, IGraphicsFactory factory)
+    private Vector2Int _targetViewportSize;
+
+    private FrameGraph _frameGraph;
+    private readonly ClearPass _clearPass;
+    private readonly RenderQueuePass _mainPass;
+    private readonly RenderQueuePass _uiPass;
+
+    public Renderer(Vector2Int targetViewportSize, IGLContext context, IGraphicsFactory factory)
     {
-        _mainPassTasks = [];
-        _uiPassTasks = [];
+        _context = context;
+        _factory = factory;
+        _targetViewportSize = targetViewportSize;
 
-        PerspectiveCamera = new PerspectiveCamera();
-        OrthographicCamera = new OrthographicCamera(left: 0, right: 1920, bottom: 1080, top: 0, zNearPlane: -1.0f, zFarPlane: 1.0f);
+        _shaderProgram = _factory.CreateShader(DefaultShaderConstants.DefaultVertexShader, DefaultShaderConstants.DefaultFragmentShader);
 
-        _shaderProgram = factory.CreateShader(DefaultVertexShader, DefaultFragmentShader);
+        _clearPass = new ClearPass(_context);
+        _mainPass = new RenderQueuePass(_context, _shaderProgram, enableDepthTest: true);
+        _uiPass = new RenderQueuePass(_context, _shaderProgram, enableDepthTest: false);
 
-        _frameGraph = CreateFrameGraph(context);
+        _frameGraph = BuildFrameGraph();
     }
 
-    private FrameGraph CreateFrameGraph(IGLContext context)
+    public void Render(float time = 0.0f)
     {
-        var builder = new FrameGraphBuilder();
-
-        builder.AddPass(new RenderTask<int>(
-            _ => 0,
-            _ =>
-            {
-                context.ClearColor(Color.FromArgb(255, 135, 206, 235));
-                context.ClearBuffers();
-            }));
-
-        builder.AddPass(new RenderQueuePass(context, PerspectiveCamera, _shaderProgram, _mainPassTasks, enableDepthTest: true));
-        builder.AddPass(new RenderQueuePass(context, OrthographicCamera, _shaderProgram, _uiPassTasks, enableDepthTest: false));
-
-        builder.AddPass(new RenderTask<int>(
-            _ => 0,
-            _ =>
-            {
-                _mainPassTasks.Clear();
-                _uiPassTasks.Clear();
-            }));
-
-        return builder.Compile();
+        var frameData = new FrameData((uint)_targetViewportSize.X, (uint)_targetViewportSize.Y, time);
+        _frameGraph.Execute(frameData);
     }
 
-    public void Execute() => _frameGraph.Execute();
+    public void ResizeViewport(Vector2Int newSize)
+    {
+        _targetViewportSize = newSize;
+        _frameGraph = BuildFrameGraph();
+    }
+
+    public void SubmitMain(IDrawTask<IShaderProgram> task) => _mainPass.SubmitTask(task);
+    public void SubmitUi(IDrawTask<IShaderProgram> task) => _uiPass.SubmitTask(task);
+
+    public void SetMainCamera(ICamera camera) => _mainPass.SetCamera(camera);
+    public void SetUiCamera(ICamera camera) => _uiPass.SetCamera(camera);
+
+    public void SetClearColor(Color color) => _clearPass.SetClearColor(color);
+
+    private FrameGraph BuildFrameGraph() => new FrameGraphBuilder()
+        .AddPass(_clearPass)
+        .AddPass(_mainPass)
+        .AddPass(_uiPass)
+        .Compile();
 }

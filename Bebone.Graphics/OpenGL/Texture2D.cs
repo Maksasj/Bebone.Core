@@ -3,7 +3,7 @@ using Silk.NET.OpenGL;
 
 namespace Bebone.Graphics.OpenGL;
 
-public sealed class Texture2D : ITexture, IDisposable
+public sealed class Texture2D : ITexture2D, IDisposable
 {
     private readonly IGLContext _gl;
     private readonly uint _handle;

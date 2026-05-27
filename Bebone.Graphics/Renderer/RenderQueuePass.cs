@@ -4,22 +4,26 @@ using Bebone.Graphics.RenderGraph;
 
 namespace Bebone.Graphics.Renderer;
 
-public class RenderQueuePass(IGLContext context, ICamera camera, IShaderProgram shader, List<IDrawTask<int>> renderQueue, bool enableDepthTest) : IPass
+public class RenderQueuePass(IGLContext context, IShaderProgram shader, bool enableDepthTest) : IPass
 {
     private readonly IGLContext _context = context;
-    private readonly ICamera _camera = camera;
     private readonly IShaderProgram _shader = shader;
-    private readonly List<IDrawTask<int>> _renderQueue = renderQueue;
     private readonly bool _enableDepthTest = enableDepthTest;
+
+    private readonly List<IDrawTask<IShaderProgram>> _renderQueue = [];
+    private ICamera? _camera = null;
 
     public void Compile(IReadOnlyDictionary<string, object> resources)
     {
 
     }
 
-    public void Execute()
+    public void Execute(FrameData frameData)
     {
-        _context.SetViewport(0, 0, 1920, 1080);
+        if (_camera is null)
+            throw new InvalidOperationException($"Camera is not set for {nameof(RenderQueuePass)}");
+
+        _context.SetViewport(0, 0, frameData.Width, frameData.Height);
 
         if (_enableDepthTest)
             _context.EnableDepthTest();
@@ -27,9 +31,15 @@ public class RenderQueuePass(IGLContext context, ICamera camera, IShaderProgram 
             _context.DisableDepthTest();
 
         _shader.Activate();
-        _shader.SetUniform("cam", _camera.GetViewMatrix() * _camera.GetProjectionMatrix((float)1920 / (float)1080));
+        _shader.SetUniform("cam", _camera.GetViewMatrix() * _camera.GetProjectionMatrix(frameData.AspectRatio));
 
         foreach (var task in _renderQueue)
-            task.Execute(0);
+            task.Execute(_shader);
+
+        _renderQueue.Clear();
     }
+
+    public void SubmitTask(IDrawTask<IShaderProgram> drawTask) => _renderQueue.Add(drawTask);
+
+    public void SetCamera(ICamera camera) => _camera = camera;
 }
