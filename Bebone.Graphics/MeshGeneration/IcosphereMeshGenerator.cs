@@ -18,10 +18,10 @@ public class IcosphereMeshGenerator(float radius, int lod = 3) : IcosahedronMesh
 
             foreach (var triangle in triangles)
             {
-                var res = tri.Subdivide();
+                var newTriangles = triangle.Subdivide();
 
-                foreach (var r in res)
-                    tmp.Add(VertexTriangle.ProjectToUnitSphere(r, _radius));
+                foreach (var newTriangle in newTriangles)
+                    tmp.Add(VertexTriangle.ProjectToUnitSphere(newTriangle, _radius));
             }
 
             triangles = tmp;
@@ -46,7 +46,7 @@ public class IcosphereMeshGenerator(float radius, int lod = 3) : IcosahedronMesh
         var triangles = GenerateIcosphereTriangles();
 
         foreach (var triangle in triangles)
-            builder.AddTriangle(tri.V1, tri.V2, tri.V3);
+            builder.AddTriangle(triangle.V1, triangle.V2, triangle.V3);
 
         return builder.Build();
     }

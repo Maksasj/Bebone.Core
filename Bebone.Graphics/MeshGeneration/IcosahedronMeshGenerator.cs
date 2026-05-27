@@ -55,9 +55,9 @@ public class IcosahedronMeshGenerator : IMeshGenerator<Vertex>
 
         foreach (var triangle in triangleIndices)
         {
-            var p0 = positions[tri[0]];
-            var p1 = positions[tri[1]];
-            var p2 = positions[tri[2]];
+            var p0 = positions[triangle[0]];
+            var p1 = positions[triangle[1]];
+            var p2 = positions[triangle[2]];
 
             var n0 = Vector3.Normalize(p0);
             var n1 = Vector3.Normalize(p1);
@@ -78,7 +78,7 @@ public class IcosahedronMeshGenerator : IMeshGenerator<Vertex>
         var triangles = GenerateIcosahedronTriangles();
 
         foreach (var triangle in triangles)
-            builder.AddTriangle(tri.V1, tri.V2, tri.V3);
+            builder.AddTriangle(triangle.V1, triangle.V2, triangle.V3);
 
         return builder.Build();
     }
