@@ -14,6 +14,8 @@ public interface IWindow : IDisposable
     event EventHandler<MouseScrollChangedEventArgs>? MouseScrollChanged;
     event EventHandler<WindowSizeChangedEventArgs>? WindowSizeChanged;
 
+    void SetTitle(string title);
+
     void HideCursor();
     void ShowCursor();
     void SetCursorPosition(Vector2 position);

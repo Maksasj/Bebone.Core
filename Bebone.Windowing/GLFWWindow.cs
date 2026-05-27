@@ -115,6 +115,13 @@ public sealed class GlfwWindow : IWindow
         return _glfw.WindowShouldClose(_windowHandle);
     }
 
+    public unsafe void SetTitle(string title)
+    {
+        ThrowIfDisposed();
+
+        _glfw.SetWindowTitle(_windowHandle, title);
+    }
+
     public unsafe void HideCursor()
     {
         ThrowIfDisposed();
