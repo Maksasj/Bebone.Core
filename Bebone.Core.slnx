@@ -1,8 +1,14 @@
 <Solution>
+  <Folder Name="/SolutionItems/">
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Build.targets" />
+    <File Path="Directory.Packages.props" />
+  </Folder>
   <Folder Name="/Workflows/">
     <File Path=".github/workflows/run-tests.yml" />
   </Folder>
   <Project Path="Bebone.Core.Tests/Bebone.Core.Tests.csproj" Id="f0d0f6c7-4df0-4ffb-9cfc-d3cd20f8ef8b" />
+  <Project Path="Bebone.Deployment/Bebone.Deployment.csproj" Id="4a4497a8-34fa-427d-adb8-f137091bfcce" />
   <Project Path="Bebone.Graphics/Bebone.Graphics.csproj" />
   <Project Path="Bebone.Math/Bebone.Math.csproj" />
   <Project Path="Bebone.Physics/Bebone.Physics.csproj" />

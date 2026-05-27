@@ -1,0 +1,23 @@
+<Project>
+  <PropertyGroup>
+    <TargetsForTfmSpecificBuildOutput>
+      $(TargetsForTfmSpecificBuildOutput);
+      AddProjectReferenceDllsToPackage
+    </TargetsForTfmSpecificBuildOutput>
+  </PropertyGroup>
+
+  <Target Name="AddProjectReferenceDllsToPackage"
+          DependsOnTargets="ResolveReferences">
+
+    <ItemGroup>
+      <_ProjectReferenceDlls
+        Include="@(ReferenceCopyLocalPaths)"
+        Condition="'%(ReferenceCopyLocalPaths.ReferenceSourceTarget)' == 'ProjectReference'" />
+
+      <BuildOutputInPackage
+        Include="@(_ProjectReferenceDlls)"
+        TargetPath="%(_ProjectReferenceDlls.Filename)%(_ProjectReferenceDlls.Extension)" />
+    </ItemGroup>
+
+  </Target>
+</Project>

@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <PackageId>MyCompany.MyPackage</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>MyCompany</Authors>
+    <Description>Combined package for multiple libraries</Description>
+    <IncludeBuildOutput>true</IncludeBuildOutput>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\Bebone.Graphics\Bebone.Graphics.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\Bebone.Math\Bebone.Math.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\Bebone.Physics\Bebone.Physics.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\Bebone.Sound.Abstractions\Bebone.Sound.Abstractions.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\Bebone.Sound.SoundFlow\Bebone.Sound.SoundFlow.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\Bebone.Text\Bebone.Text.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\Bebone.Windowing\Bebone.Windowing.csproj" PrivateAssets="all" />
+  </ItemGroup>
+
+</Project>
