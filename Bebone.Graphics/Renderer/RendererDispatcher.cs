@@ -15,6 +15,8 @@ public class RendererDispatcher(Renderer renderer, IGraphicsFactory factory)
     // Pregenerate often used resources
     private readonly IMesh<Vertex> _cubeMesh = new CubeMeshGenerator().GenerateMesh(factory.CreateMeshBuilder<Vertex>());
     private readonly IMesh<Vertex> _quadMesh = new QuadMeshGenerator().GenerateMesh(factory.CreateMeshBuilder<Vertex>());
+    private readonly IMesh<Vertex> _icosahedron = new IcosahedronMeshGenerator().GenerateMesh(factory.CreateMeshBuilder<Vertex>());
+    private readonly IMesh<Vertex> _sphereMesh = new IcosphereMeshGenerator(1.0f, 4).GenerateMesh(factory.CreateMeshBuilder<Vertex>());
     private readonly ITexture2D _whiteTexture = factory.CreateFlatColorTexture(Color.White, new TextureConfiguration(Width: 16, Height: 16));
 
     public void DrawRectangle(int posX, int posY, int width, int height, ITexture2D? texture = null, Color? tint = null)
