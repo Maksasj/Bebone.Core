@@ -8,7 +8,7 @@ namespace Bebone.Core.Tests.Math;
 public class Vector3IntTests
 {
     [Test]
-    public void Constructor_SetsXYZ()
+    public void Vector3Int_SetsXYZ()
     {
         Prop.ForAll<int, int, int>((x, y, z) =>
         {

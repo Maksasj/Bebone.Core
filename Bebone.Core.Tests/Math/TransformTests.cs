@@ -9,7 +9,7 @@ namespace Bebone.Core.Tests.Math;
 public class TransformTests
 {
     [Test]
-    public void Constructor_SetsPositionRotationAndScale()
+    public void Transform_SetsPositionRotationAndScale()
     {
         // Arrange
         var position = new Vector3(1f, 2f, 3f);
@@ -26,7 +26,7 @@ public class TransformTests
     }
 
     [Test]
-    public void Constructor_WithPosition_SetsDefaultRotationAndScale()
+    public void Transform_WithPosition_SetsDefaultRotationAndScale()
     {
         // Arrange & Act
         var t = new Transform(new Vector3(1f, 2f, 3f));
@@ -37,7 +37,7 @@ public class TransformTests
     }
 
     [Test]
-    public void Constructor_WithPositionAndRotation_SetsDefaultScale()
+    public void Transform_WithPositionAndRotation_SetsDefaultScale()
     {
         // Arrange
         var rotation = Quaternion.CreateFromAxisAngle(Vector3.UnitZ, MathF.PI);
@@ -51,7 +51,7 @@ public class TransformTests
     }
 
     [Test]
-    public void Constructor_WithPositionAndScale_SetsDefaultRotation()
+    public void Transform_WithPositionAndScale_SetsDefaultRotation()
     {
         // Arrange & Act
         var t = new Transform(new Vector3(1f, 2f, 3f), new Vector3(3f, 3f, 3f));
