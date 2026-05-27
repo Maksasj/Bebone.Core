@@ -17,6 +17,20 @@ public class RendererDispatcher(Renderer renderer, IGraphicsFactory factory)
     private readonly IMesh<Vertex> _quadMesh = new QuadMeshGenerator().GenerateMesh(factory.CreateMeshBuilder<Vertex>());
     private readonly ITexture2D _whiteTexture = factory.CreateFlatColorTexture(Color.White, new TextureConfiguration(Width: 16, Height: 16));
 
+    public void DrawRectangle(int posX, int posY, int width, int height, ITexture2D? texture = null, Color? tint = null)
+    {
+        var size = new Vector3(width, height, 1.0f);
+        var position = new Vector3(posX + width * 0.5f, posY + height * 0.5f, 0.0f);
+
+        _renderer.SubmitUi(new MeshDrawTask()
+        {
+            Mesh = _quadMesh,
+            Transform = new Transform(position, Quaternion.Identity, size),
+            Texture = texture ?? _whiteTexture,
+            Tint = tint ?? Color.White
+        });
+    }
+
     public void DrawQuad(Vector3 position, Quaternion rotation, Vector3 scale, ITexture2D? texture = null, Color? tint = null)
     {
         _renderer.SubmitMain(new MeshDrawTask()
