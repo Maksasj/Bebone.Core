@@ -17,21 +17,25 @@ public class RendererDispatcher(Renderer renderer, IGraphicsFactory factory)
     private readonly IMesh<Vertex> _quadMesh = new QuadMeshGenerator().GenerateMesh(factory.CreateMeshBuilder<Vertex>());
     private readonly ITexture2D _whiteTexture = factory.CreateFlatColorTexture(Color.White, new TextureConfiguration(Width: 16, Height: 16));
 
-    public void DrawQuad(Vector3 position, Quaternion rotation, Vector3 scale)
+    public void DrawQuad(Vector3 position, Quaternion rotation, Vector3 scale, ITexture2D? texture = null, Color? tint = null)
     {
         _renderer.SubmitMain(new MeshDrawTask()
         {
             Mesh = _quadMesh,
-            Transform = new Transform(position, rotation, scale)
+            Transform = new Transform(position, rotation, scale),
+            Texture = texture ?? _whiteTexture,
+            Tint = tint ?? Color.White
         });
     }
 
-    public void DrawCube(Vector3 position, Quaternion rotation, Vector3 scale)
+    public void DrawCube(Vector3 position, Quaternion rotation, Vector3 scale, ITexture2D? texture = null, Color? tint = null)
     {
         _renderer.SubmitMain(new MeshDrawTask()
         {
             Mesh = _cubeMesh,
-            Transform = new Transform(position, rotation, scale)
+            Transform = new Transform(position, rotation, scale),
+            Texture = texture ?? _whiteTexture,
+            Tint = tint ?? Color.White
         });
     }
 }
