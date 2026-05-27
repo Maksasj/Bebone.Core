@@ -1,18 +1,25 @@
 <Project>
+
   <PropertyGroup>
     <TargetsForTfmSpecificBuildOutput>
       $(TargetsForTfmSpecificBuildOutput);
-      AddProjectReferenceDllsToPackage
+      AddExtraDllsToPackage
     </TargetsForTfmSpecificBuildOutput>
+
+    <TargetsForTfmSpecificContentInPackage>
+      $(TargetsForTfmSpecificContentInPackage);
+      AddRuntimeFilesToPackage
+    </TargetsForTfmSpecificContentInPackage>
   </PropertyGroup>
 
-  <Target Name="AddProjectReferenceDllsToPackage"
+  <Target Name="AddExtraDllsToPackage"
           DependsOnTargets="ResolveReferences">
 
     <ItemGroup>
       <_ProjectReferenceDlls
         Include="@(ReferenceCopyLocalPaths)"
-        Condition="'%(ReferenceCopyLocalPaths.ReferenceSourceTarget)' == 'ProjectReference'" />
+        Condition="'%(ReferenceCopyLocalPaths.ReferenceSourceTarget)' == 'ProjectReference'
+                   and '%(ReferenceCopyLocalPaths.Extension)' == '.dll'" />
 
       <BuildOutputInPackage
         Include="@(_ProjectReferenceDlls)"
@@ -20,4 +27,18 @@
     </ItemGroup>
 
   </Target>
+
+  <Target Name="AddRuntimeFilesToPackage"
+          DependsOnTargets="Build">
+
+    <ItemGroup>
+      <_RuntimeFiles Include="$(OutputPath)runtimes\**\*.*" />
+
+      <TfmSpecificPackageFile
+        Include="@(_RuntimeFiles)"
+        PackagePath="runtimes\%(RecursiveDir)" />
+    </ItemGroup>
+
+  </Target>
+
 </Project>

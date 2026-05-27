@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<ItemGroup>
-		<None Include="runtimes\win-x64\native\freetype.dll" Pack="true" PackagePath="runtimes\win-x64\native\" />
+		<None Include="runtimes\win-x64\native\freetype.dll" Pack="true" PackagePath="runtimes\win-x64\native\" CopyToOutputDirectory="PreserveNewest" />
 	</ItemGroup>
 
 </Project>

@@ -2,10 +2,8 @@
 
   <PropertyGroup>
     <IsPackable>true</IsPackable>
-    <PackageId>MyCompany.MyPackage</PackageId>
-    <Version>1.0.0</Version>
-    <Authors>MyCompany</Authors>
-    <Description>Combined package for multiple libraries</Description>
+    <PackageId>Bebone.Core</PackageId>
+    <Version>1.0.0-alpha1</Version>
     <IncludeBuildOutput>true</IncludeBuildOutput>
   </PropertyGroup>
   
