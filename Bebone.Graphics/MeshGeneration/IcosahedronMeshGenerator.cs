@@ -77,7 +77,7 @@ public class IcosahedronMeshGenerator : IMeshGenerator<Vertex>
     {
         var triangles = GenerateIcosahedronTriangles();
 
-        foreach (var tri in triangles)
+        foreach (var triangle in triangles)
             builder.AddTriangle(tri.V1, tri.V2, tri.V3);
 
         return builder.Build();
