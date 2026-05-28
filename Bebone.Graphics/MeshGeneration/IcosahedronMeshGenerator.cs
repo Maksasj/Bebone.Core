@@ -7,7 +7,7 @@ public class IcosahedronMeshGenerator : IMeshGenerator<Vertex>
 {
     protected static List<VertexTriangle> GenerateIcosahedronTriangles()
     {
-        float phi = (1.0f + MathF.Sqrt(5.0f)) * 0.5f;
+        const float phi = 1.618034;
         float a = 1.0f;
         float b = 1.0f / phi;
 
