@@ -115,6 +115,13 @@ public sealed class GlfwWindow : IWindow
         return _glfw.WindowShouldClose(_windowHandle);
     }
 
+    public unsafe void SetTitle(string title)
+    {
+        ThrowIfDisposed();
+
+        _glfw.SetWindowTitle(_windowHandle, title);
+    }
+
     public unsafe void HideCursor()
     {
         ThrowIfDisposed();
@@ -127,6 +134,14 @@ public sealed class GlfwWindow : IWindow
         ThrowIfDisposed();
 
         _glfw.SetInputMode(_windowHandle, CursorStateAttribute.Cursor, CursorModeValue.CursorNormal);
+    }
+
+    public unsafe void SetCursorPosition(Vector2 position)
+    {
+        ThrowIfDisposed();
+
+        _glfw.SetCursorPos(_windowHandle, position.X, position.Y);
+        _currentCursorPosition = position;
     }
 
     public Func<string, IntPtr> GetProcAddressLoader()
