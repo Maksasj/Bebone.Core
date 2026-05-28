@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <PackageId>Bebone.Core</PackageId>
+    <Version>1.0.0-alpha2</Version>
+    <IncludeBuildOutput>true</IncludeBuildOutput>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\Bebone.Graphics\Bebone.Graphics.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\Bebone.Math\Bebone.Math.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\Bebone.Physics\Bebone.Physics.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\Bebone.Sound.Abstractions\Bebone.Sound.Abstractions.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\Bebone.Sound.SoundFlow\Bebone.Sound.SoundFlow.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\Bebone.Text\Bebone.Text.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\Bebone.Windowing\Bebone.Windowing.csproj" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+  	<PackageReference Include="Silk.NET" />
+  	<PackageReference Include="SoundFlow" />
+  </ItemGroup>
+
+</Project>
