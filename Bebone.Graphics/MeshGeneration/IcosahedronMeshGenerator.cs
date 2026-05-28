@@ -7,7 +7,7 @@ public class IcosahedronMeshGenerator : IMeshGenerator<Vertex>
 {
     protected static List<VertexTriangle> GenerateIcosahedronTriangles()
     {
-        const float phi = 1.618034;
+        const float phi = 1.618034f; // Golden ratio coefficient
         float a = 1.0f;
         float b = 1.0f / phi;
 

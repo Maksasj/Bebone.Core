@@ -29,13 +29,13 @@ public class IcosphereMeshGenerator(float radius, int lod = 3) : IcosahedronMesh
 
         for (int i = 0; i < triangles.Count; ++i)
         {
-            var tri = triangles[i];
+            var triangle = triangles[i];
 
-            tri.V1.Normal = Vector3.Normalize(tri.V1.Position);
-            tri.V2.Normal = Vector3.Normalize(tri.V2.Position);
-            tri.V3.Normal = Vector3.Normalize(tri.V3.Position);
+            triangle.V1.Normal = Vector3.Normalize(triangle.V1.Position);
+            triangle.V2.Normal = Vector3.Normalize(triangle.V2.Position);
+            triangle.V3.Normal = Vector3.Normalize(triangle.V3.Position);
 
-            triangles[i] = tri;
+            triangles[i] = triangle;
         }
 
         return triangles;
