@@ -27,11 +27,14 @@ public static class DefaultShaderConstants
         in vec2 texCoords;
         in vec3 normal;
 
+        uniform sampler2D albedo;
+        uniform vec4 tint;
+
         out vec4 fragColor;
 
         void main()
         {
-            fragColor = vec4(normal * 0.5 + 0.5, 1.0);
+            fragColor = texture(albedo, texCoords) * tint;
         }
         """;
 }
