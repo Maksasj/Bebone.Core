@@ -3,7 +3,7 @@
   <PropertyGroup>
     <IsPackable>true</IsPackable>
     <PackageId>Bebone.Core</PackageId>
-    <Version>1.1.1</Version>
+    <Version>1.1.2</Version>
     <IncludeBuildOutput>true</IncludeBuildOutput>
   </PropertyGroup>
   

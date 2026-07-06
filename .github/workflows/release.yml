@@ -2,6 +2,10 @@ name: Release
 
 on:
   workflow_dispatch:
+    inputs:
+      version:
+        description: "Version tag, e.g. v1.0.0"
+        required: true
 
 jobs:
   build-and-publish:
@@ -40,11 +44,15 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          tag_name: ${{ inputs.version }}
+          release_name: Release ${{ inputs.version }}
           draft: false
           prerelease: false
       
+      - name: Find package
+        id: package
+        run: echo "path=$(ls artifacts/Bebone.Core.*.nupkg | head -n 1)" >> "$GITHUB_OUTPUT"
+
       - name: Upload Release Asset
         id: upload-release-asset 
         uses: actions/upload-release-asset@v1
@@ -52,6 +60,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./artifacts/Bebone.Core.*.nupkg
+          asset_path: ${{ steps.package.outputs.path }}
           asset_name: Bebone.Core.nupkg
           asset_content_type: application/zip
